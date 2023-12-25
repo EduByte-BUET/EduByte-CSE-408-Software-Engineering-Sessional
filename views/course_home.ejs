@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <!-- Required meta tags -->
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <title>EduByte</title>
+
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <!-- <script>
+    $(document).ready(function() {
+      
+    });
+  </script> -->
+  <%- include ('../partials/pageheader') %>
+</head>
+
+<body>
+  <div id="header" class="header d-flex align-items-center">
+    <div class="container-fluid container-xl d-flex align-items-center justify-content-between">
+      <%- include ('../partials/navbar') %>
+        <!-- navbar partial -->
+    </div>
+  </div>
+
+  <main class="container">
+    <div class="row body-width pt-3">
+
+      <div class="col-5">
+        <h3><b>My Courses</b></h3>
+        <ul class="list-group list-group-flush">
+          <% data.mycourselist.forEach(mycourse=> { %>
+
+            <li class="list-group-item">
+              <div class="list-group pt-2">
+                <a href="/course_desc" class="list-group-item list-group-item-action">
+                  <%= mycourse.TITLE %>
+                </a>
+              </div>
+            </li>
+
+            <% }); %>
+        </ul>
+
+        <h3 class="pt-4"><b>Most popular programs</b></h3>
+        <ul class="list-group list-group-flush">
+          <% data.popularlist.forEach(popularcourse=>{ %>
+
+            <li class="list-group-item">
+              <div class="list-group pt-2">
+                <a href="/course_desc" class="list-group-item list-group-item-action">
+                  <%= popularcourse.TITLE %> | Rating: <%= popularcourse.POPULARITY %>
+                </a>
+              </div>
+            </li>
+
+            <% }); %>
+        </ul>
+      </div>
+
+      <div class="col-1"></div>
+
+      <div class="col-6 pr-2">
+        <h3><b>Courses by Categories</b></h3>
+
+        <ul class="list-group list-group-flush">
+          <% data.categorylist.forEach(category=> { %>
+
+            <li class="list-group-item">
+              <div class="list-group pt-2 btn-group dropend">
+                <button id="category" type="button"
+                  class="btn btn-secondary dropdown-toggle list-group-item list-group-item-action list-group-item-secondary"
+                  data-bs-toggle="dropdown" aria-expanded="false">
+                  <%= category.categoryname.CATEGORY %>
+                </button>
+                <ul class="dropdown-menu pr-2">
+                  <% category.courselist.forEach(coursename=>{ %>
+                    <li>
+                      <button id="myButton" class="dropdown-item" value="<%= coursename.TITLE %>">
+                        <%= coursename.TITLE %>
+                      </button>
+                    </li>
+                    <% }) %>
+                </ul>
+              </div>
+            </li>
+
+            <% }); %>
+        </ul>
+      </div>
+    </div>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+    crossorigin="anonymous"></script>
+
+  <script>
+    // sample.js
+    $(document).ready(function () {
+      // Attach a click event handler to the button
+      $("#myButton").on("click", function () {
+        // Get the custom data attribute value
+
+        const selectedValue = $("#myButton").val();
+        // alert(`Selected Value: ${selectedValue}`);
+
+        // Send the data to the backend using AJAX
+        $.ajax({
+          type: "POST", // or "GET" depending on your backend route
+          url: "/",
+          data: {selected_course: selectedValue}, // Send your custom data here
+          success: function (response) {
+            console.log("Backend response:", response);
+            window.location.href = `/course_desc`;
+          },
+          error: function (err) {
+            console.error("Error:", err);
+          }
+        });
+      });
+    });
+
+  </script>
+</body>
+
+</html>
