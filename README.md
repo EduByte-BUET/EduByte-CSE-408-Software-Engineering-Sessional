@@ -15,4 +15,6 @@ See our site's API structure overview: [API DOC](https://documenter.getpostman.c
 - Frontend : `React`, `HTML`, `CSS`, `Bootstrap`
 - Backend : `ExpressJS Framework`
 - Database : `PostgreSQL`
-- Tools : `DataGrip`, `Postman` 
+- Tools :
+  - `DataGrip` - Database Management
+  - `Postman` - API Documentation, Debugging, API Testing
