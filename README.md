@@ -1,7 +1,7 @@
 # Software Development Project **`EduByte`**
 
 <p align='center'>
-<img alt="EduByte" src="Server/public/logo/EduByte_Logo.png" />
+<img alt="EduByte" height=50% width=50% src="Server/public/logo/EduByte_Logo.png" />
 </p>
 
 # **Project Overview**
