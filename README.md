@@ -1,6 +1,4 @@
-# Software Development Project
-
-# **`EduByte`**
+# Software Development Project **`EduByte`**
 
 <p align='center'>
 <img alt="EduByte" src="Server/public/logo/EduByte_Logo.png" />
