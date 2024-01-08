@@ -15,6 +15,12 @@
 # API Documentation: 
 See our site's API structure overview: [API DOC](https://documenter.getpostman.com/view/32129219/2s9YsGhD2R)
 
+# Project Architecture **`EduByte`**
+Architecture 
+<p align='center'>
+<img alt="EduByte" height=50% width=50% src="Server/public/logo/EduByte_Logo.png" />
+</p>
+
 # **Tech Stack & Tools**
 
 - Frontend : `React`, `HTML`, `CSS`, `Bootstrap`
