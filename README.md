@@ -17,7 +17,7 @@ See our site's API structure overview: [API DOC](https://documenter.getpostman.c
 
 # Project Architecture **`Model View Controller`**
 <p align='center'>
-<img alt="EduByte" height=50% width=50% src="Server/public/logo/archi.png" />
+<img alt="Design Architecture" height=50% width=50% src="Server/public/architecture/archi.png" />
 </p>
 
 # **Tech Stack & Tools**
