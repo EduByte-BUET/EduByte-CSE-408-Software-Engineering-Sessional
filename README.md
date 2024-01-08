@@ -15,7 +15,7 @@
 # API Documentation: 
 See our site's API structure overview: [API DOC](https://documenter.getpostman.com/view/32129219/2s9YsGhD2R)
 
-# Project Architecture **`Model View Controller`**
+# Project Architecture - **`Model View Controller`**
 <p align='center'>
 <img alt="Design Architecture" src="Server/public/architecture/archi.png" />
 </p>
