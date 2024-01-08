@@ -21,7 +21,7 @@ Site's Endpoints Documentation: [API DOC](https://documenter.getpostman.com/view
 </p>
 
 # **Tech Stack & Tools**
-
+- Stack: `**PERN**`
 - Frontend : `React`, `HTML`, `CSS`, `Bootstrap`
 - Backend : `ExpressJS Framework`, `NodeJS`
 - Database : `PostgreSQL`
