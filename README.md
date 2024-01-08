@@ -28,4 +28,4 @@ See our site's API structure overview: [API DOC](https://documenter.getpostman.c
 - Tools :
   - `DataGrip` - Database Management
   - `Postman` - API Documentation, Debugging, API Testing
-- Hosting Service: `Amazon Web Service (AWS)`, `AWRDS (PostgreSQL server)`
+- Hosting Service: `Amazon Web Service (AWS)`, `Amazon Web Relational Database Service (AWRDS) (PostgreSQL server)`
