@@ -13,7 +13,7 @@
 - 1905096 - Apurbo Banik Turjo
 
 # API Documentation: 
-See our site's API structure overview: [API DOC](https://documenter.getpostman.com/view/32129219/2s9YsGhD2R)
+Site's Endpoints Documentation: [API DOC](https://documenter.getpostman.com/view/32129219/2s9YsGhD2R)
 
 # Project Architecture - **`Model View Controller`**
 <p align='center'>
