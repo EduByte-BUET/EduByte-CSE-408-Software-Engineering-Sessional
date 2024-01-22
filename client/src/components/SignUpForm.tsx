@@ -1,6 +1,6 @@
 import React from "react";
 import { Form, Button } from "react-bootstrap";
-import bg from ".././assets/images/background_signup.jpg";
+import bg from "../assets/react.svg"
 import { useState } from "react";
 import axios from "axios";
 

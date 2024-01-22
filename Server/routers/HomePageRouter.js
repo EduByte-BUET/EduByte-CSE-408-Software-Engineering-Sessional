@@ -1,8 +1,13 @@
+const path = require("path");
+const fs = require("fs").promises;
 const express = require("express");
 const router = express.Router();
 const courses_router = express.Router();
+const logo_router = express.Router();
+const bg_router = express.Router();
 
 router.use("/", courses_router);
+router.use("/logo", logo_router);
 
 courses_router.route("/").get(async (req, res) => {
 	console.log("/home GET");
@@ -59,20 +64,44 @@ courses_router.route("/").get(async (req, res) => {
 		twitter_link: "http://twitter.com/edubyte",
 		insta_link: "http://instagram.com/edubyte",
 	};
-    about = "We're dedicated to providing the best online learning experience, with thousands of courses taught by industry experts and experienced instructors.";
+	about =
+		"We're dedicated to providing the best online learning experience, with thousands of courses taught by industry experts and experienced instructors.";
 
-    homepageinfo = {
-        site_description: site_description,
-        most_popular_courses: most_popular_courses,
-        supporters: supporters,
-        edubyte_content_info: edubyte_content_info,
-        about: about,
-    };
-
+	homepageinfo = {
+		site_description: site_description,
+		most_popular_courses: most_popular_courses,
+		supporters: supporters,
+		edubyte_content_info: edubyte_content_info,
+		about: about,
+	};
 
 	if (Object.keys(homepageinfo).length > 0) res.status(200); // OK
-    else res.status(404); // Not found
+	else res.status(404); // Not found
 	res.json(homepageinfo);
+});
+
+logo_router.route("/").get(async (req, res) => {
+	console.log("/logo GET");
+
+	logo = path.join(__dirname, "../public/logo/EduByte_Logo.png");
+
+	fs.access(logo)
+		.then(() => res.status(200)) // OK
+		.catch(() => res.status(404)); // Not found
+
+	res.sendFile(logo);
+});
+
+bg_router.route("/").get(async (req, res) => {
+	console.log("/bg GET");
+
+	bg = path.join(__dirname, "../public/images/background_signup.jpg");
+
+	fs.access(bg)
+		.then(() => res.status(200)) // OK
+		.catch(() => res.status(404)); // Not found
+
+	res.sendFile(logo);
 });
 
 module.exports = router;

@@ -1,8 +1,41 @@
 #root {
-  max-width: 1280px;
+  max-width: screen-xl;
   margin: 0 auto;
-  padding: 2rem;
+  padding: 0rem;
   text-align: center;
+}
+
+.custom-nav-link {
+  border: none;
+  transition: transform 0.8s ease;
+  margin: 0 10px;
+  padding: 5px 10px;
+  color: black;
+  position: relative;
+}
+
+.custom-nav-link::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  height: 2px;
+  width: 100%;
+  background-color: darkred;
+  transform: scaleX(0);
+  transition: transform 0.5s ease;
+}
+
+.custom-nav-link:hover {
+  transform: translateY(-2px);
+}
+
+.custom-nav-link:hover::after {
+  transform: scaleX(1);
+}
+
+.custom-nav-link:active {
+  transform: scale(0.95);
 }
 
 .logo {
@@ -12,7 +45,7 @@
   transition: filter 300ms;
 }
 .logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
+  filter: drop-shadow(0 0 2em #959af6aa);
 }
 .logo.react:hover {
   filter: drop-shadow(0 0 2em #61dafbaa);
@@ -39,4 +72,35 @@
 
 .read-the-docs {
   color: #888;
+}
+.blue-text {
+  color: blue;
+}
+.cream-background {
+  background-color: #fbeaf3;
+}
+.column-border {
+  border-right: 1px solid #000; 
+}
+.row-border {
+  border-bottom: 2px solid #000000; 
+}
+.hover-effect {
+  background-color: #e7e2e2;
+}
+.hover-effect:hover {
+  background-color: #b8c3fb; 
+}
+.block-effect {
+  background-color: #f4e3e3;
+}
+.block-effect:hover {
+  background-color: #ecedf2; 
+}
+.bold-text {
+  font-weight: bold;
+}
+.custom-link {
+  color: inherit; /* Use the color of the parent element */
+  text-decoration: none; /* Remove the underline */
 }

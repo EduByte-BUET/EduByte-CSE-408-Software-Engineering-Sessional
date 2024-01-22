@@ -105,17 +105,16 @@ courses_router.route("/").get(async (req, res) => {
     status: "success",
     message: "Course details retrieved successfully.",
     course: {
-      course_id: 1,
-      course_name: "Data Science Fundamentals",
-      course_description:
-        "An introduction to the basic concepts of data science.",
+      course_id: 201,
+      course_name: "Introduction to Programming",
+      course_description:"An introduction to the basic concepts of data science. Data Science is one of the hottest topics in the 21st century.In this course, you will learn the basics of data science and statistical modeling using Python programming language.",
       instructor_name: "Prof. John Smith",
       total_lectures: 12,
       total_enrolled_students: 150,
       start_date: "2023-06-01",
       end_date: "2023-07-15",
       tags: ["data science", "statistics"],
-      course_image_url: "https://example.com/images/datascience.jpg",
+      course_video_url: "https://www.youtube.com/embed/JL_grPUnXzY?si=mQtLZnjhMkVBdRGf",
       skills_acquired: ["Data Analysis", "Statistical Modeling"],
       author: {
         author_id: 101,
@@ -195,49 +194,49 @@ block_router.route("/").get(async (req, res) => {
       course_name: "Introduction to Programming",
       total_lectures: 20,
       total_quizzes: 15,
+      blocks: [
+        {
+          block_id: 1,
+          block_name: "Fundamentals of Programming",
+          total_lectures: 5,
+          total_quizzes: 2,
+          lectures: [
+            {
+              lecture_id: 1,
+              lecture_title: "Introduction to Variables",
+              duration_minutes: 30,
+              quiz_id: 2001,
+            },
+            {
+              lecture_id: 2,
+              lecture_title: "Control Structures",
+              duration_minutes: 45,
+              quiz_id: 2002,
+            },
+          ],
+        },
+        {
+          block_id: 2,
+          block_name: "Advanced Programming Concepts",
+          total_lectures: 7,
+          total_quizzes: 3,
+          lectures: [
+            {
+              lecture_id: 1,
+              lecture_title: "Object-Oriented Programming",
+              duration_minutes: 60,
+              quiz_id: 2003,
+            },
+            {
+              lecture_id: 2,
+              lecture_title: "Exception Handling",
+              duration_minutes: 40,
+              quiz_id: 2004,
+            },
+          ],
+        },
+      ],
     },
-    blocks: [
-      {
-        block_id: 101,
-        block_name: "Fundamentals of Programming",
-        total_lectures: 5,
-        total_quizzes: 2,
-        lectures: [
-          {
-            lecture_id: 1001,
-            lecture_title: "Introduction to Variables",
-            duration_minutes: 30,
-            quiz_id: 2001,
-          },
-          {
-            lecture_id: 1002,
-            lecture_title: "Control Structures",
-            duration_minutes: 45,
-            quiz_id: 2002,
-          },
-        ],
-      },
-      {
-        block_id: 102,
-        block_name: "Advanced Programming Concepts",
-        total_lectures: 7,
-        total_quizzes: 3,
-        lectures: [
-          {
-            lecture_id: 1003,
-            lecture_title: "Object-Oriented Programming",
-            duration_minutes: 60,
-            quiz_id: 2003,
-          },
-          {
-            lecture_id: 1004,
-            lecture_title: "Exception Handling",
-            duration_minutes: 40,
-            quiz_id: 2004,
-          },
-        ],
-      },
-    ],
   };
   if (Object.keys(blockinfo).length > 0) res.status(200); // OK
   else res.status(404); // Not found
