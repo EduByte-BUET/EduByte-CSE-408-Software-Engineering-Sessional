@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import "../../css/aa.css";
+import "../../css/courseUpload.css";
 
-export default function AA() {
+export default function CourseUpload() {
   const [courses, setCourses] = useState([
     { id: "course1", name: "Introduction to React" },
     { id: "course2", name: "Advanced React" },

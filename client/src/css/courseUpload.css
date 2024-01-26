@@ -6,9 +6,6 @@
   
 }
 
-.course-management h2 {
-
-}
 
 .uploads .form-group {
   margin-bottom: 15px;
@@ -30,7 +27,7 @@
 
 .btn-upward {
   position: relative;
-  top: -100px; /* Adjust this value as needed */
+  top: -100px; 
 }
 
 
@@ -42,7 +39,7 @@
 .course-management .btn-primary {
   background-color: #007bff;
   border-color: #007bff;
-  margin-top: 15px; /* Add some space above the button */
+  margin-top: 15px; 
 }
 
 .course-management .btn-primary:hover {
@@ -54,9 +51,9 @@
   float: right;
 }
 
-/* Specific styles for description textarea to match the select dropdown height */
+
 .course-management #courseDescription {
-  resize: none; /* Prevent resizing of textarea */
+  resize: none;
 }
 
 /* Adjustments for smaller screens */
@@ -100,11 +97,11 @@
 }
 
 .course-management textarea.form-control {
-  height: auto; /* Adjust the height of the textarea */
+  height: auto; 
 }
 
 
 .custom-select .options {
   overflow-y: auto;
-  max-height: 30px; /* Adjust this value as needed */
+  max-height: 30px; 
 }

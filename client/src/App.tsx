@@ -9,6 +9,8 @@ import './App.css';
 import './button.css';
 import LectureInfo from './components/LectureInfo';
 import Homepage from './components/homepage';
+import Dashboard from './UserDashboardFolder/Dashboard';
+
 
 const App: React.FC = () => {
   const [courseData, setCourseData] = useState<{ course_id: number; courseName: string } | null>(null);
@@ -24,14 +26,27 @@ const App: React.FC = () => {
   return (
     <Router>
       <Header />
-      
+
       <Routes>
         <Route path="/" element={<Homepage />} />
         <Route path="/courses" element={<CoursesPage />} />
         <Route path="/signup" element={<SignUpForm />} />
-        <Route path="/courses/:course_id" element={<CourseDetail onCourseData={handleCourseData}/>} />
-        <Route path="/courses/:course_id/blocks" element={<CourseBlocks onBlockData={handleBlockData}/>} />
-        <Route path="/courses/:course_id/blocks/:block_id" element={<LectureInfo courseData={courseData} blockData={blockData}/>} />
+        <Route
+          path="/courses/:course_id"
+          element={<CourseDetail onCourseData={handleCourseData} />}
+        />
+        <Route
+          path="/courses/:course_id/blocks"
+          element={<CourseBlocks onBlockData={handleBlockData} />}
+        />
+        <Route
+          path="/courses/:course_id/blocks/:block_id"
+          element={
+            <LectureInfo courseData={courseData} blockData={blockData} />
+          }
+        />
+
+        <Route path="/user/dashboard/*" element={<Dashboard />} />
       </Routes>
     </Router>
   );
