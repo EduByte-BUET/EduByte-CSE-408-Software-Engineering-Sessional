@@ -1,0 +1,55 @@
+.btn.blue-button {
+  background-color: dodgerblue  ;
+}
+
+.btn.red-button {
+  background-color: crimson;
+}
+
+.btn.green-button {
+  background-color: limegreen;
+}
+
+.btn.yellow-button {
+  background-color: yellow;
+}
+
+.btn.pink-button {
+  background-color: pink;
+}
+
+.btn.blue-button, .btn.red-button, .btn.green-button, .btn.yellow-button, .btn.pink-button {
+  color: whitesmoke;
+  font-family: "montserrat", sans-serif;
+  font-weight: bold;
+  border: none;
+  cursor: pointer;
+  display: inline-block;
+  position: relative;
+  transition: 0.5s;
+  border-radius: 0.1875rem;
+  overflow: hidden;
+}
+
+.btn.blue-button:hover, .btn.red-button:hover, .btn.green-button:hover, .btn.yellow-button:hover, .btn.pink-button:hover {
+  box-shadow: 0px 15px 20px rgba(0, 0, 0, 0.2); /* Add this line */
+}
+
+.btn.blue-button:after, .btn.red-button:after, .btn.green-button:after, .btn.yellow-button:after, .btn.pink-button:after {
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 2px;
+  background: black;
+  transition: all .3s;
+  bottom: 0;
+  left: -100%;
+}
+
+.btn.blue-button:hover:after, .btn.red-button:hover:after, .btn.green-button:hover:after, .btn.yellow-button:hover:after, .btn.pink-button:hover:after {
+  left: 0;
+}
+
+.btn.blue-button:active, .btn.red-button:active, .btn.green-button:active, .btn.yellow-button:active, .btn.pink-button:active {
+  transform: translateY(4px);
+}

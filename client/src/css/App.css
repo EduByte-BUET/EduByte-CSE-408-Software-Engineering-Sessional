@@ -1,0 +1,21 @@
+#root {
+  max-width: 100%;
+  max-height: 100%;
+  text-align: center;
+}
+
+body {
+  font-family: 'Inria Sans', sans-serif !important;
+}
+
+div::-webkit-scrollbar {
+  width: 10px; /* For Chrome, Safari, and Opera */
+}
+
+div::-webkit-scrollbar-track {
+  background: lightcyan; /* Color of the track */
+}
+
+div::-webkit-scrollbar-thumb {
+  background: lightseagreen; /* Color of the scroll thumb */
+}

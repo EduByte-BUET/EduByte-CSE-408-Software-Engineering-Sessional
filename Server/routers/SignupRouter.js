@@ -1,48 +1,60 @@
 const express = require("express");
-const app = express();
 const router = express.Router();
-app.use(router);
 
-router
-  .route("/") // when a client hits /login, come to this router
-  .get(async (req, res) => {
-    console.log('In API Signup');
-  })
-  .post(async (req, res) => {
-    console.log(req.body);
+const db = require("../database/db");
 
-    // console.log(username + " " + pass);
+// signin Credentials
+// fullname, Email, Username, Password, Retype Password, Institution, Experience, Goal, Interests
+let userInfo = {
+	fullname: "",
+	email: "",
+	username: "",
+	password: "",
+	institution: "",
+	experience: "",
+	goal: "",
+	interests: [],
+};
 
-    // const data = await infoPool.getUserInfo(username, pass);
-    // console.log(data);
+// Router chaining ekhane problem create kore .route("/"), same route e mount kore but get and post route alada ekhane
+router.get("/:username", async (req, res) => {
+		console.log("/user/signup GET");
 
-    // try {
-    //   if (data.length != 0) {
-    //     // user provided correct credentials
-    //     req.session.validUser = true;
-    //     req.session.username = username;
-    //     console.log(data);
+		const username = req.params.username;
+		
+		const db_response = await db.checkUsername(username);
+		console.log("DB Response", db_response);
+		if (db_response) {
+			res.status(409).send(); // only send the status
+		}
+		else {
+			res.status(200).send();
+		}
+		console.log("response from /user/signin GET", username);
+	})
 
-    //     auth_type = data[0].AUTH_TYPE;
-    //     if (auth_type == 'user') {
-    //       req.session.user_id = data[0].USER_ID;
+router.post("/", async (req, res) => {
+		console.log("user/signup POST");
+    
+		userInfo = req.body.updatedUserInfo;
+		console.log(userInfo);
 
-    //       res.redirect("/");
-    //     }
-    //     else if(auth_type == "creator") {
-    //       req.session.user_id = data[0].USER_ID;
 
-    //       res.redirect("/content_creator");
-    //     }
-        
-    //   } else {
-    //     return res.render("login", {
-    //       message: "Incorrect Email or Password",
-    //     });
-    //   }
-    // } catch {
-    //   console.log("Error in loggin in!!");
-    // }
-  });
+    // req.session.userid = username; // This creates a session ID for the user
+		res.status(200); // OK
+		res.json({
+			message: "signup request received",
+			verdict: "success",
+		});
+		
+		try { 
+			await db.addUser(userInfo);
+			console.log("Successfully saved user info to database");
+		}
+		catch (err) {
+			console.log("Error in saving userinfo to database");
+		}
+	});
+
 
 module.exports = router;
