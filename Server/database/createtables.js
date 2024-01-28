@@ -342,7 +342,8 @@ const initDB = async (newPool) => {
     // await createRecommendedCoursesTable();
     // await createQuizTable();
     // await createCourseProgressTable();
-	// await createCategogoriesTable();
+	  // await createCategogoriesTable();
+
 }
 
 module.exports = {

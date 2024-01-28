@@ -55,6 +55,7 @@ router.post("/", async (req, res) => {
 
 		// Username is unique, so we can use it as the user ID
 		req.session.username = userInfo.username;
+
 		res.status(200).send();
 	} catch (err) {
 		res.status(409).send();

@@ -18,7 +18,7 @@ const pool = new Pool({
 	user: "postgres",
 	host: "localhost",
 	database: "test",
-	password: "postgredb",
+	password: "connectdb",
 	port: 5432,
 });
 
@@ -64,6 +64,22 @@ const getUserPassword = async (username) => {
 		console.log(err);
 	}
 };
+
+const getUserPassword = async (username) => {
+	try {
+		const res = await pool.query(
+			"SELECT password FROM users WHERE username = $1",
+			[username]
+		);
+		if (res.rows[0]) {
+			return res.rows[0].password;
+		}
+		return null;
+	}
+	catch (err) {
+		console.log(err);
+	}
+}
 
 const addUser = async (user) => {
 	try {
@@ -174,6 +190,37 @@ const getCoursesPageInfo = async (user_id) => {
 		};
 	}
 };
+
+const getCoursesPageInfo = async () =>{
+    try {
+        const categories = await pool.query('SELECT category FROM courses');
+        const popularCourses = await pool.query('SELECT * FROM courses ORDER BY total_enrolled DESC LIMIT 5');
+        const recommendedCourses = await pool.query('SELECT * FROM recommended_courses JOIN courses ON recommended_courses.course_id = courses.course_id WHERE user_id = $1', [userId]);
+
+        const categoriesWithCourses = await Promise.all(categories.rows.map(async (category) => {
+            const courses = await pool.query('SELECT * FROM courses WHERE category_id = $1', [category.category_id]);
+            return {
+                ...category,
+                courses: courses.rows,
+            };
+        }));
+		console.log("Inside courses page info function");
+
+        return {
+            status: "success",
+            message: "Course page information retrieved successfully.",
+            categories: categoriesWithCourses,
+            popular_courses: popularCourses.rows,
+            recommended_courses: recommendedCourses.rows,
+        };
+    } catch (err) {
+        console.error(err);
+        return {
+            status: "error",
+            message: "Failed to retrieve course page information.",
+        };
+    }
+}
 
 module.exports = {
 	createTables,

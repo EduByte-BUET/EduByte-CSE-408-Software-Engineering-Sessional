@@ -1,0 +1,172 @@
+.sidebars {
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+  padding-bottom: 1rem;
+
+height: 650px;
+
+}
+
+
+.text-center {
+  padding-bottom: 1rem;
+}
+
+.img-thumbnail {
+  width: 100px; /* Adjusted size */
+  height: 100px; /* Adjusted size */
+  border-radius: 50%; /* Makes the image round */
+  margin-bottom: 1rem;
+  border: 3px solid #007bff; /* Blue border for image */
+}
+
+.dash-navlink {
+  display: block;
+  margin: 0.5rem 0;
+  padding: 0.75rem 1rem;
+  background-color: #f8f9fa;
+  border-radius: 0.375rem; /* Slightly rounded corners for the links */
+  color: #007bff;
+  transition: background-color 0.2s, color 0.2s;
+  font-size: 1.1rem; /* Bigger font size */
+  font-weight: 500; /* Slightly bolder font */
+}
+
+.dash-navlink:hover,
+.dash-navlink:focus {
+ 
+  background-color: #e2e6ea;
+  color: #0056b3; /* Slightly darker blue on hover/focus */
+   border-left: 4px solid #0056b3; 
+}
+
+.dash-navlink.active {
+  color: #fff;
+  background-color: #58a1f0;
+  border-left: 4px solid #0056b3; /* Left border to highlight active link */
+}
+
+
+.home-navlink {
+   display: block;
+  margin: 0.5rem 0;
+  padding: 0.75rem 1rem;
+  background-color: #d1f063;
+  border-radius: 0.375rem; /* Slightly rounded corners for the links */
+  color: #17170e;
+  transition: background-color 0.2s, color 0.2s;
+  font-size: 1.1rem; /* Bigger font size */
+  font-weight: 500; /* Slightly bolder font */
+  margin-top: 50px;
+  
+}
+.logout-navlink {
+   display: block;
+  margin: 0.5rem 0;
+  padding: 0.75rem 1rem;
+  background-color: #fc824e;
+  border-radius: 0.375rem; /* Slightly rounded corners for the links */
+  color: #17170e;
+  transition: background-color 0.2s, color 0.2s;
+  font-size: 1.1rem; /* Bigger font size */
+  font-weight: 500; /* Slightly bolder font */
+  margin-top: 30px;
+  
+}
+
+.home-navlink:hover, .logout-navlink:hover{
+transform: scale(1.02); /* Scales up the link a bit */
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.bottom-links {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around; /* Evenly spaces the links */
+  /* Fixes the position at the bottom */
+  bottom: 0; /* Aligns at the bottom of the sidebar */
+  width: calc(100% - 1rem); /* Full width of the sidebar minus some padding */
+  background-color: rgb(255, 255, 255); /* Inherits the sidebar's background color */
+  padding: 0.5rem 0; /* Adds some padding above and below the links */
+ 
+}
+
+.bottom-courses{
+  display: block;
+  margin: 0.5rem 0.1;
+  padding: 0.75rem 8rem;
+  background-color: #f4acce;
+  border-radius: 0.375rem; /* Slightly rounded corners for the links */
+  color: #17170e;
+  transition: background-color 0.2s, color 0.2s;
+  font-size: 1.1rem; /* Bigger font size */
+  font-weight: 500; /* Slightly bolder font */
+ 
+}
+
+.show-courses{
+  display: block;
+  margin: 0.5rem 0.1;
+  padding: 0.75rem 14rem;
+  background-color: #f4acce;
+  border-radius: 0.375rem; /* Slightly rounded corners for the links */
+  color: #17170e;
+  transition: background-color 0.2s, color 0.2s;
+  font-size: 1.1rem; /* Bigger font size */
+  font-weight: 500; /* Slightly bolder font */
+}
+bottom-courses:hover,
+.show-courses:hover{
+   box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+}
+
+.mt-auto {
+  margin-top: auto;
+  padding-top: 1rem;
+}
+
+/* Ensure links take full width for better click area */
+.nav.flex-column {
+  width: 100%;
+  margin: 10px;
+}
+
+/* Spacing between nav items */
+.nav-item + .nav-item {
+  margin-top: 10px;
+}
+
+.card-title {
+  color: #0056b3; /* A shade of blue */
+ 
+}
+
+.card-text {
+  color: #666; /* Dark gray */
+}
+
+.card-dash {
+  max-width: 60em;
+  max-height: 17em;
+  flex-direction: row;
+  
+
+  border-radius: 15px; /* Rounded corners for the card */
+}
+
+.card-body-dash{
+  display: flex;
+  justify-content: space-between;
+}
+
+.text-part{
+  width: 60%;
+}
+
+.card-dash img {
+  max-width: 20%;
+  margin: auto;
+  padding: 1em;
+  border-radius: 0.7em;
+
+}
+
