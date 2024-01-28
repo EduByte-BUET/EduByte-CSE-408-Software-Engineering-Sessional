@@ -291,6 +291,29 @@ const createCourseProgressTable = async () => {
 	);
 }
 
+const createCategogoriesTable = async () => {
+	// Create the categories table if it doesn't exist
+	// SERIAL - auto-incrementing integer
+	await pool.query(
+		`
+		CREATE TABLE IF NOT EXISTS categories (
+			category_id SERIAL PRIMARY KEY,
+			name VARCHAR(255) NOT NULL,
+			description TEXT,
+			courses INT[] -- Array of course_id
+		);
+		
+		`, (err, res) => {
+			if (err) {
+				console.error(err);
+				return;
+			}
+
+			console.log("CATEGORIES Table creation successful");
+		}
+	);
+}
+
 const dropTable = async (table_name) => {
     await pool.query(
         `DROP TABLE IF EXISTS ${table_name};`,
@@ -319,6 +342,8 @@ const initDB = async (newPool) => {
     // await createRecommendedCoursesTable();
     // await createQuizTable();
     // await createCourseProgressTable();
+	  // await createCategogoriesTable();
+
 }
 
 module.exports = {

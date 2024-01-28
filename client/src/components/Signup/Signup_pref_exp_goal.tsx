@@ -53,7 +53,7 @@ function Signup_pref_exp_goal(props: Props) {
 								EduByte
 							</span>
 						</h1>
-						<h3 className="mb-1">What is your institution?</h3>
+						<h3 className="mb-1">What is your experience level?</h3>
 						{experienceOptions.map((option, index) => (
 							<div className="form-check custom-form-check mt-3" key={index}>
 								<input

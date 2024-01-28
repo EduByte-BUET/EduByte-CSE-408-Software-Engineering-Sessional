@@ -1,8 +1,8 @@
 import React from "react";
 import axios from "axios";
 import Nav from "react-bootstrap/Nav";
-import { Link } from "react-router-dom";
-import { useState, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { useState } from "react";
 import api from "../../api/Signin";
 
 function Login(props: any) {
@@ -14,7 +14,8 @@ function Login(props: any) {
 		setUser({ email: "", password: "" });
 	};
 
-	const handleSubmit = (event: React.FormEvent<any>) => {
+	const navigate = useNavigate();
+	const handleSubmit = async (event: React.FormEvent<any>) => {
 		event.preventDefault();
 
 		if (user.email === "" || user.password === "") {
@@ -23,16 +24,24 @@ function Login(props: any) {
 			return;
 		}
 		
-		console.log(user);
-		api
-			.post("/", {
+		try {
+			const response = await api.post("/", {
 				username: user.email,
 				password: user.password,
-			})
-			.then((response) => {
-				console.log(response.data);
-			})
-			.catch((error) => console.error(error));
+			});
+			
+			if (response) {
+				navigate("/courses", { state: user }); 
+				resetFields();
+			}
+		} catch (err) {
+			console.log(err);
+			alert(
+				"Wrong username or password"
+			);
+			resetFields();
+			return;
+		}
 	};
 
 	return (
