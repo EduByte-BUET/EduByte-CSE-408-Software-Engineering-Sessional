@@ -39,7 +39,7 @@ app.use("/discussion", discussion_page_router);
 app.use("/content_create", content_create_router);
 
 app.listen(3000, () => {
-  // db.createTables(); // Initialize the db when the server starts
+  db.createTables(); // Initialize the db when the server starts
   
   console.log("Listening on server: 3000");
 });

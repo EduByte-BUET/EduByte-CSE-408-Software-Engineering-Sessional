@@ -23,7 +23,7 @@ const createUsersTable = async () => {
 			fullname VARCHAR(100) NOT NULL,
             username VARCHAR(50) UNIQUE NOT NULL,
 			email VARCHAR(50) UNIQUE NOT NULL,
-            password VARCHAR(50) NOT NULL,
+            password VARCHAR(500) NOT NULL,
 			institution VARCHAR(100) NOT NULL,
 			experience VARCHAR(100) NOT NULL,
 			goal VARCHAR(100) NOT NULL,
@@ -215,8 +215,6 @@ const createRecommendedCoursesTable = async () => {
 		CREATE TABLE IF NOT EXISTS recommended_courses (
 			user_id INT REFERENCES users(user_id),
 			course_id INT REFERENCES courses(course_id),
-			recommended_date TIMESTAMP WITHOUT TIME ZONE DEFAULT NOW(),
-			recommendation_reason TEXT,
 			interest_tags TEXT,                                                         -- Tags related to the user's interests
 			recommendation_strength VARCHAR(100),                          -- 'high', 'medium', 'low'
 			user_engagement_level VARCHAR(100),                         -- Could be based on user's activity,      
@@ -311,16 +309,16 @@ const initDB = async (newPool) => {
     pool = newPool;
 
     // await dropTable(tables.courses);
-    await createUsersTable();
-    await createContentCreatorTable();
-    await createCourseTable();
-    await createBlocksTable();
-    await createLectureTable();
-    await createLessonTable();
-    await createEnrolledCoursesTable();
-    await createRecommendedCoursesTable();
-    await createQuizTable();
-    await createCourseProgressTable();
+    // await createUsersTable();
+    // await createContentCreatorTable();
+    // await createCourseTable();
+    // await createBlocksTable();
+    // await createLectureTable();
+    // await createLessonTable();
+    // await createEnrolledCoursesTable();
+    // await createRecommendedCoursesTable();
+    // await createQuizTable();
+    // await createCourseProgressTable();
 }
 
 module.exports = {

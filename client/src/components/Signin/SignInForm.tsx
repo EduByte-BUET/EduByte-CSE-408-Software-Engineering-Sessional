@@ -22,7 +22,8 @@ function Login(props: any) {
 			resetFields();
 			return;
 		}
-
+		
+		console.log(user);
 		api
 			.post("/", {
 				username: user.email,
@@ -39,7 +40,7 @@ function Login(props: any) {
 			style={{
 				backgroundImage: `url(${background})`,
 				backgroundSize: "cover",
-				height: "100vh",
+				height: "93vh",
 				width: "100vw",
 			}}
 			className="d-flex"
@@ -57,7 +58,7 @@ function Login(props: any) {
 					<form onSubmit={handleSubmit}>
 						<div className="mb-3">
 							<input
-								type="email"
+								type="text"
 								className="form-control input-field"
 								placeholder="Email/Username"
 								value={user.email}
@@ -87,10 +88,8 @@ function Login(props: any) {
 									No account? Signup
 								</Nav.Link>
 							</button>
-							<button type="button" className="btn blue-button">
-								<Nav.Link as={Link} to="/signin">
-									Signin
-								</Nav.Link>
+							<button type="submit" className="btn blue-button">
+								Signin
 							</button>
 						</div>
 					</form>

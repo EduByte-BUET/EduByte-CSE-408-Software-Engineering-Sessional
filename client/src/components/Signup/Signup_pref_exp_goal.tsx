@@ -37,7 +37,7 @@ function Signup_pref_exp_goal(props: Props) {
 			style={{
 				backgroundImage: `url(${background})`,
 				backgroundSize: "cover",
-				height: "100vh",
+				height: "93vh",
 				width: "100vw",
 			}}
 			className="d-flex"

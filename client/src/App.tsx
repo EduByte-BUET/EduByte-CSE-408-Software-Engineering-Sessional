@@ -7,12 +7,17 @@ import SignupFieldPref from "./components/Signup/Signup_pref_interests";
 import SignInForm from "./components/Signin/SignInForm";
 import Header from "./components/Header";
 import signin_api from "./api/Signin";
+//----home
+import Homepage from "./components/Home/Homepage";
+import Dashboard from "./components/UserDashboard/Dashboard";
 // ----
 import CoursesPage from "./components/CoursePage/CoursesPageHome";
 import CourseDetail from "./components/CoursePage/CourseDetail";
 import CourseBlocks from "./components/CoursePage/CourseBlocks";
 import LectureInfo from "./components/CoursePage/LectureInfo";
 import Lesson from "./components/CoursePage/Lesson";
+// ----
+import CourseUpload from "./components/ContentCreatorPage/CourseUpload";
 // ----
 import "./css/App.css";
 import "./css/Header.css";
@@ -160,6 +165,9 @@ function App() {
 							/>
 						}
 					/>
+					<Route path="/upload" element={<CourseUpload />} />
+					<Route path="/home" element={<Homepage/>} />
+					<Route path="/user/dashboard/*" element={<Dashboard/>}/>
 				</Routes>
 			</Router>
 		</>

@@ -1,10 +1,11 @@
-const db = require("../database/db");
 const express = require("express");
 const router = express.Router();
 const courses_router = express.Router();
 const block_router = express.Router();
 const lecture_router = express.Router();
 const lesson_router = express.Router();
+
+const db = require("../database/db");
 
 router.use("/", courses_router);
 router.use("/blocks", block_router);
@@ -17,7 +18,7 @@ courses_router.route("/").get(async (req, res) => {
 	// const userid = req.session.userid;
 	// const userid = 1;
 
-	// const coursesPageInfo = await db.getCoursepageInfo(userid);
+	// const coursesPageInfo = db.getCoursesPageInfo();
 
 	// A sample json response is given below
 	coursesPageInfo = {
