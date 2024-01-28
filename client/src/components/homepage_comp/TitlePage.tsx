@@ -10,7 +10,7 @@ export default function TitlePage() {
 				<div className="col-xl-5 offset-xl-7 col-lg-8 offset-lg-2 col-md-10 offset-md-1">
 					<div className="hero-content">
 						<h2 className="mb-30 wow fadeInUp" data-wow-delay=".2s">Edubyte</h2>
-						<p className="wow fadeInUp" data-wow-delay=".4s">Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam diam voluptua.</p>
+						<p className="wow fadeInUp" data-wow-delay=".4s">From the smallest lines of code to the grandest software syste ms, CSE empowers dreamers to turn their ideas into reality.</p>
 						<div className="hero-btns">
 							<a href="#courses" className="main-btn wow fadeInUp" data-wow-delay=".6s">Courses</a>
 						</div>

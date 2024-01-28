@@ -12,7 +12,7 @@ export default function Footer() {
 						<a href="index.html" className="logo d-blok">
 							<img src="assets/images/logo.svg" alt=""/>
 						</a>
-						<p>Lorem ipsum dolor sit amco nsetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna .</p>
+						<p></p>
 					</div>
 				</div>
 				<div className="col-xl-2 col-lg-2 offset-xl-1 offset-lg-1 col-md-6">
@@ -43,7 +43,7 @@ export default function Footer() {
 						<ul>
 							<li><p>Phone: +884-9273-3867</p></li>
 							<li><p>Email: hello@gmail.com</p></li>
-							<li><p>Address: Random Road<br/> USA</p></li>
+							<li><p>Address: Random Road<br/></p></li>
 						</ul>
 					</div>
 				</div>

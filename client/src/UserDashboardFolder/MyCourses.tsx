@@ -1,8 +1,9 @@
 import React, { useState } from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-import {NavLink, Link } from "react-router-dom";
+import { NavLink, Link } from "react-router-dom";
 import "./dashboard.css";
 import UserProfile from "./UserProfile";
+import newimage from "../assets/hero-img.png"
 
 // Dummy data for courses
 const coursesData = [
@@ -68,7 +69,7 @@ const coursesData = [
     testsCompleted: 3,
     totalTests: 8,
     averageScore: 72,
-  }
+  },
   // ... More courses data
 ];
 
@@ -76,37 +77,53 @@ const MyCourses = () => {
   const [courses] = useState(coursesData);
 
   return (
-    <div className="col-md-9 col-lg-10">
+    <div className="col-md-8 col-lg-9">
       <div className=" justify-content-between align-items-center py-3">
         {/* Add SortBy and SearchBar components */}
       </div>
-      <div className="courses-container" >
-        <div className="courses-list" style={{height: '520px', overflowY: "auto"}}>
+      <div
+        className="courses-container"
+        style={{ height: "540px", overflowY: "auto" }}
+      >
+        <div className="courses-list">
           {courses.map((course) => (
-            <div className="card mb-3 shadow-sm" key={course.id}>
-              <div className="card-body">
+            <div className="card card-dash mb-3 shadow-sm" key={course.id}>
+              <img src={newimage} className="card-img-top" alt="..." />
+              <div className="card-body card-body-dash">
                 <h5 className="card-title">{course.title}</h5>
-                <p className="card-text">
-                  Lectures completed: {course.lecturesCompleted}/
-                  {course.totalLectures}
-                </p>
-                <p className="card-text">
-                  Tests completed: {course.testsCompleted}/{course.totalTests}
-                </p>
-                <p className="card-text">
-                  Average score: {course.averageScore}%
-                </p>
+                <div className="text-part">
+                  <p className="card-text">
+                    Lectures completed: {course.lecturesCompleted}/
+                    {course.totalLectures}
+                  </p>
+                  <p className="card-text">
+                    Tests completed: {course.testsCompleted}/{course.totalTests}
+                  </p>
+                  <p className="card-text">
+                    Average score: {course.averageScore}%
+                  </p>
+                  <a
+                    href="#"
+                    className="btn blue-button"
+                    style={{ padding: '0.75rem 2rem'}}
+                  >
+                    Details
+                  </a>
+                </div>
+                <div className="progress-bar">
+                 
+                </div>
               </div>
             </div>
           ))}
         </div>
       </div>
 
-      <div className="mt-auto bottom-links">
-        <Link className="nav-link dash-navlink" to="/add-course">
+      <div className="mt-auto bottom-links ">
+        <Link className="nav-link bottom-courses" to="/add-course">
           Add Course
         </Link>
-        <Link className="nav-link dash-navlink" to="/request-course">
+        <Link className="nav-link bottom-courses" to="/request-course">
           Request a Course
         </Link>
       </div>

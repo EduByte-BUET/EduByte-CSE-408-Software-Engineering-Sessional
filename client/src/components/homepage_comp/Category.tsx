@@ -10,7 +10,7 @@ export default function Category() {
 				<div className="col-xl-8 col-lg-10 mx-auto">
 					<div className="section-title text-center">
 						<h2 className="wow fadeInUp" data-wow-delay=".2s">Top Catagories</h2>
-						<p className="wow fadeInUp" data-wow-delay=".4s">Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos accusam.</p>
+						<p className="wow fadeInUp" data-wow-delay=".4s"></p>
 					</div>
 				</div>
 			</div>

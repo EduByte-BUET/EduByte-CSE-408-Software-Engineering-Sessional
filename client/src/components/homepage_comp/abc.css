@@ -1,0 +1,186 @@
+
+
+
+/* Carousel container with Flexbox */
+.carousel-container {
+  display: flex;
+  align-items: center; /* Align vertically */
+  justify-content: space-between; /* Space between items */
+}
+
+/* Carousel and controls inside the container */
+.carousel-inner, .carousel-control-prev, .carousel-control-next {
+  flex: 0 0 auto; /* Do not grow, do not shrink, auto basis */
+}
+.carousel-control-prev, .carousel-control-next {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 50px;
+  height: 50px;
+  background-color: rgba(0,0,0,0.5); /* semi-transparent black */
+  color: rgb(5, 4, 4);
+  border-radius: 50%;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+}
+/* Ensure the carousel takes the full width minus controls */
+.carousel-inner {
+  width: calc(100% - 80px); /* Adjust 80px based on your control sizes */
+  margin: 0 10px; /* Spacing for visual comfort */
+}
+
+/* Media Query for smaller screens */
+@media (max-width: 768px) {
+  .carousel-container {
+    display: block; /* Stack items */
+  }
+
+  .carousel-inner {
+    width: 100%; /* Full width for carousel */
+    margin: 0; /* Reset margin */
+  }
+
+
+  .carousel-control-prev {
+    left: 50px; /* Spacing from left */
+  }
+
+  .carousel-control-next {
+    right: 50px; /* Spacing from right */
+  }
+}
+
+.card{
+  padding: 0;
+   overflow: hidden; 
+}
+
+.card-body.pop-body{
+    font-family: 'Lora', serif;
+    text-align: left;
+}
+
+
+.card-body.pop-body h4 {
+    font-size: medium;
+}
+
+.card-img-top {
+    padding: 0;         /* Removes padding */
+    max-width: 100%;        /* Makes the image take up the full width of the container */
+    height: 150px;       /* Adjusts the height to maintain aspect ratio */
+    display: block;     /* Ensures the image takes up the full line */
+    object-fit: cover
+}
+
+.card-hover{
+  transition: transform 0.3s ease, box-shadow 0.3s ease, color 0.3s ease, background-color 0.3s ease;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  /* Optional: rounded corners */
+  border-radius: 10px;
+  /* Optional: Initial background color */
+  background-color: white;
+}
+
+.card-hover:hover {
+  transform: scale(1.05);
+  box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+  /* color: #007bff; Adjust the color as needed */
+  /* Change background color on hover */
+}
+
+.card-hover .card-body h4 a {
+  transition: color 0.3s ease; /* Smooth transition for link color */
+}
+
+.card-hover .card-body h4 a:hover {
+  color: #8f5bf7; /* Darker shade for link text */
+}
+
+/* Optional: Change badge and button styles on hover */
+.card-hover:hover .badge {
+  background-color: #17a2b8; /* Different background for badges */
+}
+
+.card-hover:hover .fe-heart {
+  color: #dc3545; /* Heart icon color change */
+}
+
+.card-hover:hover .card-footer {
+  /* background-color: #0a3c6e; Footer background change */
+}
+
+.card-footer h5 {
+  color: #1559b2; /* Heading color */
+  font-size: 1rem; /* Heading font size */
+  margin-bottom: 10px; /* Add some space below the heading */
+  text-indent: 10px;
+}
+
+.card-footer a {
+  text-decoration: none; /* Remove underline from links */
+  color: #007bff; /* Link text color */
+}
+
+.card-footer a:hover {
+  color: #0056b3; /* Change link color on hover */
+  text-decoration: none; /* Remove underline on hover */
+}
+.card-footer {
+    display: flex;
+    align-items: center; /* Aligns items vertically in the center */
+    justify-content: space-between; /* Spreads out the items */
+    padding: 10px; /* Adjust as needed */
+    background-color:  #ffc0c0; /* Change to desired footer background */
+   
+  border-top-left-radius: 10px; /* Rounded top-left corner */
+  border-top-right-radius: 10px; /* Rounded top-right corner */
+  padding: auto;
+}
+
+
+.card-footer .col {
+    flex: 1; /* Allows the price section to take available space */
+    text-align: left; /* Aligns the price text to the left */
+   
+}
+
+
+.button-primary {
+    background-color: #007bff; /* Primary button color */
+    color: white; /*Text color */
+    border: none; /* Removes border */
+    padding: 10px 10px; /* Adjust padding as needed */
+    font-size: 1em; /* Adjust font size as needed */
+    border-radius: 5px; /* Rounded corners */
+    height: 100%; /* Button takes full height of the footer */
+    display: flex; /* To align the icon and text */
+    align-items: center; /* Centers items vertically */
+    ;
+   
+}
+
+.button-primary i {
+    margin-right: 0px; /* Space between icon and text */
+}
+
+/* Base styles - for larger screens */
+.card pop-card{
+    margin: 15px; /* Adjust as needed */
+}
+
+/* Media query for smaller screens */
+@media (max-width: 768px) { /* Adjust breakpoint as needed */
+    .card pop-card{
+        margin: 20px 20px; /* Smaller margins for smaller screens */
+    }
+}
+
+/* Further adjustments for even smaller screens */
+@media (max-width: 480px) { /* Adjust breakpoint as needed */
+    .card pop-card{
+        margin: 5px; /* Even smaller margins */
+    }
+}

@@ -1,25 +1,33 @@
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import React, { useState } from "react";
 import CoursesPage from "./components/Courses";
 import SignUpForm from "./components/SignUpForm";
 import CourseDetail from "./components/CourseDetail";
 import CourseBlocks from "./components/CourseBlocks";
-import Header from './components/Header';
-import './App.css';
-import './button.css';
-import LectureInfo from './components/LectureInfo';
-import Homepage from './components/homepage';
-import Dashboard from './UserDashboardFolder/Dashboard';
-
+import Header from "./components/Header";
+import "./App.css";
+import "./button.css";
+import LectureInfo from "./components/LectureInfo";
+import Homepage from "./components/homepage";
+import Dashboard from "./UserDashboardFolder/Dashboard";
 
 const App: React.FC = () => {
-  const [courseData, setCourseData] = useState<{ course_id: number; courseName: string } | null>(null);
+  const [courseData, setCourseData] = useState<{
+    course_id: number;
+    courseName: string;
+  } | null>(null);
 
-  const handleCourseData = (data: { course_id: number; courseName: string }) => {
+  const handleCourseData = (data: {
+    course_id: number;
+    courseName: string;
+  }) => {
     setCourseData(data);
   };
-  const [blockData, setBlockData] = useState<{ block_id: number; blockName: string } | null>(null);
-  const handleBlockData = (data: {block_id:number; blockName:string}) => {
+  const [blockData, setBlockData] = useState<{
+    block_id: number;
+    blockName: string;
+  } | null>(null);
+  const handleBlockData = (data: { block_id: number; blockName: string }) => {
     setBlockData(data);
   };
 
@@ -47,6 +55,7 @@ const App: React.FC = () => {
         />
 
         <Route path="/user/dashboard/*" element={<Dashboard />} />
+       
       </Routes>
     </Router>
   );

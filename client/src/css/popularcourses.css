@@ -52,28 +52,21 @@
   }
 }
 
-.card{
+.cardi{
   padding: 0;
    overflow: hidden; 
 }
 
-.card-body {
+.card-bodyi{
     font-family: 'Lora', serif;
     text-align: left;
 }
 
-.card-body .badge,
-.card-body .fs-5,
-.card-body h4,
-.card-body small {
-
-}
-
-.card-body h4 {
+.card-bodyi h4 {
     font-size: medium;
 }
 
-.card-img-top {
+.card-img-topi {
     padding: 0;         /* Removes padding */
     max-width: 100%;        /* Makes the image take up the full width of the container */
     height: 150px;       /* Adjusts the height to maintain aspect ratio */
@@ -81,7 +74,7 @@
     object-fit: cover
 }
 
-.card-hover {
+.card-hover{
   transition: transform 0.3s ease, box-shadow 0.3s ease, color 0.3s ease, background-color 0.3s ease;
   box-shadow: 0 4px 8px rgba(0,0,0,0.1);
   /* Optional: rounded corners */
@@ -97,11 +90,11 @@
   /* Change background color on hover */
 }
 
-.card-hover .card-body h4 a {
+.card-hover .card-bodyi h4 a {
   transition: color 0.3s ease; /* Smooth transition for link color */
 }
 
-.card-hover .card-body h4 a:hover {
+.card-hover .card-bodyi h4 a:hover {
   color: #8f5bf7; /* Darker shade for link text */
 }
 
@@ -114,27 +107,27 @@
   color: #dc3545; /* Heart icon color change */
 }
 
-.card-hover:hover .card-footer {
+.card-hover:hover .card-footer-pop {
   /* background-color: #0a3c6e; Footer background change */
 }
 
-.card-footer h5 {
+.card-footer-pop h5 {
   color: #1559b2; /* Heading color */
   font-size: 1rem; /* Heading font size */
   margin-bottom: 10px; /* Add some space below the heading */
   text-indent: 10px;
 }
 
-.card-footer a {
+.card-footer-pop a {
   text-decoration: none; /* Remove underline from links */
   color: #007bff; /* Link text color */
 }
 
-.card-footer a:hover {
+.card-footer-pop a:hover {
   color: #0056b3; /* Change link color on hover */
   text-decoration: none; /* Remove underline on hover */
 }
-.card-footer {
+.card-footer-pop {
     display: flex;
     align-items: center; /* Aligns items vertically in the center */
     justify-content: space-between; /* Spreads out the items */
@@ -147,7 +140,7 @@
 }
 
 
-.card-footer .col {
+.card-footer-pop .col {
     flex: 1; /* Allows the price section to take available space */
     text-align: left; /* Aligns the price text to the left */
    
@@ -173,20 +166,20 @@
 }
 
 /* Base styles - for larger screens */
-.card {
+.cardi {
     margin: 15px; /* Adjust as needed */
 }
 
 /* Media query for smaller screens */
 @media (max-width: 768px) { /* Adjust breakpoint as needed */
-    .card {
+    .cardi {
         margin: 20px 20px; /* Smaller margins for smaller screens */
     }
 }
 
 /* Further adjustments for even smaller screens */
 @media (max-width: 480px) { /* Adjust breakpoint as needed */
-    .card {
+    .cardi {
         margin: 5px; /* Even smaller margins */
     }
 }

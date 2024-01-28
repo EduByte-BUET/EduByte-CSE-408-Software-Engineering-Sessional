@@ -2,7 +2,8 @@
   box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
   padding-bottom: 1rem;
 
-
+  height: 650px;
+  
 
 }
 
@@ -49,7 +50,7 @@
 .home-navlink {
    display: block;
   margin: 0.5rem 0;
-  padding: 0.75rem 1rem;
+  padding: 0.75rem 0.1rem;
   background-color: #d1f063;
   border-radius: 0.375rem; /* Slightly rounded corners for the links */
   color: #17170e;
@@ -80,7 +81,8 @@ transform: scale(1.02); /* Scales up the link a bit */
 
 .bottom-links {
   display: flex;
-  justify-content: space-evenly; /* Evenly spaces the links */
+  flex-direction: row;
+  justify-content: space-around; /* Evenly spaces the links */
   /* Fixes the position at the bottom */
   bottom: 0; /* Aligns at the bottom of the sidebar */
   width: calc(100% - 1rem); /* Full width of the sidebar minus some padding */
@@ -88,6 +90,36 @@ transform: scale(1.02); /* Scales up the link a bit */
   padding: 0.5rem 0; /* Adds some padding above and below the links */
  
 }
+
+.bottom-courses{
+  display: block;
+  margin: 0.5rem 0.1;
+  padding: 0.75rem 8rem;
+  background-color: #f4acce;
+  border-radius: 0.375rem; /* Slightly rounded corners for the links */
+  color: #17170e;
+  transition: background-color 0.2s, color 0.2s;
+  font-size: 1.1rem; /* Bigger font size */
+  font-weight: 500; /* Slightly bolder font */
+ 
+}
+
+.show-courses{
+  display: block;
+  margin: 0.5rem 0.1;
+  padding: 0.75rem 14rem;
+  background-color: #f4acce;
+  border-radius: 0.375rem; /* Slightly rounded corners for the links */
+  color: #17170e;
+  transition: background-color 0.2s, color 0.2s;
+  font-size: 1.1rem; /* Bigger font size */
+  font-weight: 500; /* Slightly bolder font */
+}
+bottom-courses:hover,
+.show-courses:hover{
+   box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+}
+
 .mt-auto {
   margin-top: auto;
   padding-top: 1rem;
@@ -105,21 +137,36 @@ transform: scale(1.02); /* Scales up the link a bit */
 
 .card-title {
   color: #0056b3; /* A shade of blue */
+ 
 }
 
 .card-text {
   color: #666; /* Dark gray */
 }
 
-.card {
+.card-dash {
+  max-width: 60em;
+  max-height: 17em;
+  flex-direction: row;
+  
+
   border-radius: 15px; /* Rounded corners for the card */
 }
 
-
-.fullscreen-div {
-  width: 100vw;   /* 100% of the viewport width */
-  height: 100vh;  /* 100% of the viewport height */
-  position: fixed; /* Optional: to make sure the div stays in place even when you scroll */
-  top: 0;
-  left: 0;
+.card-body-dash{
+  display: flex;
+  justify-content: space-between;
 }
+
+.text-part{
+  width: 60%;
+}
+
+.card-dash img {
+  max-width: 20%;
+  margin: auto;
+  padding: 1em;
+  border-radius: 0.7em;
+
+}
+

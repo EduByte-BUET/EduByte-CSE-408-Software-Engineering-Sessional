@@ -12,7 +12,7 @@ export default function ContactInfo() {
 				<div className="col-xl-5 col-lg-5">
 					<div className="section-title">
 						<h2 className="wow fadeInUp" data-wow-delay=".2s">Get In Touch</h2>
-						<p className="wow fadeInUp" data-wow-delay=".4s">Lorem ipsum dolor sit amet, consetetur sadipscing <br/>elitr, sed diam nonumy eirmod tempor invidunt utlabo</p>
+						<p className="wow fadeInUp" data-wow-delay=".4s"></p>
 					</div>
 					<div className="contact-content">
 						<h3>Hot Line Call Us 24/7</h3>

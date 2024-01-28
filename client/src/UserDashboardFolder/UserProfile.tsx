@@ -13,7 +13,7 @@ const UserProfile = () => {
   };
 
   return (
-    <div className="col-md-3 col-lg-2 bg-light d-flex flex-column sidebars">
+    <div className="col-md-4 col-lg-3 bg-light d-flex flex-column sidebars">
       <div className="text-center py-4">
         <img src={newimage} alt="User" className="img-thumbnail" />
         <h3>Username</h3>
@@ -55,7 +55,7 @@ const UserProfile = () => {
         >
           Saved Posts
         </Link>
-        <Link to="/home" className="nav-link  home-navlink">
+        <Link to="/" className="nav-link  home-navlink">
           Home
         </Link>
         <Link to="/logout" className="nav-link  logout-navlink">
