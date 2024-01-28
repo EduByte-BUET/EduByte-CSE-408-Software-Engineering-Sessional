@@ -1,5 +1,7 @@
 const path = require("path");
 const fs = require("fs").promises;
+const bcrypt = require("bcrypt");
+const db = require("../database/db");
 
 const express = require("express");
 const router = express.Router();
@@ -13,6 +15,11 @@ router.use("/bg", bg_router);
 // signin Credentials
 // Name, Email, Username, Password
 
+async function checkPassword(password, hashedPassword) {
+    const match = await bcrypt.compare(password, hashedPassword);
+    return match; // true if the passwords match, false otherwise
+}
+
 signin_router
 	.route("/") // when a client hits /login, come to this router
 	.get(async (req, res) => {
@@ -25,43 +32,22 @@ signin_router
 			req.body.username,
 			req.body.password,
 		];
-		console.log("Serverside: ", username, password);
-		res.status(200); // OK
-		res.json({
-			message: "login request received",
-			verdict: "success",
+
+		const usernameExists = db.checkUsername(username);
+		if (!usernameExists) {
+			res.status(401).send(); // Unauthorized
+		}
+		const hashedPassword = await db.getUserPassword(username);
+		console.log(password, hashedPassword);
+
+		checkPassword(password, hashedPassword).then(match => {
+			if (match) {
+				console.log("Successful login");
+				res.status(200).send(); // OK
+			} else {
+				res.status(401).send(); // Unauthorized
+			}
 		});
-
-		// const data = await infoPool.getUserInfo(username, pass);
-		// console.log(data);
-
-		// try {
-		//   if (data.length != 0) {
-		//     // user provided correct credentials
-		//     req.session.validUser = true;
-		//     req.session.username = username;
-		//     console.log(data);
-
-		//     auth_type = data[0].AUTH_TYPE;
-		//     if (auth_type == 'user') {
-		//       req.session.user_id = data[0].USER_ID;
-
-		//       res.redirect("/");
-		//     }
-		//     else if(auth_type == "creator") {
-		//       req.session.user_id = data[0].USER_ID;
-
-		//       res.redirect("/content_creator");
-		//     }
-
-		//   } else {
-		//     return res.render("login", {
-		//       message: "Incorrect Email or Password",
-		//     });
-		//   }
-		// } catch {
-		//   console.log("Error in loggin in!!");
-		// }
 	});
 
 bg_router.route("/").get(async (req, res) => {

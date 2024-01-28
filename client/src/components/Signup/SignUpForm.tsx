@@ -74,7 +74,7 @@ function Login(props: any) {
 			style={{
 				backgroundImage: `url(${background})`,
 				backgroundSize: "cover",
-				height: "100vh",
+				height: "93vh",
 				width: "100vw",
 			}}
 			className="d-flex"

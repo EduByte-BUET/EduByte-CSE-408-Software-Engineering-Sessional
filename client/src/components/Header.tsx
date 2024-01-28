@@ -22,7 +22,7 @@ function Header() {
 	}, []);
 
 	return (
-		<Navbar bg="light" expand="lg" fixed="top" className="p-0">
+		<Navbar bg="light" expand="lg" className="p-0">
 			<Container
 				className="flex justify-content-between"
 			>
@@ -31,7 +31,6 @@ function Header() {
 				<img
 					src={logo}
 					width="12%"
-					height="10%"
 					className="align-top"
 					alt="logo"
 					onClick={() => navigate("/home")}

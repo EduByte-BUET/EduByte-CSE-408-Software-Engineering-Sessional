@@ -1,8 +1,8 @@
 import React from "react";
 import axios from "axios";
 import Nav from "react-bootstrap/Nav";
-import { Link } from "react-router-dom";
-import { useState, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { useState } from "react";
 import api from "../../api/Signin";
 
 function Login(props: any) {
@@ -14,7 +14,8 @@ function Login(props: any) {
 		setUser({ email: "", password: "" });
 	};
 
-	const handleSubmit = (event: React.FormEvent<any>) => {
+	const navigate = useNavigate();
+	const handleSubmit = async (event: React.FormEvent<any>) => {
 		event.preventDefault();
 
 		if (user.email === "" || user.password === "") {
@@ -22,16 +23,25 @@ function Login(props: any) {
 			resetFields();
 			return;
 		}
-
-		api
-			.post("/", {
+		
+		try {
+			const response = await api.post("/", {
 				username: user.email,
 				password: user.password,
-			})
-			.then((response) => {
-				console.log(response.data);
-			})
-			.catch((error) => console.error(error));
+			});
+			
+			if (response) {
+				navigate("/courses", { state: user }); 
+				resetFields();
+			}
+		} catch (err) {
+			console.log(err);
+			alert(
+				"Wrong username or password"
+			);
+			resetFields();
+			return;
+		}
 	};
 
 	return (
@@ -39,7 +49,7 @@ function Login(props: any) {
 			style={{
 				backgroundImage: `url(${background})`,
 				backgroundSize: "cover",
-				height: "100vh",
+				height: "93vh",
 				width: "100vw",
 			}}
 			className="d-flex"
@@ -57,7 +67,7 @@ function Login(props: any) {
 					<form onSubmit={handleSubmit}>
 						<div className="mb-3">
 							<input
-								type="email"
+								type="text"
 								className="form-control input-field"
 								placeholder="Email/Username"
 								value={user.email}
@@ -87,10 +97,8 @@ function Login(props: any) {
 									No account? Signup
 								</Nav.Link>
 							</button>
-							<button type="button" className="btn blue-button">
-								<Nav.Link as={Link} to="/signin">
-									Signin
-								</Nav.Link>
+							<button type="submit" className="btn blue-button">
+								Signin
 							</button>
 						</div>
 					</form>

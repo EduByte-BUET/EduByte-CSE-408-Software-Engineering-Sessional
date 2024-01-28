@@ -1,10 +1,11 @@
-const db = require("../database/db");
 const express = require("express");
 const router = express.Router();
 const courses_router = express.Router();
 const block_router = express.Router();
 const lecture_router = express.Router();
 const lesson_router = express.Router();
+
+const db = require("../database/db");
 
 router.use("/", courses_router);
 router.use("/blocks", block_router);
@@ -17,94 +18,99 @@ courses_router.route("/").get(async (req, res) => {
 	// const userid = req.session.userid;
 	// const userid = 1;
 
-	// const coursesPageInfo = await db.getCoursepageInfo(userid);
+	// if (req.session.username === undefined) {
+	// 	res.status(200).json(); // The user is not logged in
+	// }
+
+	const coursesPageInfo = await db.getCoursesPageInfo(1); // user_id = 1
+	// console.log(coursesPageInfo);
 
 	// A sample json response is given below
-	coursesPageInfo = {
-		status: "success",
-		message: "Course page information retrieved successfully.",
-		categories: [
-			{
-				category_id: 1,
-				name: "Programming",
-				description: "Explore the world of programming languages.",
-				courses: [
-					{
-						course_id: 101,
-						title: "JavaScript Fundamentals",
-						author: "John Doe",
-						total_content: 30,
-						description: "Learn the basics of JavaScript programming.",
-					},
-					{
-						course_id: 102,
-						title: "Full Stack Web Development",
-						author: "Jane Smith",
-						total_content: 50,
-						description:
-							"Become a full-stack web developer with this comprehensive course.",
-					},
-				],
-			},
-			{
-				category_id: 2,
-				name: "Web Development",
-				description: "Build web applications and websites.",
-				courses: [
-					{
-						course_id: 201,
-						title: "Python for Data Science",
-						author: "Alice Johnson",
-						total_content: 40,
-						description:
-							"Explore data science using Python programming language.",
-					},
-					{
-						course_id: 202,
-						title: "Machine Learning Basics",
-						author: "Bob Williams",
-						total_content: 35,
-						description:
-							"Introduction to machine learning concepts and algorithms.",
-					},
-				],
-			},
-		],
-		popular_courses: [
-			{
-				course_id: 101,
-				title: "JavaScript Fundamentals",
-				author: "John Doe",
-				total_content: 30,
-				description: "Learn the basics of JavaScript programming.",
-			},
-			{
-				course_id: 102,
-				title: "Full Stack Web Development",
-				author: "Jane Smith",
-				total_content: 50,
-				description:
-					"Become a full-stack web developer with this comprehensive course.",
-			},
-		],
-		recommended_courses: [
-			{
-				course_id: 201,
-				title: "Python for Data Science",
-				author: "Alice Johnson",
-				total_content: 40,
-				description: "Explore data science using Python programming language.",
-			},
-			{
-				course_id: 202,
-				title: "Machine Learning Basics",
-				author: "Bob Williams",
-				total_content: 35,
-				description:
-					"Introduction to machine learning concepts and algorithms.",
-			},
-		],
-	};
+	// coursesPageInfo = {
+	// 	status: "success",
+	// 	message: "Course page information retrieved successfully.",
+	// 	categories: [
+	// 		{
+	// 			category_id: 1,
+	// 			name: "Programming",
+	// 			description: "Explore the world of programming languages.",
+	// 			courses: [
+	// 				{
+	// 					course_id: 101,
+	// 					title: "JavaScript Fundamentals",
+	// 					author: "John Doe",
+	// 					total_lessons: 30,
+	// 					description: "Learn the basics of JavaScript programming.",
+	// 				},
+	// 				{
+	// 					course_id: 102,
+	// 					title: "Full Stack Web Development",
+	// 					author: "Jane Smith",
+	// 					total_lessons: 50,
+	// 					description:
+	// 						"Become a full-stack web developer with this comprehensive course.",
+	// 				},
+	// 			],
+	// 		},
+	// 		{
+	// 			category_id: 2,
+	// 			name: "Web Development",
+	// 			description: "Build web applications and websites.",
+	// 			courses: [
+	// 				{
+	// 					course_id: 201,
+	// 					title: "Python for Data Science",
+	// 					author: "Alice Johnson",
+	// 					total_lessons: 40,
+	// 					description:
+	// 						"Explore data science using Python programming language.",
+	// 				},
+	// 				{
+	// 					course_id: 202,
+	// 					title: "Machine Learning Basics",
+	// 					author: "Bob Williams",
+	// 					total_lessons: 35,
+	// 					description:
+	// 						"Introduction to machine learning concepts and algorithms.",
+	// 				},
+	// 			],
+	// 		},
+	// 	],
+	// 	popular_courses: [
+	// 		{
+	// 			course_id: 101,
+	// 			title: "JavaScript Fundamentals",
+	// 			author: "John Doe",
+	// 			total_lessons: 30,
+	// 			description: "Learn the basics of JavaScript programming.",
+	// 		},
+	// 		{
+	// 			course_id: 102,
+	// 			title: "Full Stack Web Development",
+	// 			author: "Jane Smith",
+	// 			total_lessons: 50,
+	// 			description:
+	// 				"Become a full-stack web developer with this comprehensive course.",
+	// 		},
+	// 	],
+	// 	recommended_courses: [
+	// 		{
+	// 			course_id: 201,
+	// 			title: "Python for Data Science",
+	// 			author: "Alice Johnson",
+	// 			total_lessons: 40,
+	// 			description: "Explore data science using Python programming language.",
+	// 		},
+	// 		{
+	// 			course_id: 202,
+	// 			title: "Machine Learning Basics",
+	// 			author: "Bob Williams",
+	// 			total_lessons: 35,
+	// 			description:
+	// 				"Introduction to machine learning concepts and algorithms.",
+	// 		},
+	// 	],
+	// };
 	course_info = {
 		status: "success",
 		message: "Course details retrieved successfully.",
@@ -207,7 +213,7 @@ block_router.route("/").get(async (req, res) => {
 
 lecture_router.route("").get(async (req, res) => {
 	console.log("/courses/blocks/lectures GET");
-  // Get all the lectures under a block
+	// Get all the lectures under a block
 	const lecture_id = req.query.lecture_id;
 
 	lectures_list = {
@@ -284,11 +290,11 @@ lecture_router.route("").get(async (req, res) => {
 });
 
 lesson_router.route("/").get(async (req, res) => {
-  console.log("/courses/blocks/lectures/lessons GET");
-  // Get all the lessons under a lecture
-  const lecture_id = req.query.lecture_id;
+	console.log("/courses/blocks/lectures/lessons GET");
+	// Get all the lessons under a lecture
+	const lecture_id = req.query.lecture_id;
 
-  lessons_list = {
+	lessons_list = {
 		status: "success",
 		message: "Detailed lecture information retrieved successfully.",
 		lecture: {
@@ -326,9 +332,9 @@ lesson_router.route("/").get(async (req, res) => {
 		},
 	};
 
-  if (Object.keys(lessons_list).length > 0) res.status(200); // OK
-  else res.status(404); // Not found
-  res.json(lessons_list);
+	if (Object.keys(lessons_list).length > 0) res.status(200); // OK
+	else res.status(404); // Not found
+	res.json(lessons_list);
 });
 
 module.exports = router;

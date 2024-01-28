@@ -26,3 +26,7 @@
 .custom-nav-link:hover::after {
 	transform: scaleX(1);
 }
+
+.custom-nav-link:active {
+	transform: scale(0.95);
+  }

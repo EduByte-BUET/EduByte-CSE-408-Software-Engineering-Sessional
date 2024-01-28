@@ -2,6 +2,13 @@ const express = require("express");
 const router = express.Router();
 
 const db = require("../database/db");
+const bcrypt = require("bcrypt");
+
+async function hashPassword(password) {
+	const saltRounds = 10;
+	const hashedPassword = await bcrypt.hash(password, saltRounds);
+	return hashedPassword;
+}
 
 // signin Credentials
 // fullname, Email, Username, Password, Retype Password, Institution, Experience, Goal, Interests
@@ -18,43 +25,40 @@ let userInfo = {
 
 // Router chaining ekhane problem create kore .route("/"), same route e mount kore but get and post route alada ekhane
 router.get("/:username", async (req, res) => {
-		console.log("/user/signup GET");
+	console.log("/user/signup GET");
 
-		const username = req.params.username;
-		
-		const db_response = await db.checkUsername(username);
-		console.log("DB Response", db_response);
-		if (db_response) {
-			res.status(409).send(); // only send the status
-		}
-		else {
-			res.status(200).send();
-		}
-		console.log("response from /user/signin GET", username);
-	})
+	const username = req.params.username;
+
+	const db_response = await db.checkUsername(username);
+	console.log("DB Response", db_response);
+	if (db_response) {
+		res.status(409).send(); // only send the status
+	} else {
+		res.status(200).send();
+	}
+	console.log("response from /user/signin GET", username);
+});
 
 router.post("/", async (req, res) => {
-		console.log("user/signup POST");
-    
-		userInfo = req.body.updatedUserInfo;
-		console.log(userInfo);
+	console.log("user/signup POST");
 
+	userInfo = req.body.updatedUserInfo;
+	console.log(userInfo);
 
-    // req.session.userid = username; // This creates a session ID for the user
-		res.status(200); // OK
-		res.json({
-			message: "signup request received",
-			verdict: "success",
-		});
-		
-		try { 
-			await db.addUser(userInfo);
-			console.log("Successfully saved user info to database");
-		}
-		catch (err) {
-			console.log("Error in saving userinfo to database");
-		}
-	});
+	const hashedPassword = await hashPassword(userInfo.password);
+	userInfo.password = hashedPassword;
 
+	// req.session.userid = username; // This creates a session ID for the user
+
+	try {
+		await db.addUser(userInfo);
+
+		// Username is unique, so we can use it as the user ID
+		req.session.username = userInfo.username;
+		res.status(200).send();
+	} catch (err) {
+		res.status(409).send();
+	}
+});
 
 module.exports = router;

@@ -14,6 +14,8 @@ import CourseBlocks from "./components/CoursePage/CourseBlocks";
 import LectureInfo from "./components/CoursePage/LectureInfo";
 import Lesson from "./components/CoursePage/Lesson";
 // ----
+import CourseUpload from "./components/ContentCreatorPage/CourseUpload";
+// ----
 import "./css/App.css";
 import "./css/Header.css";
 import "./css/Button.css";
@@ -160,6 +162,7 @@ function App() {
 							/>
 						}
 					/>
+					<Route path="/upload" element={<CourseUpload />} />
 				</Routes>
 			</Router>
 		</>
