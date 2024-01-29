@@ -1,5 +1,5 @@
 import React from "react";
-import axios from "axios";
+import { UserContext } from "../UserContext/UserContext";
 import Nav from "react-bootstrap/Nav";
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
@@ -7,6 +7,7 @@ import api from "../../api/Signin";
 
 function Login(props: any) {
 	const { background } = props;
+	const { setCurrentUser } = React.useContext(UserContext);
 
 	const [user, setUser] = useState({ email: "", password: "" });
 
@@ -31,7 +32,10 @@ function Login(props: any) {
 			});
 			
 			if (response) {
-				navigate("/courses", { state: user }); 
+				// Current user is in the system now
+				setCurrentUser(user.email);
+
+				navigate("/home", { state: user }); 
 				resetFields();
 			}
 		} catch (err) {

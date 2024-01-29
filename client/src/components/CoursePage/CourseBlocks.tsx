@@ -4,6 +4,7 @@ import { useParams } from "react-router-dom";
 import BlockTemp from "./BlockTemp";
 import BlockComponent from "./BlockComponent";
 import api from "../../api/CourseInfo";
+import { Spinner } from "react-bootstrap";
 
 interface Block {
 	block_id: number;
@@ -14,7 +15,6 @@ interface Block {
 		lecture_id: number;
 		lecture_title: string;
 		duration_minutes: number;
-		quiz_id: number;
 	}>;
 }
 
@@ -60,7 +60,7 @@ const CourseBlocks: React.FC<CourseBlocksProps> = ({ onBlockData }) => {
 	}, [course_id]);
 
 	if (!course) {
-		return <div>Loading...</div>;
+		return <Spinner />;
 	}
 
 	return (
@@ -76,11 +76,11 @@ const CourseBlocks: React.FC<CourseBlocksProps> = ({ onBlockData }) => {
 						</p>
 					</div>
 					<div style={{ overflowY: "auto" }}>
-						{course.blocks.map((block) => (
+						{course.blocks.map((block,index) => (
 							<BlockTemp
 								key={block.block_id}
 								course_id={course.course_id}
-								block_id={block.block_id}
+								block_id={index+1}
 								block_name={block.block_name}
 								onBlockClick={handleBlockClick}
 							/>
@@ -94,11 +94,11 @@ const CourseBlocks: React.FC<CourseBlocksProps> = ({ onBlockData }) => {
 						</p>
 					</div>
 					<div style={{ overflowY: "auto" }}>
-						{course.blocks.map((block) => (
+						{course.blocks.map((block, index) => (
 							<BlockComponent
 								key={block.block_id}
 								course_id={course.course_id}
-								block_id={block.block_id}
+								block_id={index+1}
 								blockName={block.block_name}
 								lectures={block.lectures}
 								onBlockClick={handleBlockClick}

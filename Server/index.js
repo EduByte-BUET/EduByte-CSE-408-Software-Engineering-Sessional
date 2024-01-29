@@ -1,9 +1,9 @@
 const db = require("./database/db");
 db.connectToDB();
 
-const session = require('express-session');
 const express = require("express");
 const cors = require('cors')
+const session = require('express-session');
 
 const app = express();
 
@@ -16,13 +16,12 @@ const exam_page_router = require("./routers/ExamPageRouter");
 const discussion_page_router = require("./routers/DiscussionPageRouter");
 const content_create_router = require("./routers/ContentCreateRouter");
 
-app.use(
-  session({
-    secret: "secret-key",
-    resave: false,
-    saveUninitialized: false,
-  })
-);
+app.use(session({
+  secret: 'your secret key',
+  resave: false,
+  saveUninitialized: true,
+  cookie: { secure: true, maxAge: 24 * 60 * 60 * 1000 } // 24 hours
+}));
 
 app.use(cors()) // Use this after the variable declaration
 app.use(express.json());

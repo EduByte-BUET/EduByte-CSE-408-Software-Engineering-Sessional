@@ -1,16 +1,52 @@
-
-import React, { useEffect, useState } from "react";
-import {NavLink, Link } from "react-router-dom";
+import { UserContext } from "../UserContext/UserContext";
+import React, { useState } from "react";
+import { useNavigate, Link } from "react-router-dom";
 import "../../css/dashboard.css"
 import newimage from "../../assets/hero-img.png"
+import signinapi from "../../api/Signin";
 
 const UserProfile = () => {
-  const [activeLink, setActiveLink] = useState("/courses"); // Default active link
+  const [activeLink, setActiveLink] = useState(""); // Default active link
 
   // Function to set the active link and apply the 'active' class
-  const handleSetActiveLink = (link) => {
+  const handleSetActiveLink = (link: any) => {
     setActiveLink(link);
   };
+
+  // Getting the current user from the context
+  const { setCurrentUser } = React.useContext(UserContext);
+  const navigate = useNavigate();
+
+  const handleLogout = async () => {
+    try {
+      await signinapi.get("/logout");
+      localStorage.removeItem("currentUser");
+      navigate("/home");
+      setCurrentUser(null);
+    }
+    catch (err) {
+      console.error(err);
+    }
+    
+  }
+
+  const handleMyCourses = () => {
+    handleSetActiveLink("/courses");
+  }
+
+  const handleRecommendations = () => {
+    handleSetActiveLink("/recommendations");
+  }
+
+  const handleNotifications = () => {
+    handleSetActiveLink("/notifications");
+  }
+
+  const handleSavedPosts = () => {
+    handleSetActiveLink("/savedposts");
+  }
+
+  
 
   return (
     <div className="col-md-4 col-lg-3 bg-light d-flex flex-column sidebars">
@@ -24,7 +60,7 @@ const UserProfile = () => {
           className={`nav-link dash-navlink ${
             activeLink === "/courses" ? "active" : ""
           }`}
-          onClick={() => handleSetActiveLink("/courses")}
+          onClick={handleMyCourses}
         >
           Courses
         </Link>
@@ -33,7 +69,7 @@ const UserProfile = () => {
           className={`nav-link dash-navlink ${
             activeLink === "/recommendations" ? "active" : ""
           }`}
-          onClick={() => handleSetActiveLink("/recommendations")}
+          onClick={handleRecommendations}
         >
           Recommendations
         </Link>
@@ -42,7 +78,7 @@ const UserProfile = () => {
           className={`nav-link dash-navlink ${
             activeLink === "/notifications" ? "active" : ""
           }`}
-          onClick={() => handleSetActiveLink("/notifications")}
+          onClick={handleNotifications}
         >
           Notifications
         </Link>
@@ -51,25 +87,15 @@ const UserProfile = () => {
           className={`nav-link dash-navlink ${
             activeLink === "/savedposts" ? "active" : ""
           }`}
-          onClick={() => handleSetActiveLink("/savedposts")}
+          onClick={handleSavedPosts}
         >
           Saved Posts
         </Link>
-        <button className="btn blue-button m-3">
-            <Link
-              to="/home"
-              style={{ color: "inherit", textDecoration: "inherit" }}
-            >
-              Home <i className="bi bi-house"></i>
-            </Link>
+        <button className="btn blue-button m-3" onClick={() => navigate('/home') }>
+              <i className="bi bi-house"></i> Home
       </button>
-      <button className="btn blue-button m-3">
-            <Link
-              to="/logout"
-              style={{ color: "inherit", textDecoration: "inherit" }}
-            >
+      <button className="btn blue-button m-3" onClick={handleLogout}>
               Logout
-            </Link>
       </button>
       </nav>
     </div>

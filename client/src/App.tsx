@@ -1,5 +1,8 @@
 import { useState, useEffect } from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+// -----User Context
+import { UserContext } from "./components/UserContext/UserContext";
+// ---------
 import SignUpForm from "./components/Signup/SignUpForm";
 import SignupInstitution from "./components/Signup/Signup_pref_institution";
 import SignupExpGoal from "./components/Signup/Signup_pref_exp_goal";
@@ -24,21 +27,38 @@ import "./css/Header.css";
 import "./css/Button.css";
 import "./css/SigninSingupInput.css";
 import "./css/SignupPrefs.css";
-import "./css/CoursesPageList.css"
+import "./css/CoursesPageList.css";
 
 function App() {
+	// -----User Context
+	const [currentUser, setCurrentUser] = useState<any>(null);
 	// -----
-	const [courseData, setCourseData] = useState<{ course_id: number; courseName: string } | null>(null);
+	const [courseData, setCourseData] = useState<{
+		course_id: number;
+		courseName: string;
+	} | null>(null);
 
-	const handleCourseData = (data: { course_id: number; courseName: string }) => {
+	const handleCourseData = (data: {
+		course_id: number;
+		courseName: string;
+	}) => {
 		setCourseData(data);
 	};
-	const [blockData, setBlockData] = useState<{ block_id: number; blockName: string } | null>(null);
-	const handleBlockData = (data: {block_id:number; blockName:string}) => {
+	const [blockData, setBlockData] = useState<{
+		block_id: number;
+		blockName: string;
+	} | null>(null);
+	const handleBlockData = (data: { block_id: number; blockName: string }) => {
 		setBlockData(data);
 	};
-	const [lectureData, setLectureData] = useState<{ lecture_id: number; lecture_title: string } | null>(null);
-	const handleLectureData = (data: {lecture_id:number; lecture_title:string}) => {
+	const [lectureData, setLectureData] = useState<{
+		lecture_id: number;
+		lecture_title: string;
+	} | null>(null);
+	const handleLectureData = (data: {
+		lecture_id: number;
+		lecture_title: string;
+	}) => {
 		setLectureData(data);
 	};
 	// -----
@@ -93,83 +113,98 @@ function App() {
 		});
 	}, []);
 
+	// save user information in local storage
+	useEffect(() => {
+		if (currentUser) {
+			localStorage.setItem("currentUser", currentUser);
+		}
+	}, [currentUser]);
+	// get user information from local storage
+	useEffect(() => {
+		const user = localStorage.getItem("currentUser");
+		if (user) {
+			setCurrentUser(user);
+		}
+	}, []);
+
 	return (
 		<>
-			{/* <div style={{ paddingTop: '40px' }} /> */}
-			<Router>
-				<Header />
-				<Routes>
-					<Route
-						path="/signup"
-						element={<SignUpForm background={signin_bg} />}
-					/>
-					<Route
-						path="/signup/institution"
-						element={
-							<SignupInstitution
-								background={signin_bg}
-								options={intitutionOptions}
-							/>
-						}
-					/>
-					<Route
-						path="/signup/experience"
-						element={
-							<SignupExpGoal
-								background={signin_bg}
-								experienceOptions={experienceOptions}
-								goalOptions={goalOptions}
-							/>
-						}
-					/>
-					<Route
-						path="/signup/interests"
-						element={
-							<SignupFieldPref
-								background={signin_bg}
-								fieldOptions={fieldOptions}
-							/>
-						}
-					/>
-					<Route
-						path="/signin"
-						element={<SignInForm background={signin_bg} />}
-					/>
+			<UserContext.Provider value={{ currentUser, setCurrentUser }}>
+				<Router>
+					<Header />
+					<Routes>
+						<Route
+							path="/signup"
+							element={<SignUpForm background={signin_bg} />}
+						/>
+						<Route
+							path="/signup/institution"
+							element={
+								<SignupInstitution
+									background={signin_bg}
+									options={intitutionOptions}
+								/>
+							}
+						/>
+						<Route
+							path="/signup/experience"
+							element={
+								<SignupExpGoal
+									background={signin_bg}
+									experienceOptions={experienceOptions}
+									goalOptions={goalOptions}
+								/>
+							}
+						/>
+						<Route
+							path="/signup/interests"
+							element={
+								<SignupFieldPref
+									background={signin_bg}
+									fieldOptions={fieldOptions}
+								/>
+							}
+						/>
+						<Route
+							path="/signin"
+							element={<SignInForm background={signin_bg} />}
+						/>
 
-					<Route path="/courses" element={<CoursesPage />} />
-					<Route
-						path="/courses/:course_id"
-						element={<CourseDetail onCourseData={handleCourseData} />}
-					/>
-					<Route
-						path="/courses/:course_id/blocks"
-						element={<CourseBlocks onBlockData={handleBlockData} />}
-					/>
-					<Route
-						path="/courses/:course_id/blocks/:block_id"
-						element={
-							<LectureInfo
-								courseData={courseData}
-								blockData={blockData}
-								onLectureData={handleLectureData}
-							/>
-						}
-					/>
-					<Route
-						path="/courses/:course_id/blocks/:block_id/lectures/:lecture_id"
-						element={
-							<Lesson
-								courseData={courseData}
-								blockData={blockData}
-								lectureData={lectureData}
-							/>
-						}
-					/>
-					<Route path="/upload" element={<CourseUpload />} />
-					<Route path="/home" element={<Homepage/>} />
-					<Route path="/user/dashboard/*" element={<Dashboard/>}/>
-				</Routes>
-			</Router>
+						<Route path="/courses" element={<CoursesPage />} />
+						<Route
+							path="/courses/:course_id"
+							element={<CourseDetail onCourseData={handleCourseData} />}
+						/>
+						<Route
+							path="/courses/:course_id/blocks"
+							element={<CourseBlocks onBlockData={handleBlockData} />}
+						/>
+						<Route
+							path="/courses/:course_id/blocks/:block_id"
+							element={
+								<LectureInfo
+									courseData={courseData}
+									blockData={blockData}
+									onLectureData={handleLectureData}
+								/>
+							}
+						/>
+						<Route
+							path="/courses/:course_id/blocks/:block_id/lectures/:lecture_id"
+							element={
+								<Lesson
+									courseData={courseData}
+									blockData={blockData}
+									lectureData={lectureData}
+								/>
+							}
+						/>
+						<Route path="/upload" element={<CourseUpload />} />
+						<Route path="/home" element={<Homepage />} />
+						<Route path="/user/dashboard/*" element={<Dashboard />} />
+					</Routes>
+				</Router>
+			</UserContext.Provider>
 		</>
 	);
 }

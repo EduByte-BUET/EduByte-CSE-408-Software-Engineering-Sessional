@@ -5,106 +5,52 @@ import "../../css/dashboard.css";
 import UserProfile from "./UserProfile";
 import newimage from "../../assets/hero-img.png";
 import { Container } from "react-bootstrap";
+import api from "../../api/Dashboard";
+
 
 // Dummy data for courses
-const coursesData = [
-  {
-    id: 1,
-    title: "Data Structures and Algorithms",
-    lecturesCompleted: 12,
-    totalLectures: 30,
-    testsCompleted: 3,
-    totalTests: 8,
-    averageScore: 72,
-  },
-  {
-    id: 1,
-    title: "Data Structures and Algorithms",
-    lecturesCompleted: 12,
-    totalLectures: 30,
-    testsCompleted: 3,
-    totalTests: 8,
-    averageScore: 72,
-  },
-  {
-    id: 1,
-    title: "Data Structures and Algorithms",
-    lecturesCompleted: 12,
-    totalLectures: 30,
-    testsCompleted: 3,
-    totalTests: 8,
-    averageScore: 72,
-  },
-  {
-    id: 1,
-    title: "Data Structures and Algorithms",
-    lecturesCompleted: 12,
-    totalLectures: 30,
-    testsCompleted: 3,
-    totalTests: 8,
-    averageScore: 72,
-  },
-  {
-    id: 1,
-    title: "Data Structures and Algorithms",
-    lecturesCompleted: 12,
-    totalLectures: 30,
-    testsCompleted: 3,
-    totalTests: 8,
-    averageScore: 72,
-  },
-  {
-    id: 1,
-    title: "Data Structures and Algorithms",
-    lecturesCompleted: 12,
-    totalLectures: 30,
-    testsCompleted: 3,
-    totalTests: 8,
-    averageScore: 72,
-  },
-  {
-    id: 1,
-    title: "Data Structures and Algorithms",
-    lecturesCompleted: 12,
-    totalLectures: 30,
-    testsCompleted: 3,
-    totalTests: 8,
-    averageScore: 72,
-  },
-  // ... More courses data
-];
+// let coursesData = [
+//   {
+//     course_id: 1,
+//     course_title: "Data Structures and Algorithms",
+//     lessons_completed: 12,
+//     total_lessons: 30,
+//   },
+// ];
 
-const MyCourses = () => {
-  const [courses] = useState(coursesData);
+const MyCourses = (props: any) => {
+  const { coursesData } = props;
+  console.log(coursesData);
 
   return (
     <div className="col-md-8 col-lg-9">
       <Container>
         <div className=" justify-content-between align-items-center py-3">
-          {/* Add SortBy and SearchBar components */}
         </div>
+
         <div
           className="courses-container"
           style={{ height: "540px", overflowY: "auto" }}
         >
           <div className="courses-list">
-            {courses.map((course) => (
+            {coursesData.map((course: any) => (
               <div className="card card-dash mb-3 shadow-sm" key={course.id}>
                 <img src={newimage} className="card-img-top" alt="..." />
                 <div className="card-body card-body-dash">
-                  <h5 className="card-title">{course.title}</h5>
+                  <h5 className="card-title">{course.course_title}</h5>
                   <div className="text-part">
                     <p className="card-text">
-                      Lectures completed: {course.lecturesCompleted}/
-                      {course.totalLectures}
+                      Lessons completed: {course.lessons_completed}/
+                      {course.total_lessons}
                     </p>
-                    <p className="card-text">
+                    {/* <p className="card-text">
                       Tests completed: {course.testsCompleted}/
                       {course.totalTests}
                     </p>
                     <p className="card-text">
                       Average score: {course.averageScore}%
-                    </p>
+                    </p> */}
+                    <p>Completion : <b>{(course.lessons_completed * 100 / course.total_lessons).toFixed(2)} %</b> </p>
                     <a
                       href="#"
                       className="btn blue-button"
@@ -123,7 +69,7 @@ const MyCourses = () => {
         <div className="mt-auto bottom-links ">
           <button className="btn blue-button">
             <Link
-              to="/addCourse"
+              to="/courses"
               style={{ color: "inherit", textDecoration: "inherit" }}
             >
               Add Course <i className="bi bi-arrow-right"></i>

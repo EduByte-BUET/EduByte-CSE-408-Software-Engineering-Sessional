@@ -4,6 +4,7 @@ const courses_router = express.Router();
 const recommendations_router = express.Router();
 const notifications_router = express.Router();
 const saved_posts_router = express.Router();
+const db = require("../database/db");
 
 // --------------------------------------------- User ---------------------------------------------
 
@@ -20,46 +21,51 @@ courses_router.route("/").get(async (req, res) => {
 	// Client would want to get the courses from the database
 	// userid (needed to get data form the db) is stored in req.session.userid
 	// A sample json response is given below
-	courses = {
-		courses: [
-			{
-				course_id: 1,
-				course_name: "Introduction to Programming",
-				total_completed_lecture: 5,
-				total_lecture: 10,
-				total_completed_quiz: 3,
-				total_quiz: 10,
-				avg_quiz_score: 85,
-			},
-			{
-				course_id: 2,
-				course_name: "Web Development Basics",
-				total_completed_lecture: 8,
-				total_lecture: 10,
-				total_completed_quiz: 5,
-				total_quiz: 10,
-				avg_quiz_score: 92,
-			},
-			{
-				course_id: 3,
-				course_name: "Data Structures and Algorithms",
-				total_completed_lecture: 7,
-				total_lecture: 15,
-				total_completed_quiz: 4,
-				total_quiz: 8,
-				avg_quiz_score: 88,
-			},
-			{
-				course_id: 4,
-				course_name: "Database Systems",
-				total_completed_lecture: 6,
-				total_lecture: 12,
-				total_completed_quiz: 3,
-				total_quiz: 6,
-				avg_quiz_score: 90,
-			},
-		],
-	};
+	// courses = {
+	// 	courses: [
+	// 		{
+	// 			course_id: 1,
+	// 			course_name: "Introduction to Programming",
+	// 			total_completed_lecture: 5,
+	// 			total_lecture: 10,
+	// 			total_completed_quiz: 3,
+	// 			total_quiz: 10,
+	// 			avg_quiz_score: 85,
+	// 		},
+	// 		{
+	// 			course_id: 2,
+	// 			course_name: "Web Development Basics",
+	// 			total_completed_lecture: 8,
+	// 			total_lecture: 10,
+	// 			total_completed_quiz: 5,
+	// 			total_quiz: 10,
+	// 			avg_quiz_score: 92,
+	// 		},
+	// 		{
+	// 			course_id: 3,
+	// 			course_name: "Data Structures and Algorithms",
+	// 			total_completed_lecture: 7,
+	// 			total_lecture: 15,
+	// 			total_completed_quiz: 4,
+	// 			total_quiz: 8,
+	// 			avg_quiz_score: 88,
+	// 		},
+	// 		{
+	// 			course_id: 4,
+	// 			course_name: "Database Systems",
+	// 			total_completed_lecture: 6,
+	// 			total_lecture: 12,
+	// 			total_completed_quiz: 3,
+	// 			total_quiz: 6,
+	// 			avg_quiz_score: 90,
+	// 		},
+	// 	],
+	// };
+
+	const user_id = 1; // req.session.userid;
+	const courses = await db.getMyCoursesData(user_id);
+	console.log(courses);
+
 	if (Object.keys(courses).length > 0) res.status(200); // OK
 	else res.status(400); // Bad Request
 	res.json(courses);

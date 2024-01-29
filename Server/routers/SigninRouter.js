@@ -7,8 +7,10 @@ const express = require("express");
 const router = express.Router();
 const signin_router = express.Router();
 const bg_router = express.Router();
+const logout_router = express.Router();
 
 router.use("/", signin_router);
+router.use("/logout", logout_router);
 router.use("/bg", bg_router);
 
 // router.use(express.json());
@@ -20,35 +22,33 @@ async function checkPassword(password, hashedPassword) {
     return match; // true if the passwords match, false otherwise
 }
 
-signin_router
-	.route("/") // when a client hits /login, come to this router
-	.get(async (req, res) => {
-		console.log("/user/signin GET");
-		res.send("response from /user/signin GET");
-	})
-	.post(async (req, res) => {
-		console.log("user/signin POST");
-		const [username, password] = [
-			req.body.username,
-			req.body.password,
-		];
+signin_router.route("/")
+  .post(async (req, res) => {
+    console.log("user/signin POST");
+    const [username, password] = [req.body.username, req.body.password];
 
-		const usernameExists = db.checkUsername(username);
-		if (!usernameExists) {
-			res.status(401).send(); // Unauthorized
-		}
-		const hashedPassword = await db.getUserPassword(username);
-		console.log(password, hashedPassword);
+    const usernameExists = await db.checkUsername(username);
+    if (!usernameExists) {
+      return res.status(401).send(); // Unauthorized
+    }
+    const hashedPassword = await db.getUserPassword(username);
 
-		checkPassword(password, hashedPassword).then(match => {
-			if (match) {
-				console.log("Successful login");
-				res.status(200).send(); // OK
-			} else {
-				res.status(401).send(); // Unauthorized
-			}
-		});
-	});
+    checkPassword(password, hashedPassword).then(match => {
+      if (match) {
+        console.log("Successful login", username);
+        req.session.username = username;
+        req.session.save(err => {
+          if (err) {
+            console.log(err);
+            return res.status(500).send(); // Internal Server Error
+          }
+          return res.status(200).send(); // OK
+        });
+      } else {
+        return res.status(401).send(); // Unauthorized
+      }
+    });
+  });
 
 bg_router.route("/").get(async (req, res) => {
 	console.log("/bg GET");
@@ -65,8 +65,12 @@ bg_router.route("/").get(async (req, res) => {
 			res.status(404);
 			res.send("Not found");
 		}); // Not found
+});
 
-	
+logout_router.route("/").get(async (req, res) => {
+	console.log("/logout GET");
+	req.session.destroy();
+	res.status(200).send();
 });
 
 module.exports = router;

@@ -186,8 +186,8 @@ const createEnrolledCoursesTable = async () => {
 	await pool.query(
 		`
 		CREATE TABLE IF NOT EXISTS enrolled_courses (
-			user_id INT REFERENCES users(user_id),
-			course_id INT REFERENCES courses(course_id),
+			user_id INT,
+			course_id INT,
 			enroll_date TIMESTAMP WITHOUT TIME ZONE DEFAULT NOW(),
 			feedback TEXT,
 			rating DECIMAL(2, 1),
@@ -271,10 +271,10 @@ const createCourseProgressTable = async () => {
 		CREATE TABLE IF NOT EXISTS course_progress (
 			user_id INT REFERENCES users(user_id),
 			course_id INT REFERENCES courses(course_id),
-			block_no INT,
-			lecture_no INT,
-			lesson_no INT,
-			quiz_id INT REFERENCES quizzes(quiz_id),
+			block_id INT,
+			lecture_id INT,
+			lesson_id INT[],
+			-- quiz_id INT REFERENCES quizzes(quiz_id),
 			quiz_attempts INT, -- Number of quiz attempts within the lecture
 			quiz_score DECIMAL(5, 2), -- Latest or highest quiz score		
 			PRIMARY KEY (user_id, course_id)
@@ -342,7 +342,7 @@ const initDB = async (newPool) => {
     // await createRecommendedCoursesTable();
     // await createQuizTable();
     // await createCourseProgressTable();
-	  // await createCategogoriesTable();
+	// await createCategogoriesTable();
 
 }
 

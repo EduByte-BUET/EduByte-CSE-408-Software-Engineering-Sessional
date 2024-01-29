@@ -1,5 +1,6 @@
 import React from "react";
 import axios from "axios";
+import { UserContext } from "./UserContext/UserContext";
 import { Link, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import Container from "react-bootstrap/Container";
@@ -9,6 +10,7 @@ import Navbar from "react-bootstrap/Navbar";
 function Header() {
 	const navigate = useNavigate();
 	const [logo, setLogo] = useState<string>("");
+	const { currentUser } = React.useContext(UserContext);
 
 	// Getting the logo from the server
 	useEffect(() => {
@@ -49,9 +51,14 @@ function Header() {
 					<Nav.Link as={Link} to="/donate" className="custom-nav-link">
 						Donate
 					</Nav.Link>
-					<Nav.Link as={Link} to="/signin" className="custom-nav-link">
+
+					{ currentUser ? <Nav.Link as={Link} to="/user/dashboard" className="custom-nav-link">
+						{currentUser}
+					</Nav.Link> : null }
+					{ currentUser==null ? <Nav.Link as={Link} to="/signin" className="custom-nav-link">
 						Signin
-					</Nav.Link>
+					</Nav.Link> : null }
+
 				</Nav>
 			</Container>
 		</Navbar>

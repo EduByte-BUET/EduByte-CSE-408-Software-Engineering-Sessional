@@ -48,7 +48,7 @@ function Login(props: any) {
 
 		// Check for username duplicacy
 		try {
-			const res = await api.get(`/${user.username}`);
+			await api.get(`/${user.username}`);
 			console.log("Status code : 200");
 			// status: 200
 		} catch (err) {

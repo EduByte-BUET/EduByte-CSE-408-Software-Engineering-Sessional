@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
-import { useParams, Route } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import VideoPlayer from "./VideoPlayer";
-import { Link } from "react-router-dom";
 import api from "../../api/CourseInfo";
 
 interface RouteParams {
@@ -13,19 +11,11 @@ interface Course {
 	course_id: number;
 	course_name: string;
 	course_description: string;
-	instructor_name: string;
-	total_lectures: number;
-	total_enrolled_students: number;
-	start_date: string;
-	end_date: string;
+	total_lessons: number;
+	total_enrolled: number;
 	tags: string[];
 	course_video_url: string;
 	skills_acquired: string[];
-	author: {
-		author_id: number;
-		author_name: string;
-		author_bio: string;
-	};
 }
 
 interface ApiResponse {
@@ -40,6 +30,7 @@ interface CourseDetailProps {
 const CourseDetail = ({ onCourseData }: CourseDetailProps) => {
 	const [course, setCourse] = useState<Course | null>(null);
 	const { course_id } = useParams<Record<string, string>>();
+	const navigate = useNavigate();
 
 	useEffect(() => {
 		const fetchData = async () => {
@@ -63,6 +54,22 @@ const CourseDetail = ({ onCourseData }: CourseDetailProps) => {
 		fetchData();
 	}, [course_id]);
 
+
+
+	const handleStartCourse = async () => {
+		if (course !== null) {
+			try {
+				await api.registerToCourse(course.course_id);
+				navigate(`/courses/${course.course_id}/blocks`);
+			} catch (err) {
+				console.error(err);
+				alert(
+					"You are already enrolled in this course! or something went wrong"
+				);
+			}
+		}
+	};
+
 	if (!course) {
 		return <div>Loading...</div>;
 	}
@@ -73,13 +80,12 @@ const CourseDetail = ({ onCourseData }: CourseDetailProps) => {
 				<div className="col mt-6 text-start">
 					<h4 className="blue-text">{course.course_name}</h4>
 					<p>{course.course_description}</p>
-					<button className="btn blue-button">
-						<Link
-							to={`/courses/${course.course_id}/blocks`}
-							style={{ color: "inherit", textDecoration: "inherit" }}
-						>
-							Start Course <i className="bi bi-arrow-right"></i>
-						</Link>
+					<button
+						className="btn blue-button"
+						style={{ color: "inherit", textDecoration: "inherit" }}
+						onClick={handleStartCourse}
+					>
+						Start Course <i className="bi bi-arrow-right"></i>
 					</button>
 				</div>
 				<div className="col mt-3">
@@ -88,17 +94,16 @@ const CourseDetail = ({ onCourseData }: CourseDetailProps) => {
 			</div>
 			<div className="row cream-background mt-3">
 				<div className="col-4 text-start ml-2 column-border p-3">
-					<h5>Number of Lectures</h5>
+					<h5>Number of Lessons</h5>
 					<ul>
-						<li>About {course.total_lectures}</li>
-						<li>Instructor: {course.instructor_name}</li>
-						<li>Starting from {course.start_date}</li>
+						<li>Total: {course.total_lessons}</li>
+						<li>Fields related to: {course.tags}</li>
 					</ul>
 				</div>
 				<div className="col-4 text-start ml-2 column-border p-3">
 					<h5>Enrolled By</h5>
 					<ul>
-						<li>{course.total_enrolled_students} learners</li>
+						<li>{course.total_enrolled} learners</li>
 					</ul>
 				</div>
 				<div className="col-4 text-start p-3">
