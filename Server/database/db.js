@@ -141,7 +141,7 @@ const getCourse = async (course_id) => {
 			message: "Course details retrieved successfully.",
 			course: {
 				course_id: course.course_id,
-				course_title: course.course_name,
+				course_title: course.course_title,
 				description: course.course_description,
 				total_lessons: course.total_lessons,
 				total_enrolled: course.total_enrolled,
@@ -183,51 +183,18 @@ const getCategories = async () => {
 	}
 }
 
-const getCoursesPageInfo = async (user_id) => {
+const getRecommendedCourses = async (user_id) => {
 	try {
-		const categoriesResult = await pool.query("SELECT * FROM categories");
-		let categories = categoriesResult.rows;
-
-		for (let i = 0; i < categories.length; i++) {
-			let courses = [];
-			for (let j = 0; j < categories[i].courses.length; j++) {
-				const courseResult = await pool.query(
-					"SELECT course_id, course_title FROM courses WHERE course_id = $1",
-					[categories[i].courses[j]]
-				);
-				courses.push(courseResult.rows[0]);
-			}
-			categories[i].courses = courses;
-		}
-
-		const popularCoursesResult = await pool.query(
-			"SELECT course_id, course_title as title, total_lessons, description FROM courses ORDER BY total_enrolled DESC LIMIT 5"
-		);
-		const popularCourses = popularCoursesResult.rows;
-
-		const recommendedCoursesResult = await pool.query(
+		const res = await pool.query(
 			"SELECT courses.course_id, courses.course_title as title, courses.total_lessons, courses.description FROM recommended_courses JOIN courses ON recommended_courses.course_id = courses.course_id WHERE user_id = $1",
 			[user_id]
 		);
-		const recommendedCourses = recommendedCoursesResult.rows;
-
-		const coursesPageInfo = {
-			status: "success",
-			message: "Course page information retrieved successfully.",
-			categories: categories,
-			popular_courses: popularCourses,
-			recommended_courses: recommendedCourses,
-		};
-
-		return coursesPageInfo;
-	} catch (err) {
-		console.error(err);
-		return {
-			status: "error",
-			message: "Failed to retrieve course page information.",
-		};
+		return res.rows;
 	}
-};
+	catch (err) {
+		console.log(err);
+	}
+}
 
 // registerToCourse(user_id, course_id, enroll_date, enrollment_status, last_activity)
 const registerToCourse = async (
@@ -645,7 +612,6 @@ module.exports = {
 	getUser,
 	getCourse,
 	getPopularCourses,
-	getCoursesPageInfo,
 	getUserPassword,
 	registerToCourse,
 	getBlockList,
@@ -653,5 +619,6 @@ module.exports = {
 	getLectureInfo,
 	markLesson,
 	getMyCoursesData,
-	getCategories
+	getCategories,
+	getRecommendedCourses,
 };

@@ -2,7 +2,7 @@
   margin-bottom: 10px;
 }
 
-.custom-form-check-input.form-check-input {
+.custom-form-check-input {
   display: none;
 }
 
@@ -19,6 +19,11 @@
 }
 
 input[type="checkbox"]:checked ~ .custom-form-check-label, .custom-form-check-label:hover {
+  background-color: lightseagreen;
+  color: white;
+}
+
+input[type="radio"]:checked ~ .custom-form-check-label, .custom-form-check-label:hover {
   background-color: lightseagreen;
   color: white;
 }

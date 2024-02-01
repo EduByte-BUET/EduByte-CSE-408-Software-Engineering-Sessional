@@ -46,6 +46,16 @@ popular_course_router.route("/").get(async (req, res) => {
 }
 );
 
+recommended_course_router.route("/").get(async (req, res) => {
+	console.log("/courses/recommended GET");
+	// Get all the recommended courses
+	const recommended_courses = await db.getRecommendedCourses();
+	if (recommended_courses != null) res.status(200); // OK
+	else res.status(404); 
+	res.json(recommended_courses);
+}
+);
+
 courses_router.route("/").get(async (req, res) => {
 	console.log("/courses GET");
 	const course_id = req.query.course_id;
