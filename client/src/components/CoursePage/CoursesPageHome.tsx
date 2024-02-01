@@ -14,7 +14,6 @@ const CoursesPageHome = () => {
       try {
         const res = await api.get("/courses/categories");
         setCategories(res.data);
-        
       } catch (err) {
         alert("Error occurred. Please try again later.");
       }

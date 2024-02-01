@@ -1,65 +1,33 @@
 import React, { useEffect, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import VideoPlayer from "./VideoPlayer";
 import api from "../../api/GeneralAPI";
 
-interface RouteParams {
-	course_id: string;
-}
 
-interface Course {
-	course_id: number;
-	course_name: string;
-	course_description: string;
-	total_lessons: number;
-	total_enrolled: number;
-	tags: string[];
-	course_video_url: string;
-	skills_acquired: string[];
-}
-
-interface ApiResponse {
-	status: string;
-	message: string;
-	course: Course;
-}
-interface CourseDetailProps {
-	onCourseData: (data: { course_id: number; courseName: string }) => void;
-}
-
-const CourseDetail = ({ onCourseData }: CourseDetailProps) => {
-	const [course, setCourse] = useState<Course | null>(null);
-	const { course_id } = useParams<Record<string, string>>();
+const CourseDetail = () => {
+	const [course, setCourse] = useState<any>(null);
+	const location = useLocation();
 	const navigate = useNavigate();
+	const {course_id, course_title} = location.state;
 
 	useEffect(() => {
 		const fetchData = async () => {
 			try {
-				console.log("Courseid: " + course_id);
-				const response = await api.getCourse(course_id);
-				console.log(response.data.course);
-
+				console.log("course_id: " + course_id);
+				const response = await api.get(`/courses?course_id=${course_id}`);
 				setCourse(response.data.course);
-				onCourseData({
-					course_id: response.data.course.course_id,
-					courseName: response.data.course.course_name,
-				});
-				// status: 200
 			} catch (err) {
-				// status: 409 (conflict)
 				console.error(err);
 			}
 		};
 
 		fetchData();
-	}, [course_id]);
-
-
+	}, []);
 
 	const handleStartCourse = async () => {
 		if (course !== null) {
 			try {
-				await api.registerToCourse(course.course_id);
+				await api.post("/courses/register", { course_id: course_id });
 				navigate(`/courses/${course.course_id}/blocks`);
 			} catch (err) {
 				console.error(err);
@@ -78,8 +46,8 @@ const CourseDetail = ({ onCourseData }: CourseDetailProps) => {
 		<div className="container">
 			<div className="row justify-content-between">
 				<div className="col mt-6 text-start">
-					<h4 className="blue-text">{course.course_name}</h4>
-					<p>{course.course_description}</p>
+					<h4 className="blue-text">{course.course_title}</h4>
+					<p>{course.description}</p>
 					<button
 						className="btn blue-button"
 						style={{ color: "inherit", textDecoration: "inherit" }}
@@ -89,7 +57,7 @@ const CourseDetail = ({ onCourseData }: CourseDetailProps) => {
 					</button>
 				</div>
 				<div className="col mt-3">
-					<VideoPlayer videoUrl={course.course_video_url} />
+					<img src={course.thumbnail_url} alt="Course Photo" />
 				</div>
 			</div>
 			<div className="row cream-background mt-3">
@@ -109,7 +77,7 @@ const CourseDetail = ({ onCourseData }: CourseDetailProps) => {
 				<div className="col-4 text-start p-3">
 					<h5>Skills required</h5>
 					<ul>
-						{course.skills_acquired.map((skill, index) => (
+						{course.skills_acquired.map((skill:string, index:number) => (
 							<li key={index}>{skill}</li>
 						))}
 					</ul>
