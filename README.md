@@ -1,3 +1,9 @@
+# Software Development Project **`Guidelines`**
+To all the developers
+1. First "git pull https://github.com/EduByte-BUET/EduByte-CSE-408-Software-Engineering-Sessional.git"
+2. Then start modifying
+3. Red flag: files to be modified should not overlap by any chance
+
 # Software Development Project **`EduByte`**
 
 <p align='center'>

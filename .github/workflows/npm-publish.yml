@@ -1,0 +1,65 @@
+# This workflow will run tests using node and then publish a package to GitHub Packages when a release is created
+# For more information see: https://docs.github.com/en/actions/publishing-packages/publishing-nodejs-packages
+
+name: Node.js CI/CD
+
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  backend:
+    runs-on: self-hosted
+    strategy:
+      matrix:
+        node-version: [20.x]
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Setup Node.js ${{ matrix.node-version }} for Backend
+      uses: actions/setup-node@v3
+      with:
+        node-version: ${{ matrix.node-version }}
+        cache: 'npm'
+        cache-dependency-path: Server/package-lock.json
+
+    - name: Install Backend Dependencies
+      run: npm ci
+      working-directory: ./Server
+
+    - name: Build Backend
+      run: npm run build --if-present
+      working-directory: ./Server
+
+    - name: Restart Backend Service
+      run: sudo pm2 restart backend
+      working-directory: ./Server
+
+  frontend:
+    needs: backend # Optional: if you want to deploy backend first
+    runs-on: self-hosted
+    strategy:
+      matrix:
+        node-version: [20.x]
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Setup Node.js ${{ matrix.node-version }} for Frontend
+      uses: actions/setup-node@v3
+      with:
+        node-version: ${{ matrix.node-version }}
+        cache: 'npm'
+        cache-dependency-path: client/package-lock.json
+
+    - name: Install Frontend Dependencies
+      run: npm ci
+      working-directory: ./client
+
+    - name: Build Frontend
+      run: npm run build --if-present
+      working-directory: ./client
+
+    # Add any additional frontend deployment steps here
+    # For example, if you're deploying to a static site host or executing a script to upload build artifacts
+
+   

@@ -8,11 +8,17 @@ const register_to_course_router = express.Router();
 const lesson_marked_router = express.Router();
 const store_video_file = express.Router();
 const store_pdf_file = express.Router();
+const category_router = express.Router();
 const popular_course_router = express.Router();
+const recommended_course_router = express.Router();
 
 const db = require("../database/db");
 const fs = require("fs");
 
+router.use("/courses", courses_router);
+router.use("/categories", category_router);
+router.use("/popular", popular_course_router);
+router.use("/recommended", recommended_course_router);
 router.use("/", courses_router);
 router.use("/blocks", block_router);
 router.use("/blocks/lectures", lecture_router);
@@ -22,6 +28,26 @@ router.use("/register", register_to_course_router);
 router.use("/store/video", store_video_file);
 router.use("/store/pdf", store_pdf_file);
 router.use("/popular", popular_course_router);
+
+category_router.route("/").get(async (req, res) => {
+	console.log("/courses/categories GET");
+	// Get all the categories
+	const categories = await db.getCategories();
+	if (categories != null) res.status(200); // OK
+	else res.status(404); 
+	res.json(categories);
+}
+);
+popular_course_router.route("/").get(async (req, res) => {
+	console.log("/courses/popular GET");
+	// Get all the popular courses
+	const popular_courses = await db.getPopularCourses();
+	if (popular_courses != null) res.status(200); // OK
+	else res.status(404); 
+	res.json(popular_courses);
+}
+);
+
 
 courses_router.route("/").get(async (req, res) => {
 	console.log("/courses GET ----------------------------------- ", req.session.username);
