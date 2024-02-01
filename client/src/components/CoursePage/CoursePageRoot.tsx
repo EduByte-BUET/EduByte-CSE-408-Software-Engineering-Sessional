@@ -55,8 +55,8 @@ function CoursePageRoot() {
             }
           />
           <Route
-            path="/:course_id"
-            element={<CourseDetail onCourseData={handleCourseData} />}
+            path="/detail"
+            element={<CourseDetail/>}
           />
           <Route
             path="/:course_id/blocks"

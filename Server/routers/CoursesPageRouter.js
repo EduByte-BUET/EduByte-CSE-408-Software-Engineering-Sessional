@@ -45,7 +45,15 @@ popular_course_router.route("/").get(async (req, res) => {
 	res.json(popular_courses);
 }
 );
-
+recommended_course_router.route("/").get(async (req, res) => {
+    console.log("/courses/recommended GET");
+    // Get all the recommended courses
+    const recommended_courses = await db.getRecommendedCourses();
+    if (recommended_courses != null) res.status(200); // OK
+    else res.status(404); 
+    res.json(recommended_courses);
+}
+);
 courses_router.route("/").get(async (req, res) => {
 	console.log("/courses GET");
 	const course_id = req.query.course_id;
@@ -64,58 +72,6 @@ block_router.route("/").get(async (req, res) => {
 
 	// A sample json response is given below
 	// Get data from database using block_id
-	// blocks_list = {
-	// 	status: "success",
-	// 	message: "Blocks and lectures for the course retrieved successfully.",
-	// 	course: {
-	// 		course_id: 1,
-	// 		course_name: "Introduction to Programming",
-	// 		total_lectures: 20,
-	// 		total_quizzes: 15,
-	// 		blocks: [
-	// 			{
-	// 				block_id: 1,
-	// 				block_name: "Fundamentals of Programming",
-	// 				total_lectures: 5,
-	// 				total_quizzes: 2,
-	// 				lectures: [
-	// 					{
-	// 						lecture_id: 1,
-	// 						lecture_title: "Introduction to Variables",
-	// 						duration_minutes: 30,
-	// 						quiz_id: 2001,
-	// 					},
-	// 					{
-	// 						lecture_id: 2,
-	// 						lecture_title: "Control Structures",
-	// 						duration_minutes: 45,
-	// 						quiz_id: 2002,
-	// 					},
-	// 				],
-	// 			},
-	// 			{
-	// 				block_id: 2,
-	// 				block_name: "Advanced Programming Concepts",
-	// 				total_lectures: 7,
-	// 				total_quizzes: 3,
-	// 				lectures: [
-	// 					{
-	// 						lecture_id: 1,
-	// 						lecture_title: "Object-Oriented Programming",
-	// 						duration_minutes: 60,
-	// 						quiz_id: 2003,
-	// 					},
-	// 					{
-	// 						lecture_id: 2,
-	// 						lecture_title: "Exception Handling",
-	// 						duration_minutes: 40,
-	// 						quiz_id: 2004,
-	// 					},
-	// 				],
-	// 			},
-	// 		],
-	// 	},
-	// };
 
 	const blocks_list = await db.getBlockList(course_id);
 
@@ -255,7 +211,7 @@ lesson_router.route("/").get(async (req, res) => {
 register_to_course_router.route("/").post(async (req, res) => {
 	console.log("/courses/register POST");
 	// Register a user to a course
-	const course_id = req.query.course_id; // Get course_id from frontend
+	const course_id = req.data.course_id; // Get course_id from frontend
 	const enroll_date = new Date();
 	const enrollment_status = "active";
 	const last_activity = new Date();
