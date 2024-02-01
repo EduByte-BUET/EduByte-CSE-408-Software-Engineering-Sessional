@@ -27,6 +27,7 @@ router.use("/marked", lesson_marked_router);
 router.use("/register", register_to_course_router);
 router.use("/store/video", store_video_file);
 router.use("/store/pdf", store_pdf_file);
+router.use("/popular", popular_course_router);
 
 category_router.route("/").get(async (req, res) => {
 	console.log("/courses/categories GET");
@@ -174,6 +175,17 @@ courses_router.route("/").get(async (req, res) => {
 	if (Object.keys(res_obj).length > 0) res.status(200); // OK
 	else res.status(404); // Not found
 	res.json(res_obj);
+});
+
+popular_course_router.route("/").get(async (req, res) => {
+	console.log("/courses/popular GET");
+	// Get all the popular courses
+	const popular_courses = await db.getPopularCourses();
+	console.log(popular_courses);
+
+	if (popular_courses) res.status(200); // OK
+	else res.status(404); // Not found
+	res.json(popular_courses);
 });
 
 // Sends all the blocks of a course

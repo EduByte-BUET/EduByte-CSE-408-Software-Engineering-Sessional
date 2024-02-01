@@ -1,11 +1,13 @@
 import React from "react";
 import api from "../../api/GeneralAPI";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { UserContext } from "../UserContext/UserContext";
 
 function Login(props: any) {
 	const { background } = props;
 	const navigate = useNavigate();
+	const currentUser = React.useContext(UserContext);
 
 	const [user, setUser] = useState({
 		fullname: "",
@@ -48,7 +50,9 @@ function Login(props: any) {
 
 		// Check for username duplicacy
 		try {
-			await api.get(`/${user.username}`);
+			await api.get(`/user/signup/${user.username}`);
+			
+			currentUser.setCurrentUser(user.username);
 			console.log("Status code : 200");
 			// status: 200
 		} catch (err) {

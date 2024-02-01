@@ -3,7 +3,6 @@ import React from 'react';
 export default function Category() {
   return (
     <>
-    
     <section className="categories-area pt-170 pb-170" >
 		<div className="container" spellCheck >
 			<div className="row">
