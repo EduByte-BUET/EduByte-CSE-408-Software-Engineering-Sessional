@@ -101,17 +101,31 @@ const getUser = async (username) => {
 
 const getPopularCourses = async () => {
 	try {
-		const res = await pool.query(
-			`SELECT * FROM ${tables.courses} ORDER BY total_enrolled DESC`
-		);
-		if (res.rows[0]) {
-			return res.rows[0];
-		}
-		return null;
+	  const res = await pool.query(
+		"SELECT c.* FROM courses c ORDER BY total_enrolled DESC;"
+	  );
+	  if (res.rows[0]) {
+		return res.rows.map(row => {
+		  // convert the row object to a popular course object
+		  const course = {
+			course_id: row.course_id,
+			title: row.course_title,
+			thumbnail_url: row.thumbnail_url,
+			difficulty_level: row.difficulty_level,
+			category: row.category,
+			total_enrolled: row.total_enrolled,
+			total_lessons: row.total_lessons
+		  };
+		  console.log(course);
+		  return course;
+		});
+	  }
+	  return null;
 	} catch (err) {
-		console.log(err);
+	  console.log(err);
 	}
-};
+  };
+  
 
 const getCourse = async (course_id) => {
 	try {
