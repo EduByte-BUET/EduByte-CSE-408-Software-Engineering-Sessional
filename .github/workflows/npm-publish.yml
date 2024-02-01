@@ -30,21 +30,12 @@ jobs:
     - name: Restart backend server
       run: pm2 restart backendserver
       working-directory: Server
-
-      run: npm ci
-      working-directory: Server
-    - name: Run tests
-      run: npm test
-      working-directory: Server
-    - name: Restart backend server
-      run: pm2 restart backendserver
-      working-directory: Server
       
     - name: Install client dependencies
       run: npm ci
-      working-directory: Client
+      working-directory: client
 
     # Build client app (if applicable)
     - name: Build client app
       run: npm run build
-      working-directory: Client
+      working-directory: client
