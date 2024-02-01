@@ -563,8 +563,36 @@ const getMyCoursesData = async (user_id) => {
 		[user_id]
 	  );
   
-	  // The rest of your function remains the same...
+	  // Check if the query returned any rows
+	  if (res.rowCount > 0) {
+		// Initialize an empty array to store the courses data
+		const coursesData = [];
+  
+		// Loop through the rows of the query result
+		for (let row of res.rows) {
+		  // Add the course data to the array
+		  coursesData.push({
+			course_id: row.course_id,
+			course_title: row.course_title,
+			lessons_completed: row.lesson_count,
+			total_lessons: row.total_lessons,
+		  });
+		}
+  
+		// Create the object to return
+		const courses_list = {
+		  status: "success",
+		  message: "Courses data for the user retrieved successfully.",
+		  coursesData: coursesData,
+		};
+  
+		return courses_list;
+	  } else {
+		// If the query returned no rows, return null
+		return null;
+	  }
 	} catch (err) {
+	  // If there is an error, log it and return null
 	  console.log(err);
 	  return null;
 	}

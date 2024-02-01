@@ -42,7 +42,6 @@ const Lesson: React.FC<LessonProps> = ({
 	lectureData,
 }) => {
 	const [data, setData] = useState<ApiResponse | null>(null);
-	useParams();
 
 	useEffect(() => {
 		const fetchData = async () => {
@@ -55,7 +54,7 @@ const Lesson: React.FC<LessonProps> = ({
 		};
 
 		fetchData();
-	}, []);
+	}, [courseData, blockData, lectureData]);
 
 	if (!data) {
 		return <div>Loading...</div>;

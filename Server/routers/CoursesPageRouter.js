@@ -6,8 +6,11 @@ const lecture_router = express.Router();
 const lesson_router = express.Router();
 const register_to_course_router = express.Router();
 const lesson_marked_router = express.Router();
+const store_video_file = express.Router();
+const store_pdf_file = express.Router();
 
 const db = require("../database/db");
+const fs = require("fs");
 
 router.use("/", courses_router);
 router.use("/blocks", block_router);
@@ -15,6 +18,8 @@ router.use("/blocks/lectures", lecture_router);
 router.use("/blocks/lectures/lessons", lesson_router);
 router.use("/marked", lesson_marked_router);
 router.use("/register", register_to_course_router);
+router.use("/store/video", store_video_file);
+router.use("/store/pdf", store_pdf_file);
 
 courses_router.route("/").get(async (req, res) => {
 	console.log("/courses GET ----------------------------------- ", req.session.username);
@@ -218,6 +223,8 @@ lecture_router.route("").get(async (req, res) => {
 	const course_id = req.query.course_id;
 	const block_id = req.query.block_id;
 	const lecture_id = req.query.lecture_id;
+	console.log("LectureID: ", lecture_id);
+	console.log("block_id: ", block_id);
 
 	// lectures_list = {
 	// 	status: "success",
@@ -381,6 +388,17 @@ lesson_marked_router.route("/").post(async (req, res) => {
 	if (marked.length > 0) res.status(200).send();
 	else res.status(404).send();
 	// res.status(200).send();
+});
+
+store_video_file.post("/", async (req, res) => {
+	console.log("/courses/store/video POST");
+
+
+	const writer = fs.createWriteStream(__dirname + "/../videos/" + video_file_name);
+  	res.data.pipe(writer);
+	const video_file = req.files.file;
+	const video_file_name = video_file.name;
+	console.log(video_file_path);
 });
 
 module.exports = router;

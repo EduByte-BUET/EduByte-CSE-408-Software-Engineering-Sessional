@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import "../../css/courseUpload.css";
 import "../../css/Button.css";
+import api from "../../api/StoreFiles";
 
 export default function CourseUpload() {
   const [courses, setCourses] = useState([
@@ -27,12 +28,42 @@ export default function CourseUpload() {
     setTemplateFile(event.target.files[0]);
   };
 
-  const handleVideoFileChange = (event: any) => {
+  const handleVideoFileChange = async (event: any) => {
     setVideoFile(event.target.files[0]);
+
+    const formData = new FormData();
+
+    if (videoFile === null) return; // don't save if null
+    // Append the file to the FormData instance
+    formData.append('file', videoFile);
+  
+    // Send the file to the backend
+    try {
+      const response = await api.post('/video', formData);
+  
+      console.log(response.data);
+    } catch (error) {
+      console.error('Error:', error);
+    }
   };
 
-  const handlePdfFileChange = (event: any) => {
+  const handlePdfFileChange = async (event: any) => {
     setPdfFile(event.target.files[0]);
+
+    const formData = new FormData();
+
+    if (pdfFile === null) return; // don't save if null
+    // Append the file to the FormData instance
+    formData.append('file', pdfFile);
+  
+    // Send the file to the backend
+    try {
+      const response = await api.post('/pdf', formData);
+  
+      console.log(response.data);
+    } catch (error) {
+      console.error('Error:', error);
+    }
   };
 
   const handleSubmit = (event: { preventDefault: () => void }) => {

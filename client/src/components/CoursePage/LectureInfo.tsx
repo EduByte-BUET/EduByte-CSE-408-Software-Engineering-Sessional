@@ -1,6 +1,7 @@
 import React, { FC, useEffect, useState } from 'react';
 import axios from 'axios';
 import { useParams, Link } from 'react-router-dom';
+import { Spinner } from 'react-bootstrap';
 
 // lectures_list = {
 //   status: "success",
@@ -84,7 +85,7 @@ const LectureInfo: React.FC<LectureInfoProps> = ({ courseData, blockData, onLect
   const [data, setData] = useState<LecturesData | null>(null);
 
   const handleClick = (lecture_id: number, lecture_title: string) => {
-    console.log("On lecture data");
+    console.log([lecture_id, lecture_title]);
     onLectureData({ lecture_id, lecture_title });
   };
   
@@ -96,10 +97,10 @@ const LectureInfo: React.FC<LectureInfoProps> = ({ courseData, blockData, onLect
     };
 
     fetchData();
-  }, [course_id, block_id]);
+  }, []);
 
   if (!data) {
-    return <div>Loading...</div>;
+    return <Spinner />;
   }
 
   return (

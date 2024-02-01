@@ -51,9 +51,12 @@ function Header() {
 					<Nav.Link as={Link} to="/donate" className="custom-nav-link">
 						Donate
 					</Nav.Link>
+					<Nav.Link as={Link} to="/upload" className="custom-nav-link">
+						Course Upload (Content Creator Only)
+					</Nav.Link>
 
 					{ currentUser ? <Nav.Link as={Link} to="/user/dashboard" className="custom-nav-link">
-						{currentUser}
+						{currentUser} [Logged In]
 					</Nav.Link> : null }
 					{ currentUser==null ? <Nav.Link as={Link} to="/signin" className="custom-nav-link">
 						Signin

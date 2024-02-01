@@ -3,7 +3,7 @@ import { UserContext } from "../UserContext/UserContext";
 import Nav from "react-bootstrap/Nav";
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
-import api from "../../api/Signin";
+import api from "../../api/GeneralAPI";
 
 function Login(props: any) {
 	const { background } = props;
@@ -14,6 +14,11 @@ function Login(props: any) {
 	const resetFields = () => {
 		setUser({ email: "", password: "" });
 	};
+
+	// Custom hook to set local storage
+	const useLocalStorage = (key: any, initValue: any) => {
+		window.localStorage.setItem(key, initValue);
+	}
 
 	const navigate = useNavigate();
 	const handleSubmit = async (event: React.FormEvent<any>) => {
@@ -26,7 +31,7 @@ function Login(props: any) {
 		}
 		
 		try {
-			const response = await api.post("/", {
+			const response = await api.post("/user/signin", {
 				username: user.email,
 				password: user.password,
 			});
@@ -34,6 +39,7 @@ function Login(props: any) {
 			if (response) {
 				// Current user is in the system now
 				setCurrentUser(user.email);
+				useLocalStorage("currentUser", user.email);
 
 				navigate("/home", { state: user }); 
 				resetFields();

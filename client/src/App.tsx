@@ -26,8 +26,8 @@ import "./css/App.css";
 import "./css/Header.css";
 import "./css/Button.css";
 import "./css/SigninSingupInput.css";
-import "./css/SignupPrefs.css";
 import "./css/CoursesPageList.css";
+import "./css/SignupPrefs.css";
 
 function App() {
 	// -----User Context

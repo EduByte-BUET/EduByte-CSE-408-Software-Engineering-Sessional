@@ -63,10 +63,16 @@ courses_router.route("/").get(async (req, res) => {
 	// };
 
 	const user_id = 1; // req.session.userid;
-	const courses = await db.getMyCoursesData(user_id);
-	console.log(courses);
+	let courses = await db.getMyCoursesData(user_id);
+	if (courses == null) {
+		courses = {
+			status: "success",
+			message: "Courses data for the user retrieved successfully.",
+			coursesData: [],
+		};
+	}
 
-	if (Object.keys(courses).length > 0) res.status(200); // OK
+	if (courses !== null) res.status(200); // OK
 	else res.status(400); // Bad Request
 	res.json(courses);
 });

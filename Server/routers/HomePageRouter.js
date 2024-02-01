@@ -82,6 +82,7 @@ courses_router.route("/").get(async (req, res) => {
 
 logo_router.route("/").get(async (req, res) => {
 	console.log("/logo GET");
+	console.log("User: ", req.session.username);
 
 	logo = path.join(__dirname, "../public/logo/EduByte_Logo.png");
 

@@ -1,5 +1,7 @@
 import { useNavigate, useLocation } from "react-router-dom";
+import { UserContext } from "../UserContext/UserContext";
 import { useState } from "react";
+import React from "react";
 import api from "../../api/Signup";
 
 interface Props {
@@ -8,6 +10,7 @@ interface Props {
 }
 
 function Signup_pref_interests(props: Props) {
+	const { setCurrentUser } = React.useContext(UserContext);
 	const { background, fieldOptions } = props;
 
 	const navigate = useNavigate();
@@ -38,6 +41,7 @@ function Signup_pref_interests(props: Props) {
 
 			if (res) {
 				navigate("/home", { state: updatedUserInfo }); // reload
+				setCurrentUser(updatedUserInfo.username);
 				resetAll();
 			}
 		} catch (err) {
@@ -74,7 +78,7 @@ function Signup_pref_interests(props: Props) {
 							{fieldOptions.map((option, index) => (
 								<div className="form-check" key={index}>
 									<input
-										className="form-check-input"
+										className="form-check-input custom-form-check-input"
 										type="checkbox"
 										value=""
 										id={`field-${index}`}
