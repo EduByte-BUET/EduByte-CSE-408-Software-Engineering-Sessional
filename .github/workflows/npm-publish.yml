@@ -24,6 +24,15 @@ jobs:
     - name: Install dependencies
       run: npm ci
       working-directory: Server
+    # - name: Run tests
+    #   run: npm test
+    #   working-directory: Server
+    - name: Restart backend server
+      run: pm2 restart backendserver
+      working-directory: Server
+
+      run: npm ci
+      working-directory: Server
     - name: Run tests
       run: npm test
       working-directory: Server
