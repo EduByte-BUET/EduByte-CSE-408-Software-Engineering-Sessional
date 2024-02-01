@@ -159,6 +159,31 @@ const getCourse = async (course_id) => {
 	}
 };
 
+const getCategories = async () => {
+	try {
+		const categoriesResult = await pool.query("SELECT * FROM categories");
+		let categories = categoriesResult.rows;
+
+		for (let i = 0; i < categories.length; i++) {
+			let courses = [];
+			for (let j = 0; j < categories[i].courses.length; j++) {
+				const courseResult = await pool.query(
+					"SELECT course_id, course_title FROM courses WHERE course_id = $1",
+					[categories[i].courses[j]]
+				);
+				courses.push(courseResult.rows[0]);
+			}
+			categories[i].courses = courses;
+		}
+
+		return categories;
+	}
+	catch (err) {
+		console.log(err);
+		return null;
+	}
+}
+
 const getCoursesPageInfo = async (user_id) => {
 	try {
 		const categoriesResult = await pool.query("SELECT * FROM categories");
@@ -168,7 +193,7 @@ const getCoursesPageInfo = async (user_id) => {
 			let courses = [];
 			for (let j = 0; j < categories[i].courses.length; j++) {
 				const courseResult = await pool.query(
-					"SELECT course_id, course_title as title, total_lessons, description FROM courses WHERE course_id = $1",
+					"SELECT course_id, course_title FROM courses WHERE course_id = $1",
 					[categories[i].courses[j]]
 				);
 				courses.push(courseResult.rows[0]);
@@ -629,4 +654,5 @@ module.exports = {
 	getLectureInfo,
 	markLesson,
 	getMyCoursesData,
+	getCategories
 };
