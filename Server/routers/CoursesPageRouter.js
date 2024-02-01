@@ -45,6 +45,8 @@ popular_course_router.route("/").get(async (req, res) => {
 	res.json(popular_courses);
 }
 );
+
+
 recommended_course_router.route("/").get(async (req, res) => {
     console.log("/courses/recommended GET");
     // Get all the recommended courses
@@ -54,6 +56,7 @@ recommended_course_router.route("/").get(async (req, res) => {
     res.json(recommended_courses);
 }
 );
+
 courses_router.route("/").get(async (req, res) => {
 	console.log("/courses GET");
 	const course_id = req.query.course_id;

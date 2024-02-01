@@ -37,7 +37,7 @@ function Signup_pref_interests(props: Props) {
 
 		// Send data to backend
 		try {
-			const res = await api.post("/", { updatedUserInfo });
+			const res = await api.post("/user/signup", { updatedUserInfo });
 
 			if (res) {
 				navigate("/home", { state: updatedUserInfo }); // reload

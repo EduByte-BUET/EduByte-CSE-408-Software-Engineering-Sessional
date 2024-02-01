@@ -142,6 +142,7 @@ const getCourse = async (course_id) => {
 			course: {
 				course_id: course.course_id,
 				course_title: course.course_title,
+
 				description: course.description,
 				total_lessons: course.total_lessons,
 				total_enrolled: course.total_enrolled,
