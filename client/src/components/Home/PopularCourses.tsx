@@ -15,13 +15,29 @@ interface PopularCoursesProps {
 
 export default function PopularCourses() {
   let popularCourses: PopularCoursesProps[]; // Default value
+	const [itemChunks, setItemChunks] = useState<any>([]);
+	const [activeIndex, setActiveIndex] = useState(0);
+
 
   useEffect(() => {
+    const chunkData = (data: any) => {
+      const chunkSize = 3;
+      const chunks = [];
+  
+      for (let i = 0; i < data.length; i += chunkSize) {
+        chunks.push(data.slice(i, i + chunkSize));
+      }
+  
+      setItemChunks(chunks);
+    };
+
+
     const fetchPopularCourses = async () => {
       try {
         const response = await api.get("/courses/popular");
         popularCourses = response.data;
-        console.log(popularCourses);
+        
+        chunkData(popularCourses);
       } catch (err) {
         console.error(err);
       }
@@ -30,23 +46,6 @@ export default function PopularCourses() {
     fetchPopularCourses();
   }, []);
 
-	const [itemChunks, setItemChunks] = useState<any>([]);
-	const [activeIndex, setActiveIndex] = useState(0);
-
-	useEffect(() => {
-		chunkData(popularCourses);
-	}, []); // Dependency array is empty to mimic componentDidMount
-
-	const chunkData = (data: any) => {
-		const chunkSize = 3;
-		const chunks = [];
-
-		for (let i = 0; i < data.length; i += chunkSize) {
-			chunks.push(data.slice(i, i + chunkSize));
-		}
-
-		setItemChunks(chunks);
-	};
 
 	const handleNext = () => {
 		setActiveIndex((prevIndex) => (prevIndex + 1) % itemChunks.length);
@@ -60,12 +59,6 @@ export default function PopularCourses() {
 
 	return (
 		<>
-			<head>
-				<link
-					href="https://fonts.googleapis.com/css2?family=Lora&display=swap"
-					rel="stylesheet"
-				/>
-			</head>
 			<section id="courses" className="course-area pt-140 pb-170 ">
 				<div className="container">
 					<div className="row">
@@ -107,7 +100,7 @@ export default function PopularCourses() {
 																className="badge bg-info-soft"
 																style={{ backgroundColor: "#17a2b8" }}
 															>
-																---{item.difficulty_level}
+																{item.difficulty_level}
 															</span>
 															<a href="#" className=" fs-5">
 																<i className="fe fe-heart align-middle"></i>
@@ -122,70 +115,15 @@ export default function PopularCourses() {
 																	fontSize: "large",
 																}}
 															>
-																--{item.title}
+																{item.title}
 															</a>
 														</h4>
-														{/* <div className="mt-3 d-flex align-baseline lh-1">
-															<span className="fs-6">
-																<svg
-																	xmlns="http://www.w3.org/2000/svg"
-																	width="12"
-																	height="12"
-																	fill="currentColor"
-																	className="bi bi-star-fill text-warning"
-																	viewBox="0 0 16 16"
-																>
-																	<path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z" />
-																</svg>
-																<svg
-																	xmlns="http://www.w3.org/2000/svg"
-																	width="12"
-																	height="12"
-																	fill="currentColor"
-																	className="bi bi-star-fill text-warning"
-																	viewBox="0 0 16 16"
-																>
-																	<path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z" />
-																</svg>
-																<svg
-																	xmlns="http://www.w3.org/2000/svg"
-																	width="12"
-																	height="12"
-																	fill="currentColor"
-																	className="bi bi-star-fill text-warning"
-																	viewBox="0 0 16 16"
-																>
-																	<path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z" />
-																</svg>
-																<svg
-																	xmlns="http://www.w3.org/2000/svg"
-																	width="12"
-																	height="12"
-																	fill="currentColor"
-																	className="bi bi-star-fill text-warning"
-																	viewBox="0 0 16 16"
-																>
-																	<path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z" />
-																</svg>
-																<svg
-																	xmlns="http://www.w3.org/2000/svg"
-																	width="12"
-																	height="12"
-																	fill="currentColor"
-																	className="bi bi-star-fill text-warning"
-																	viewBox="0 0 16 16"
-																>
-																	<path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z" />
-																</svg>
-															</span>
-															<span className="text-warning mx-1">4.5</span>
-														</div> */}
 														<div style={{ marginTop: "8px" }}>
 															<div style={{ fontSize: "14px", color: "#333" }}>
-																Total Enrolled: --{item.total_enrolled}
+																Total Enrolled: {item.total_enrolled}
 															</div>
 															<div style={{ fontSize: "14px", color: "#555" }}>
-																Total Lessons: --{item.total_lessons}
+																Total Lessons: {item.total_lessons}
 															</div>
 														</div>
 													</div>

@@ -18,13 +18,13 @@ export default function Homepage() {
   return (
 
     <div>
-     <TitlePage/>
-     <Skills/> 
+     {/* <TitlePage/>
+     <Skills/>  */}
      <PopularCourses/>
-     <Category/>
+     {/* <Category/>
      <TopBlogs/>
      <ContactInfo/>
-     <Footer/> 
+     <Footer/>  */}
     </div>
   );
 }
