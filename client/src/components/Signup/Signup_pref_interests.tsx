@@ -2,7 +2,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { UserContext } from "../UserContext/UserContext";
 import { useState } from "react";
 import React from "react";
-import api from "../../api/Signup";
+import api from "../../api/GeneralAPI";
 
 interface Props {
 	background: string;
@@ -10,7 +10,7 @@ interface Props {
 }
 
 function Signup_pref_interests(props: Props) {
-	const { setCurrentUser } = React.useContext(UserContext);
+	const currentUser = React.useContext(UserContext);
 	const { background, fieldOptions } = props;
 
 	const navigate = useNavigate();
@@ -37,11 +37,11 @@ function Signup_pref_interests(props: Props) {
 
 		// Send data to backend
 		try {
-			const res = await api.post("/", { updatedUserInfo });
+			const res = await api.post("/user/signup", { updatedUserInfo });
 
 			if (res) {
 				navigate("/home", { state: updatedUserInfo }); // reload
-				setCurrentUser(updatedUserInfo.username);
+				currentUser.setCurrentUser(updatedUserInfo.username);
 				resetAll();
 			}
 		} catch (err) {

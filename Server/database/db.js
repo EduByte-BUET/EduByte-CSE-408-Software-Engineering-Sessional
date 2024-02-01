@@ -49,6 +49,21 @@ const checkUsername = async (username) => {
 	}
 };
 
+const getUserId = async (username) => {
+	try {
+		const res = await pool.query(
+			"SELECT user_id FROM users WHERE username = $1",
+			[username]
+		);
+		if (res.rows[0]) {
+			return res.rows[0].user_id;
+		}
+		return null;
+	} catch (err) {
+		console.log(err);
+	}
+}
+
 const getUserPassword = async (username) => {
 	try {
 		const res = await pool.query(
@@ -603,6 +618,7 @@ module.exports = {
 	createTables,
 	connectToDB,
 	checkUsername,
+	getUserId,
 	addUser,
 	getUser,
 	getCourse,

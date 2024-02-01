@@ -31,19 +31,20 @@ signin_router.route("/")
     if (!usernameExists) {
       return res.status(401).send(); // Unauthorized
     }
+    const user_id = await db.getUserId(username);
     const hashedPassword = await db.getUserPassword(username);
+
+    const user = {
+      user_id: user_id,
+      username: username
+    }
 
     checkPassword(password, hashedPassword).then(match => {
       if (match) {
         console.log("Successful login", username);
-        req.session.username = username;
-        req.session.save(err => {
-          if (err) {
-            console.log(err);
-            return res.status(500).send(); // Internal Server Error
-          }
-          return res.status(200).send(); // OK
-        });
+        
+        req.session.user_id = user_id;
+        return res.status(200).send(user); // Internal Server Error
       } else {
         return res.status(401).send(); // Unauthorized
       }

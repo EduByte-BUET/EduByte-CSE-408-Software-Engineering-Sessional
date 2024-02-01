@@ -1,54 +1,46 @@
 import React from "react";
-import { UserContext } from "../UserContext/UserContext";
 import Nav from "react-bootstrap/Nav";
 import { Link, useNavigate } from "react-router-dom";
+import { UserContext } from "../UserContext/UserContext";
 import { useState } from "react";
 import api from "../../api/GeneralAPI";
 
 function Login(props: any) {
 	const { background } = props;
-	const { setCurrentUser } = React.useContext(UserContext);
+	const currentUser = React.useContext(UserContext);
 
-	const [user, setUser] = useState({ email: "", password: "" });
+	const [user, setUser] = useState({ username: "", password: "" });
 
 	const resetFields = () => {
-		setUser({ email: "", password: "" });
+		setUser({ username: "", password: "" });
 	};
-
-	// Custom hook to set local storage
-	const useLocalStorage = (key: any, initValue: any) => {
-		window.localStorage.setItem(key, initValue);
-	}
 
 	const navigate = useNavigate();
 	const handleSubmit = async (event: React.FormEvent<any>) => {
 		event.preventDefault();
 
-		if (user.email === "" || user.password === "") {
+		if (user.username === "" || user.password === "") {
 			alert("Please fill all the fields");
 			resetFields();
 			return;
 		}
-		
+
 		try {
 			const response = await api.post("/user/signin", {
-				username: user.email,
+				username: user.username,
 				password: user.password,
 			});
-			
+
 			if (response) {
 				// Current user is in the system now
-				setCurrentUser(user.email);
-				useLocalStorage("currentUser", user.email);
+				currentUser.setCurrentUser(user.username);
 
-				navigate("/home", { state: user }); 
+				navigate("/home", { state: user });
 				resetFields();
 			}
 		} catch (err) {
 			console.log(err);
-			alert(
-				"Wrong username or password"
-			);
+			alert("Wrong username or password");
 			resetFields();
 			return;
 		}
@@ -79,10 +71,10 @@ function Login(props: any) {
 							<input
 								type="text"
 								className="form-control input-field"
-								placeholder="Email/Username"
-								value={user.email}
+								placeholder="Username"
+								value={user.username}
 								aria-describedby="emailHelp"
-								onChange={(e) => setUser({ ...user, email: e.target.value })}
+								onChange={(e) => setUser({ ...user, username: e.target.value })}
 							/>
 							<div id="emailHelp" className="form-text">
 								We'll never share your email with anyone else.

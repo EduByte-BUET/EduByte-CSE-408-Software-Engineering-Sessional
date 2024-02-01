@@ -1,21 +1,20 @@
 import React from "react";
-import axios from "axios";
-import { UserContext } from "./UserContext/UserContext";
 import { Link, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
+import { UserContext } from "./UserContext/UserContext";
 import Container from "react-bootstrap/Container";
 import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
+import api from "../api/GeneralAPI";
 
 function Header() {
 	const navigate = useNavigate();
 	const [logo, setLogo] = useState<string>("");
-	const { currentUser } = React.useContext(UserContext);
-
+	const currentUser = React.useContext(UserContext).currentUser;
 	// Getting the logo from the server
 	useEffect(() => {
-		axios
-			.get("http://localhost:3000/home/logo", { responseType: "blob" })
+		api
+			.get("/home/logo", { responseType: "blob" })
 			.then((response) => {
 				var imgURL = URL.createObjectURL(response.data);
 				setLogo(imgURL);

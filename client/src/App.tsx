@@ -9,7 +9,7 @@ import SignupExpGoal from "./components/Signup/Signup_pref_exp_goal";
 import SignupFieldPref from "./components/Signup/Signup_pref_interests";
 import SignInForm from "./components/Signin/SignInForm";
 import Header from "./components/Header";
-import signin_api from "./api/Signin";
+import api from "./api/GeneralAPI";
 //----home
 import Homepage from "./components/Home/Homepage";
 import Dashboard from "./components/UserDashboard/Dashboard";
@@ -98,7 +98,7 @@ function App() {
 
 	const getSignin_bg = async () => {
 		try {
-			const response = await signin_api.get("/bg", { responseType: "blob" });
+			const response = await api.get("/home/bg", { responseType: "blob" });
 			const imgURL = URL.createObjectURL(response.data);
 			return imgURL;
 		} catch (error) {

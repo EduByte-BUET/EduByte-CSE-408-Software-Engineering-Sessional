@@ -43,7 +43,6 @@ router.post("/", async (req, res) => {
 	console.log("user/signup POST");
 
 	userInfo = req.body.updatedUserInfo;
-	console.log(userInfo);
 
 	const hashedPassword = await hashPassword(userInfo.password);
 	userInfo.password = hashedPassword;
