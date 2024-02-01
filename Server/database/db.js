@@ -130,7 +130,7 @@ const getPopularCourses = async () => {
 const getCourse = async (course_id) => {
 	try {
 		const res = await pool.query(
-			"SELECT course_id, course_title AS course_name, description AS course_description, total_lessons, total_enrolled, tags FROM courses WHERE course_id = $1",
+			"SELECT course_id, course_title, description, total_lessons, total_enrolled, tags, thumbnail_url FROM courses WHERE course_id = $1",
 			[course_id]
 		);
 
@@ -141,14 +141,13 @@ const getCourse = async (course_id) => {
 			message: "Course details retrieved successfully.",
 			course: {
 				course_id: course.course_id,
-				course_name: course.course_name,
-				course_description: course.course_description,
+				course_title: course.course_name,
+				description: course.course_description,
 				total_lessons: course.total_lessons,
 				total_enrolled: course.total_enrolled,
 				tags: course.tags.split(","),
-				course_video_url:
-					"https://www.youtube.com/embed/JL_grPUnXzY?si=mQtLZnjhMkVBdRGf",
-				skills_acquired: ["Data Analysis", "Statistical Modeling"],
+				thumbnail_url: course.thumbnail_url,
+				skills_acquired: course.tags.split(","),
 			},
 		};
 

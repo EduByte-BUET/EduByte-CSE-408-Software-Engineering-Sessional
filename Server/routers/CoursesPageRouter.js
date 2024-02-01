@@ -15,7 +15,6 @@ const recommended_course_router = express.Router();
 const db = require("../database/db");
 const fs = require("fs");
 
-router.use("/courses", courses_router);
 router.use("/categories", category_router);
 router.use("/popular", popular_course_router);
 router.use("/recommended", recommended_course_router);
@@ -27,7 +26,6 @@ router.use("/marked", lesson_marked_router);
 router.use("/register", register_to_course_router);
 router.use("/store/video", store_video_file);
 router.use("/store/pdf", store_pdf_file);
-router.use("/popular", popular_course_router);
 
 category_router.route("/").get(async (req, res) => {
 	console.log("/courses/categories GET");
@@ -48,144 +46,14 @@ popular_course_router.route("/").get(async (req, res) => {
 }
 );
 
-
 courses_router.route("/").get(async (req, res) => {
-	console.log("/courses GET ----------------------------------- ", req.session.username);
-	// User ID is stored in the session (RAM)
-	// const userid = req.session.userid;
-	// const userid = 1;
-
-	// if (req.session.username === undefined) {
-	// 	res.status(200).json(); // The user is not logged in
-	// }
-
-	const coursesPageInfo = await db.getCoursesPageInfo(1); // user_id = 1
-	console.log(coursesPageInfo);
-
-	// A sample json response is given below
-	// coursesPageInfo = {
-	// 	status: "success",
-	// 	message: "Course page information retrieved successfully.",
-	// 	categories: [
-	// 		{
-	// 			category_id: 1,
-	// 			name: "Programming",
-	// 			description: "Explore the world of programming languages.",
-	// 			courses: [
-	// 				{
-	// 					course_id: 101,
-	// 					title: "JavaScript Fundamentals",
-	// 					author: "John Doe",
-	// 					total_lessons: 30,
-	// 					description: "Learn the basics of JavaScript programming.",
-	// 				},
-	// 				{
-	// 					course_id: 102,
-	// 					title: "Full Stack Web Development",
-	// 					author: "Jane Smith",
-	// 					total_lessons: 50,
-	// 					description:
-	// 						"Become a full-stack web developer with this comprehensive course.",
-	// 				},
-	// 			],
-	// 		},
-	// 		{
-	// 			category_id: 2,
-	// 			name: "Web Development",
-	// 			description: "Build web applications and websites.",
-	// 			courses: [
-	// 				{
-	// 					course_id: 201,
-	// 					title: "Python for Data Science",
-	// 					author: "Alice Johnson",
-	// 					total_lessons: 40,
-	// 					description:
-	// 						"Explore data science using Python programming language.",
-	// 				},
-	// 				{
-	// 					course_id: 202,
-	// 					title: "Machine Learning Basics",
-	// 					author: "Bob Williams",
-	// 					total_lessons: 35,
-	// 					description:
-	// 						"Introduction to machine learning concepts and algorithms.",
-	// 				},
-	// 			],
-	// 		},
-	// 	],
-	// 	popular_courses: [
-	// 		{
-	// 			course_id: 101,
-	// 			title: "JavaScript Fundamentals",
-	// 			author: "John Doe",
-	// 			total_lessons: 30,
-	// 			description: "Learn the basics of JavaScript programming.",
-	// 		},
-	// 		{
-	// 			course_id: 102,
-	// 			title: "Full Stack Web Development",
-	// 			author: "Jane Smith",
-	// 			total_lessons: 50,
-	// 			description:
-	// 				"Become a full-stack web developer with this comprehensive course.",
-	// 		},
-	// 	],
-	// 	recommended_courses: [
-	// 		{
-	// 			course_id: 201,
-	// 			title: "Python for Data Science",
-	// 			author: "Alice Johnson",
-	// 			total_lessons: 40,
-	// 			description: "Explore data science using Python programming language.",
-	// 		},
-	// 		{
-	// 			course_id: 202,
-	// 			title: "Machine Learning Basics",
-	// 			author: "Bob Williams",
-	// 			total_lessons: 35,
-	// 			description:
-	// 				"Introduction to machine learning concepts and algorithms.",
-	// 		},
-	// 	],
-	// };
-	// course_info = {
-	// 	status: "success",
-	// 	message: "Course details retrieved successfully.",
-	// 	course: {
-	// 		course_id: 1,
-	// 		course_name: "Introduction to Programming",
-	// 		course_description:
-	// 			"An introduction to the basic concepts of data science. Data Science is one of the hottest topics in the 21st century.In this course, you will learn the basics of data science and statistical modeling using Python programming language.",
-	// 		total_lessons: 12,
-	// 		total_enrolled: 150,
-	// 		tags: ["data science", "statistics"],
-	// 		course_video_url:
-	// 			"https://www.youtube.com/embed/JL_grPUnXzY?si=mQtLZnjhMkVBdRGf",
-	// 		skills_acquired: ["Data Analysis", "Statistical Modeling"],
-	// 	},
-	// };
+	console.log("/courses GET");
 	const course_id = req.query.course_id;
-	const course_info = await db.getCourse(course_id); // course_id = 1
-	console.log(course_info);
 
-	let res_obj = coursesPageInfo;
-	if (course_id !== undefined) {
-		res_obj = course_info;
-	}
-	if (Object.keys(res_obj).length > 0) res.status(200); // OK
+	const course_info = await db.getCourse(course_id);
+	if (course_info) res.status(200); // OK
 	else res.status(404); // Not found
-	res.json(res_obj);
-});
-
-popular_course_router.route("/").get(async (req, res) => {
-	console.log("/courses/popular GET");
-	// Get all the popular courses
-	const popular_courses = await db.getPopularCourses();
-	console.log(popular_courses);
-
-	if (popular_courses) res.status(200); // OK
-	else res.status(404); // Not found
-	res.json(popular_courses);
+	res.json(course_info);
 });
 
 // Sends all the blocks of a course

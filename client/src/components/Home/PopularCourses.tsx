@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import "../../css/popularcourses.css";
 import newImage from "../../assets/hero-img.png";
 import api from "../../api/GeneralAPI";
+import { useNavigate } from "react-router-dom";
 
 interface PopularCoursesProps {
   course_id: number;
@@ -17,6 +18,8 @@ export default function PopularCourses() {
   let popularCourses: PopularCoursesProps[]; // Default value
 	const [itemChunks, setItemChunks] = useState<any>([]);
 	const [activeIndex, setActiveIndex] = useState(0);
+
+  const navigate = useNavigate();
 
 
   useEffect(() => {
@@ -57,6 +60,11 @@ export default function PopularCourses() {
 		);
 	};
 
+  const handleCourseselection = (event: any) => {
+    const course_id = event.target.value;
+    navigate(`/courses?course_id=${course_id}`);
+  }
+
 	return (
 		<>
 			<section id="courses" className="course-area pt-140 pb-170 ">
@@ -86,7 +94,7 @@ export default function PopularCourses() {
 								>
 									<div className="row justify-content-center">
 										{chunk.map((item) => (
-											<div key={item.course_id} className="col-md-3">
+											<div key={item.course_id} className="col-md-3" >
 												<div className=" card cardi card-hover ">
 													{/* <a href="../course-single.html">*/}
 													<img
@@ -131,12 +139,9 @@ export default function PopularCourses() {
 													<div className="card-footer card-footer-pop">
 														<div className="row align-items-center g-0">
 															<div className="col-auto">
-																<a href="#" className="text-inherit ">
-																	<button className="btn blue-button">
-																		<i className="fe fe-shopping-cart text-primary align-middle me-2"></i>
-																		Details
-																	</button>
-																</a>
+                                  <button className="btn blue-button" value={item.course_id} onClick={handleCourseselection}>
+                                    Details
+                                  </button>
 															</div>
 														</div>
 													</div>
