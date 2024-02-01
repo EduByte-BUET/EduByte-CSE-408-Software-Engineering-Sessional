@@ -18,7 +18,6 @@ export default function Homepage() {
   return (
 
     <div>
-
      <TitlePage/>
      <Skills/> 
      <PopularCourses/>
@@ -26,9 +25,6 @@ export default function Homepage() {
      <TopBlogs/>
      <ContactInfo/>
      <Footer/> 
-         
-     
-
     </div>
   );
 }
