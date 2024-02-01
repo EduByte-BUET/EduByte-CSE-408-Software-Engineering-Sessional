@@ -1,7 +1,7 @@
 # Software Development Project **`EduByte`**
 
 <p align='center'>
-<img alt="EduByte" height=50% width=50% src="Server/public/logo/EduByte_Logo.png" />
+<img alt="EduByte" height=50% width=50% src="ProjectInfo/EduByte_Logo.png" />
 </p>
 
 # **Project Overview**
@@ -17,7 +17,7 @@ Site's Endpoints Documentation: [API DOC](https://documenter.getpostman.com/view
 
 # Project Architecture - **`Model View Controller`**
 <p align='center'>
-<img alt="Design Architecture" src="Server/public/architecture/archi.png" />
+<img alt="Design Architecture" src="ProjectInfo/archi.png" />
 </p>
 
 # **Tech Stack & Tools**
