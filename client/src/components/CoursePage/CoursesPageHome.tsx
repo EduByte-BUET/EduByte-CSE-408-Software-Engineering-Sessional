@@ -14,8 +14,6 @@ const CoursesPageHome = () => {
       try {
         const res = await api.get("/courses/categories");
         setCategories(res.data);
-        console.log(res.data);
-        console.log("dead");
       } catch (err) {
         alert("Error occurred. Please try again later.");
       }
