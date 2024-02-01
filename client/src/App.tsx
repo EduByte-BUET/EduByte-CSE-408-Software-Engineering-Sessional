@@ -10,6 +10,8 @@ import SignupFieldPref from "./components/Signup/Signup_pref_interests";
 import SignInForm from "./components/Signin/SignInForm";
 import Header from "./components/Header";
 import signin_api from "./api/GeneralAPI";
+
+import CoursePageRoot from "./components/CoursePage/CoursePageRoot";
 //----home
 import Homepage from "./components/Home/Homepage";
 import Dashboard from "./components/UserDashboard/Dashboard";
@@ -170,35 +172,7 @@ function App() {
 							element={<SignInForm background={signin_bg} />}
 						/>
 
-						<Route path="/courses" element={<CoursesPage />} />
-						<Route
-							path="/courses/:course_id"
-							element={<CourseDetail onCourseData={handleCourseData} />}
-						/>
-						<Route
-							path="/courses/:course_id/blocks"
-							element={<CourseBlocks onBlockData={handleBlockData} />}
-						/>
-						<Route
-							path="/courses/:course_id/blocks/:block_id"
-							element={
-								<LectureInfo
-									courseData={courseData}
-									blockData={blockData}
-									onLectureData={handleLectureData}
-								/>
-							}
-						/>
-						<Route
-							path="/courses/:course_id/blocks/:block_id/lectures/:lecture_id"
-							element={
-								<Lesson
-									courseData={courseData}
-									blockData={blockData}
-									lectureData={lectureData}
-								/>
-							}
-						/>
+						<Route path="/courses/*" element={<CoursePageRoot/>} />
 						<Route path="/upload" element={<CourseUpload />} />
 						<Route path="/home" element={<Homepage />} />
 						<Route path="/user/dashboard/*" element={<Dashboard />} />
