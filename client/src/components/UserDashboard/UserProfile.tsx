@@ -1,12 +1,13 @@
-import { UserContext } from "../UserContext/UserContext";
 import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import "../../css/dashboard.css"
 import newimage from "../../assets/hero-img.png"
 import api from "../../api/GeneralAPI";
+import { UserContext } from "../UserContext/UserContext";
 
 const UserProfile = () => {
   const [activeLink, setActiveLink] = useState(""); // Default active link
+  const currentUser = React.useContext(UserContext);
 
   // Function to set the active link and apply the 'active' class
   const handleSetActiveLink = (link: any) => {
@@ -19,8 +20,10 @@ const UserProfile = () => {
 
   const handleLogout = async () => {
     try {
-      await api.get("/logout");
+      await api.get("/user/signin/logout");
 
+      currentUser.setCurrentUser(null);
+      window.localStorage.removeItem("currentUser");
       navigate("/home");
       setCurrentUser(null);
     }

@@ -1,5 +1,3 @@
-// CoursesPage.tsx
-
 import React, { useEffect, useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap-icons/font/bootstrap-icons.css";
@@ -38,7 +36,7 @@ const CoursesPage: React.FC = () => {
 	useEffect(() => {
 		const fetchData = async () => {
 			try {
-				const res = await api.getCourseHome();
+				const res = await api.get("/courses");
 				setData(res.data);
 			} catch (err) {
 				alert("Error occurred. Please try again later.");
