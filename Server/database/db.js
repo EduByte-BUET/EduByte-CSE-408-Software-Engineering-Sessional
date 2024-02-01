@@ -109,7 +109,7 @@ const getPopularCourses = async () => {
 		  // convert the row object to a popular course object
 		  const course = {
 			course_id: row.course_id,
-			title: row.course_title,
+			course_title: row.course_title,
 			thumbnail_url: row.thumbnail_url,
 			difficulty_level: row.difficulty_level,
 			category: row.category,

@@ -5,7 +5,7 @@ import api from "../../api/GeneralAPI";
 
 interface PopularCoursesProps {
   course_id: number;
-  title: string;
+  course_title: string;
   thumbnail_url: string;
   difficulty_level: string;
   category: string;
@@ -115,7 +115,7 @@ export default function PopularCourses() {
 																	fontSize: "large",
 																}}
 															>
-																{item.title}
+																{item.course_title}
 															</a>
 														</h4>
 														<div style={{ marginTop: "8px" }}>
