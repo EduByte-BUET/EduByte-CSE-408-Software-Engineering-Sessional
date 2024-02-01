@@ -2,7 +2,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { UserContext } from "../UserContext/UserContext";
 import { useState } from "react";
 import React from "react";
-import api from "../../api/Signup";
+import api from "../../api/GeneralAPI";
 
 interface Props {
 	background: string;

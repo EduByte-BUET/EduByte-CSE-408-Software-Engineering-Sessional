@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import "../../css/courseUpload.css";
+import "../../css/CoursePage/courseUpload.css";
 import "../../css/Button.css";
-import api from "../../api/StoreFiles";
+import api from "../../api/GeneralAPI";
 
 export default function CourseUpload() {
   const [courses, setCourses] = useState([

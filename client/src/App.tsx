@@ -9,7 +9,7 @@ import SignupExpGoal from "./components/Signup/Signup_pref_exp_goal";
 import SignupFieldPref from "./components/Signup/Signup_pref_interests";
 import SignInForm from "./components/Signin/SignInForm";
 import Header from "./components/Header";
-import signin_api from "./api/Signin";
+import signin_api from "./api/GeneralAPI";
 //----home
 import Homepage from "./components/Home/Homepage";
 import Dashboard from "./components/UserDashboard/Dashboard";
@@ -26,7 +26,7 @@ import "./css/App.css";
 import "./css/Header.css";
 import "./css/Button.css";
 import "./css/SigninSingupInput.css";
-import "./css/CoursesPageList.css";
+import "./css/CoursePage/CoursesPageList.css";
 import "./css/SignupPrefs.css";
 
 function App() {
@@ -98,7 +98,7 @@ function App() {
 
 	const getSignin_bg = async () => {
 		try {
-			const response = await signin_api.get("/bg", { responseType: "blob" });
+			const response = await signin_api.get("user/signin/bg", { responseType: "blob" });
 			const imgURL = URL.createObjectURL(response.data);
 			return imgURL;
 		} catch (error) {

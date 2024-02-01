@@ -3,7 +3,7 @@ import axios from "axios";
 import { useParams } from "react-router-dom";
 import BlockTemp from "./BlockTemp";
 import BlockComponent from "./BlockComponent";
-import api from "../../api/CourseInfo";
+import api from "../../api/GeneralAPI";
 import { Spinner } from "react-bootstrap";
 
 interface Block {

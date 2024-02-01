@@ -1,5 +1,5 @@
 import React from "react";
-import api from "../../api/Signup";
+import api from "../../api/GeneralAPI";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 

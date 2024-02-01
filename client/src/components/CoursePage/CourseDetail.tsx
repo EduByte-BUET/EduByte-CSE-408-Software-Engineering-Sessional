@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import VideoPlayer from "./VideoPlayer";
-import api from "../../api/CourseInfo";
+import api from "../../api/GeneralAPI";
 
 interface RouteParams {
 	course_id: string;

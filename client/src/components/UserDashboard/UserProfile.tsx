@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import "../../css/dashboard.css"
 import newimage from "../../assets/hero-img.png"
-import signinapi from "../../api/Signin";
+import api from "../../api/GeneralAPI";
 
 const UserProfile = () => {
   const [activeLink, setActiveLink] = useState(""); // Default active link
@@ -19,8 +19,8 @@ const UserProfile = () => {
 
   const handleLogout = async () => {
     try {
-      await signinapi.get("/logout");
-      localStorage.removeItem("currentUser");
+      await api.get("/logout");
+
       navigate("/home");
       setCurrentUser(null);
     }
