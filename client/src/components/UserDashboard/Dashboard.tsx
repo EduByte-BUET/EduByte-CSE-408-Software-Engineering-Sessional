@@ -3,7 +3,7 @@ import { UserContext } from "../UserContext/UserContext";
 import { BrowserRouter as Router, Route, Routes, useNavigate } from "react-router-dom";
 import "../../css/dashboard.css"
 import UserProfile from "./UserProfile";
-import dashboardapi from "../../api/Dashboard";
+import dashboardapi from "../../api/GeneralAPI";
 
 import MyCourses from "./MyCourses";
 import RecommendedCourses from "./RecommendedCourses";

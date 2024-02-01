@@ -5,7 +5,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap-icons/font/bootstrap-icons.css";
 import CourseViewSections from "./CourseViewSections";
 import CategoryItem from "./CategoryItem";
-import api from "../../api/CourseInfo";
+import api from "../../api/GeneralAPI";
 import { Spinner } from "react-bootstrap";
 import "../../css/CoursePage/CourseHome.css";
 
