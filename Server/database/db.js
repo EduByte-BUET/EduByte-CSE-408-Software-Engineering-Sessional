@@ -18,7 +18,7 @@ const pool = new Pool({
 	user: "postgres",
 	host: "localhost",
 	database: "test",
-	password: "postgredb",
+	password: "connectdb",
 	port: 5432,
 });
 
@@ -101,17 +101,31 @@ const getUser = async (username) => {
 
 const getPopularCourses = async () => {
 	try {
-		const res = await pool.query(
-			`SELECT * FROM ${tables.courses} ORDER BY total_enrolled DESC`
-		);
-		if (res.rows[0]) {
-			return res.rows[0];
-		}
-		return null;
+	  const res = await pool.query(
+		"SELECT c.* FROM courses c ORDER BY total_enrolled DESC;"
+	  );
+	  if (res.rows[0]) {
+		return res.rows.map(row => {
+		  // convert the row object to a popular course object
+		  const course = {
+			course_id: row.course_id,
+			course_title: row.course_title,
+			thumbnail_url: row.thumbnail_url,
+			difficulty_level: row.difficulty_level,
+			category: row.category,
+			total_enrolled: row.total_enrolled,
+			total_lessons: row.total_lessons
+		  };
+		  console.log(course);
+		  return course;
+		});
+	  }
+	  return null;
 	} catch (err) {
-		console.log(err);
+	  console.log(err);
 	}
-};
+  };
+  
 
 const getCourse = async (course_id) => {
 	try {
@@ -145,6 +159,31 @@ const getCourse = async (course_id) => {
 	}
 };
 
+const getCategories = async () => {
+	try {
+		const categoriesResult = await pool.query("SELECT * FROM categories");
+		let categories = categoriesResult.rows;
+
+		for (let i = 0; i < categories.length; i++) {
+			let courses = [];
+			for (let j = 0; j < categories[i].courses.length; j++) {
+				const courseResult = await pool.query(
+					"SELECT course_id, course_title FROM courses WHERE course_id = $1",
+					[categories[i].courses[j]]
+				);
+				courses.push(courseResult.rows[0]);
+			}
+			categories[i].courses = courses;
+		}
+
+		return categories;
+	}
+	catch (err) {
+		console.log(err);
+		return null;
+	}
+}
+
 const getCoursesPageInfo = async (user_id) => {
 	try {
 		const categoriesResult = await pool.query("SELECT * FROM categories");
@@ -154,7 +193,7 @@ const getCoursesPageInfo = async (user_id) => {
 			let courses = [];
 			for (let j = 0; j < categories[i].courses.length; j++) {
 				const courseResult = await pool.query(
-					"SELECT course_id, course_title as title, total_lessons, description FROM courses WHERE course_id = $1",
+					"SELECT course_id, course_title FROM courses WHERE course_id = $1",
 					[categories[i].courses[j]]
 				);
 				courses.push(courseResult.rows[0]);
@@ -615,4 +654,5 @@ module.exports = {
 	getLectureInfo,
 	markLesson,
 	getMyCoursesData,
+	getCategories
 };
