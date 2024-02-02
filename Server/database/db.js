@@ -221,212 +221,107 @@ const registerToCourse = async (
 // Function to get the blocks and lectures for a course
 const getBlockList = async (course_id) => {
 	try {
-	  // Query to fetch the data from the tables
-	  const res = await pool.query(
-		`SELECT
-		  c.course_id,
-		  c.course_title AS course_name,
-		  c.total_lectures,
-		  c.total_quizzes,
-		  b.block_id,
-		  b.title AS block_name,
-		  l.lecture_id,
-		  l.title AS lecture_title,
-		  ls.duration AS duration_minutes
-		FROM courses c
-		JOIN blocks b ON c.course_id = b.course_id
-		JOIN lectures l ON b.block_id = l.block_id
-		JOIN lessons ls ON l.lecture_id = ls.lecture_id
-		WHERE c.course_id = $1
-		GROUP BY
-		  c.course_id,
-		  c.course_title,
-		  c.total_lectures,
-		  c.total_quizzes,
-		  b.block_id,
-		  b.title,
-		  l.lecture_id,
-		  l.title,
-		  ls.duration
-		ORDER BY
-		  b.serial_no,
-		  l.serial_no`,
-		[course_id]
-	  );
-  
-	  // Check if the query returned any rows
-	  if (res.rowCount > 0) {
-		// Initialize an empty object to store the course data
-		const course = {};
-  
-		// Loop through the rows of the query result
-		for (let row of res.rows) {
-		  // If the course_id is not in the course object, add it and other course details
-		  if (!course.course_id) {
-			course.course_id = row.course_id;
-			course.course_name = row.course_name;
-			course.total_lectures = row.total_lectures;
-			course.total_quizzes = row.total_quizzes;
-			course.blocks = []; // Initialize an empty array to store the blocks
-		  }
-  
-		  // Find the index of the block with the same block_id as the row
-		  let blockIndex = course.blocks.findIndex(
-			(block) => block.block_id === row.block_id
-		  );
-  
-		  // If the block is not in the course object, add it and other block details
-		  if (blockIndex === -1) {
-			course.blocks.push({
-			  block_id: row.block_id,
-			  block_name: row.block_name,
-			  total_lectures: row.total_lectures,
-			  total_quizzes: row.total_quizzes,
-			  lectures: [], // Initialize an empty array to store the lectures
-			});
-  
-			// Update the block index to the last element of the blocks array
-			blockIndex = course.blocks.length - 1;
-		  }
-  
-		  // Find the index of the lecture with the same lecture_id as the row
-		  let lectureIndex = course.blocks[blockIndex].lectures.findIndex(
-			(lecture) => lecture.lecture_id === row.lecture_id
-		  );
-  
-		  // If the lecture is not in the block object, add it and other lecture details
-		  if (lectureIndex === -1) {
-			course.blocks[blockIndex].lectures.push({
-			  lecture_id: row.lecture_id,
-			  lecture_title: row.lecture_title,
-			  duration_minutes: row.duration_minutes,
-			});
-		  }
+		const courseResult = await pool.query(
+			"SELECT c.course_id, c.course_title, c.total_lectures, c.total_quizzes, b.block_id, b.title, l.lecture_id, l.title FROM courses c JOIN blocks b ON c.course_id = b.course_id JOIN lectures l ON b.block_id = l.block_id WHERE c.course_id = $1 GROUP BY c.course_id, b.block_id, l.lecture_id ORDER BY b.block_id, l.lecture_id",
+			[course_id]
+		);
+		let courseRows = courseResult.rows;
+		let course = {};
+		let blocks = [];
+		let currentBlockId = null;
+		let currentBlock = {};
+		for (let i = 0; i < courseRows.length; i++) {
+			let courseRow = courseRows[i];
+			if (i === 0) {
+				course.course_id = courseRow.course_id;
+				course.course_title = courseRow.course_title;
+				course.total_lectures = courseRow.total_lectures;
+				course.total_quizzes = courseRow.total_quizzes;
+			}
+			// If the current block id is different from the row's block id, it means we have a new block
+			if (currentBlockId !== courseRow.block_id) {
+				if (currentBlockId !== null) {
+					blocks.push(currentBlock);
+				}
+				currentBlockId = courseRow.block_id;
+				currentBlock = {
+					block_id: courseRow.block_id,
+					title: courseRow.title,
+					lectures: [],
+					total_quizzes: 0,
+				};
+			}
+			let lecture = {
+				lecture_id: courseRow.lecture_id,
+				title: courseRow.title,
+			};
+			const quizResult = await pool.query(
+				"SELECT quiz_id, quiz_title, quiz_duration FROM quizzes WHERE lecture_id = $1",
+				[lecture.lecture_id]
+			);
+			let quiz = quizResult.rows[0];
+			if (quiz) {
+				currentBlock.total_quizzes++;
+			}
+			currentBlock.lectures.push(lecture);
 		}
-  
-		// Create the object to return
-		const blocks_list = {
-		  status: "success",
-		  message: "Blocks and lectures for the course retrieved successfully.",
-		  course: course,
-		};
-  
-		return blocks_list;
-	  } else {
-		// If the query returned no rows, return null
-		return null;
-	  }
+		blocks.push(currentBlock);
+		course.blocks = blocks;
+
+		return course;
 	} catch (err) {
-	  // If there is an error, log it and return null
-	  console.log(err);
-	  return null;
+		console.log(err);
+		return null;
 	}
-  };
+};
   
 // Function to get the lectures and lessons for a block
 const getLectureList = async (block_id) => {
 	try {
-	  // Query to fetch the data from the tables
-	  const res = await pool.query(
-		`SELECT
-		  b.block_id,
-		  b.title AS block_title,
-		  COUNT(DISTINCT l.lecture_id) AS total_lectures,
-		  l.lecture_id,
-		  l.title AS lecture_title,
-		  l.description,
-		  ls.lesson_id,
-		  ls.lesson_type,
-		  ls.title AS lesson_title,
-		  ls.description AS lesson_description
-		FROM blocks b
-		JOIN lectures l ON b.block_id = l.block_id
-		JOIN lessons ls ON l.lecture_id = ls.lecture_id
-		WHERE b.block_id = $1
-		GROUP BY
-		  b.block_id,
-		  b.title,
-		  l.lecture_id,
-		  l.title,
-		  l.description,
-		  ls.lesson_id,
-		  ls.lesson_type,
-		  ls.title,
-		  ls.description
-		ORDER BY
-		  l.serial_no,
-		  ls.serial_no`,
-		[block_id]
-	  );
-  
-	  // Check if the query returned any rows
-	  if (res.rowCount > 0) {
-		// Initialize an empty object to store the block data
-		const block = {};
-  
-		// Loop through the rows of the query result
-		for (let row of res.rows) {
-		  // If the block_id is not in the block object, add it and other block details
-		  if (!block.block_id) {
-			block.block_id = row.block_id;
-			block.block_title = row.block_title;
-			block.total_lectures = row.total_lectures;
-			block.lectures = []; // Initialize an empty array to store the lectures
-		  }
-  
-		  // Find the index of the lecture with the same lecture_id as the row
-		  let lectureIndex = block.lectures.findIndex(
-			(lecture) => lecture.lecture_id === row.lecture_id
-		  );
-  
-		  // If the lecture is not in the block object, add it and other lecture details
-		  if (lectureIndex === -1) {
-			block.lectures.push({
-			  lecture_id: row.lecture_id,
-			  lecture_title: row.lecture_title,
-			  description: row.description,
-			  lessons: [], // Initialize an empty array to store the lessons
-			});
-  
-			// Update the lecture index to the last element of the lectures array
-			lectureIndex = block.lectures.length - 1;
-		  }
-  
-		  // Find the index of the lesson with the same lesson_id as the row
-		  let lessonIndex = block.lectures[lectureIndex].lessons.findIndex(
-			(lesson) => lesson.lesson_id === row.lesson_id
-		  );
-  
-		  // If the lesson is not in the lecture object, add it and other lesson details
-		  if (lessonIndex === -1) {
-			block.lectures[lectureIndex].lessons.push({
-			  lesson_id: row.lesson_id,
-			  lesson_type: row.lesson_type,
-			  lesson_title: row.lesson_title,
-			  description: row.lesson_description,
-			});
-		  }
+		const blockResult = await pool.query(
+			"SELECT b.block_id, b.title AS block_title, l.lecture_id, l.title AS lecture_title FROM blocks b JOIN lectures l ON b.block_id = l.block_id WHERE b.block_id = $1 GROUP BY b.block_id, l.lecture_id ORDER BY l.lecture_id",
+			[block_id]
+		);
+		let blockRows = blockResult.rows;
+		let block = {};
+		let lectures = [];
+
+		for (let i = 0; i < blockRows.length; i++) {
+			let blockRow = blockRows[i];
+
+			if (i === 0) {
+				block.block_id = blockRow.block_id;
+				block.title = blockRow.block_title;
+			}
+
+			let lecture = {
+				lecture_id: blockRow.lecture_id,
+				title: blockRow.lecture_title,
+				lessons: [],
+				total_lessons: 0,
+				total_quizzes: 1,
+			};
+			const lessonResult = await pool.query(
+				"SELECT lesson_id, title, lesson_type, description FROM lessons WHERE lecture_id = $1",
+				[lecture.lecture_id]
+			);
+			for (let j = 0; j < lessonResult.rows.length; j++) {
+				let lesson = lessonResult.rows[j];
+				lecture.lessons.push(lesson);
+
+				lecture.total_lessons++;
+			}
+			lectures.push(lecture);
 		}
-  
-		// Create the object to return
-		const lectures_list = {
-		  status: "success",
-		  message: "Lectures and lessons for the block retrieved successfully.",
-		  block: block,
-		  lectures: block.lectures,
-		};
-  
-		return lectures_list;
-	  } else {
-		// If the query returned no rows, return null
-		return null;
-	  }
+		block.lectures = lectures;
+
+		return block;
 	} catch (err) {
-	  // If there is an error, log it and return null
-	  console.log(err);
-	  return null;
+		console.log(err);
+		return null;
 	}
-  };
+};
+
 
 // Function to get the detailed lecture information
 const getLectureInfo = async (lecture_id) => {

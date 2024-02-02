@@ -79,7 +79,7 @@ block_router.route("/").get(async (req, res) => {
 	const blocks_list = await db.getBlockList(course_id);
 	console.log(blocks_list);
 
-	if (Object.keys(blocks_list).length > 0) res.status(200); // OK
+	if (blocks_list!=null) res.status(200); // OK
 	else res.status(404); // Not found
 	res.json(blocks_list);
 });
@@ -92,66 +92,9 @@ lecture_router.route("").get(async (req, res) => {
 	const lecture_id = req.query.lecture_id;
 	console.log("LectureID: ", lecture_id);
 	console.log("block_id: ", block_id);
-
-	// lectures_list = {
-	// 	status: "success",
-	// 	message: "Lectures for the block retrieved successfully.",
-	// 	block: {
-	// 		block_id: 101,
-	// 		block_title: "Fundamentals of Programming",
-	// 		total_lectures: 5,
-	// 		total_quizzes: 2,
-	// 	},
-	// 	lectures: [
-	// 		{
-	// 			lecture_id: 1001,
-	// 			lecture_title: "Introduction to Variables",
-	// 			description: "Understanding the basics of variables in programming.",
-	// 			video_title: "Intro_to_Variables_Video",
-	// 			pdf_title: "Intro_to_Variables_Handout",
-	// 		},
-	// 		{
-	// 			lecture_id: 1002,
-	// 			lecture_title: "Control Structures",
-	// 			description: "Exploring control flow in programming.",
-	// 			video_title: "Intro_to_Variables_Video",
-	// 			pdf_title: "Intro_to_Variables_Handout",
-	// 		},
-	// 	],
-	// };
 	const lectures_list = await db.getLectureList(block_id);
-	// console.log(lectures_list);
 
-	// details_lecture_info = {
-	// 	status: "success",
-	// 	message: "Detailed lecture information retrieved successfully.",
-	// 	lecture: {
-	// 		lecture_id: 1001,
-	// 		lecture_title: "Introduction to Variables",
-	// 		description:
-	// 			"This lecture covers the fundamental concepts of variables in programming.",
-	// 		lessons: [
-	// 			{
-	// 				lesson_id: 1,
-	// 				lesson_type: "pdf",
-	// 				lesson_title: "Intro_to_Variables_Handout",
-	// 				description:
-	// 					"A comprehensive handout on the introduction to variables.",
-	// 				file_url:
-	// 					"https://inspirehep.net/files/81d2b60e6d136b097d7a2eb55f2137d9",
-	// 			},
-	// 			{
-	// 				lesson_id: 2,
-	// 				lesson_type: "video",
-	// 				lesson_title: "Intro_to_Variables_Video",
-	// 				description:
-	// 					"Watch the video to grasp the concepts of variables effectively.",
-	// 				file_url:
-	// 					"https://www.youtube.com/embed/JL_grPUnXzY?si=mQtLZnjhMkVBdRGf",
-	// 			},
-	// 		],
-	// 	},
-	// };
+
 	const details_lecture_info = await db.getLectureInfo(lecture_id);
 	console.log(details_lecture_info);
 
@@ -159,7 +102,7 @@ lecture_router.route("").get(async (req, res) => {
 	if (lecture_id !== undefined) {
 		res_obj = details_lecture_info;
 	}
-	if (Object.keys(res_obj).length > 0) res.status(200); // OK
+	if (res_obj!= null) res.status(200); // OK
 	else res.status(404); // Not found
 	res.json(res_obj);
 });

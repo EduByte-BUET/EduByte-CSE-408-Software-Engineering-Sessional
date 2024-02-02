@@ -63,23 +63,15 @@ function CoursePageRoot() {
             element={<CourseBlocks/>}
           />
           <Route
-            path="/:course_id/blocks/:block_id"
+            path="/lectures"
             element={
-              <LectureInfo
-                courseData={courseData}
-                blockData={blockData}
-                onLectureData={handleLectureData}
-              />
+              <LectureInfo/>
             }
           />
           <Route
-            path="/:course_id/blocks/:block_id/lectures/:lecture_id"
+            path="/lectures/info"
             element={
-              <Lesson
-                courseData={courseData}
-                blockData={blockData}
-                lectureData={lectureData}
-              />
+              <Lesson/>
             }
           />
         </Routes>
