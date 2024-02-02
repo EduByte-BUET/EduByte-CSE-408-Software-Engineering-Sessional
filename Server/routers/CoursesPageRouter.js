@@ -62,14 +62,12 @@ courses_router.route("/").get(async (req, res) => {
 block_router.route("/").get(async (req, res) => {
 	console.log("/courses/blocks GET");
 	const course_id = req.query.course_id;
-	console.log(course_id);
 
-	// A sample json response is given below
 	// Get data from database using block_id
 
 	const blocks_list = await db.getBlockList(course_id);
 
-	if (Object.keys(blocks_list).length > 0) res.status(200); // OK
+	if (blocks_list != null) res.status(200); // OK
 	else res.status(404); // Not found
 	res.json(blocks_list);
 });
@@ -77,24 +75,13 @@ block_router.route("/").get(async (req, res) => {
 lecture_router.route("").get(async (req, res) => {
 	console.log("/courses/blocks/lectures GET");
 	// Get all the lectures under a block
-	const course_id = req.query.course_id;
 	const block_id = req.query.block_id;
-	const lecture_id = req.query.lecture_id;
-	console.log("LectureID: ", lecture_id);
-	console.log("block_id: ", block_id);
 
-	const lectures_list = await db.getLectureList(block_id);
+	const lecture_list = await db.getLectureList(block_id);
 
-	const details_lecture_info = await db.getLectureInfo(lecture_id);
-	console.log(details_lecture_info);
-
-	let res_obj = lectures_list;
-	if (lecture_id !== undefined) {
-		res_obj = details_lecture_info;
-	}
-	if (Object.keys(res_obj).length > 0) res.status(200); // OK
+	if (lecture_list != null) res.status(200); // OK
 	else res.status(404); // Not found
-	res.json(res_obj);
+	res.json(lecture_list);
 });
 
 lesson_router.route("/").get(async (req, res) => {
