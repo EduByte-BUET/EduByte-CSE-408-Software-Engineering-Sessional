@@ -28,7 +28,7 @@ const CourseDetail = () => {
 		if (course !== null) {
 			try {
 				await api.post("/courses/register", { course_id: course_id });
-				navigate(`/courses/${course.course_id}/blocks`);
+				navigate(`/courses/blocks`,{ state: { course_id: course.course_id, course_title: course.course_title } });
 			} catch (err) {
 				console.error(err);
 				alert(

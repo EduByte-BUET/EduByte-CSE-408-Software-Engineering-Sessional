@@ -1,53 +1,21 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { useParams } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import BlockTemp from "./BlockTemp";
 import BlockComponent from "./BlockComponent";
 import api from "../../api/GeneralAPI";
 import { Spinner } from "react-bootstrap";
 
-interface Block {
-	block_id: number;
-	block_name: string;
-	total_lectures: number;
-	total_quizzes: number;
-	lectures: Array<{
-		lecture_id: number;
-		lecture_title: string;
-		duration_minutes: number;
-	}>;
-}
+const CourseBlocks = () => {
+	const location = useLocation();
+	const { course_id, course_title } = location.state;
+	const [course, setCourse] = useState<any>(null);
 
-interface Course {
-	course_id: number;
-	course_name: string;
-	total_lectures: number;
-	total_quizzes: number;
-	blocks: Block[];
-}
-
-interface ApiResponse {
-	status: string;
-	message: string;
-	course: Course;
-}
-interface CourseBlocksProps {
-	onBlockData: (data: { block_id: number; blockName: string }) => void;
-}
-
-const CourseBlocks: React.FC<CourseBlocksProps> = ({ onBlockData }) => {
-	const [course, setCourse] = useState<Course | null>(null);
-	const { course_id } = useParams<Record<string, string>>();
-
-	const handleBlockClick = (block_id: number, blockName: string) => {
-		onBlockData({ block_id: block_id, blockName: blockName });
-	};
 
 	useEffect(() => {
 		const fetchData = async () => {
 			try {
-				const response = await api.getBlockList(course_id);
-				
+				const response = await api.get(`courses/blocks/?course_id=${course_id}`);
 				setCourse(response.data.course);
 				// status: 200
 			} catch (err) {
@@ -55,9 +23,9 @@ const CourseBlocks: React.FC<CourseBlocksProps> = ({ onBlockData }) => {
 				console.error(err);
 			}
 		};
-
+	
 		fetchData();
-	}, [course_id]);
+	}, []);
 
 	if (!course) {
 		return <Spinner />;
@@ -76,13 +44,13 @@ const CourseBlocks: React.FC<CourseBlocksProps> = ({ onBlockData }) => {
 						</p>
 					</div>
 					<div style={{ overflowY: "auto" }}>
-						{course.blocks.map((block,index) => (
+						{course.blocks.map((block:any,index:number) => (
 							<BlockTemp
 								key={block.block_id}
 								course_id={course.course_id}
-								block_id={index+1}
+								block_id={block.block_id}
+								index = {index+1}
 								block_name={block.block_name}
-								onBlockClick={handleBlockClick}
 							/>
 						))}
 					</div>
@@ -94,14 +62,14 @@ const CourseBlocks: React.FC<CourseBlocksProps> = ({ onBlockData }) => {
 						</p>
 					</div>
 					<div style={{ overflowY: "auto" }}>
-						{course.blocks.map((block, index) => (
+						{course.blocks.map((block:any, index:number) => (
 							<BlockComponent
 								key={block.block_id}
 								course_id={course.course_id}
-								block_id={index+1}
+								block_id={block.block_id}
+								index = {index+1}
 								blockName={block.block_name}
 								lectures={block.lectures}
-								onBlockClick={handleBlockClick}
 							/>
 						))}
 					</div>
