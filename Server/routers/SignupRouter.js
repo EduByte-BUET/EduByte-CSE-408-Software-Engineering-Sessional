@@ -48,8 +48,6 @@ router.post("/", async (req, res) => {
 	const hashedPassword = await hashPassword(userInfo.password);
 	userInfo.password = hashedPassword;
 
-	// req.session.userid = username; // This creates a session ID for the user
-
 	try {
 		await db.addUser(userInfo);
 

@@ -1,37 +1,59 @@
-import { Link } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
 
-interface Lecture {
-  lecture_id: number;
-  lecture_title: string;
-}
-
-interface BlockProps {
-  course_id: number;
-  block_id: number;
-  blockName: string;
-  lectures: Lecture[];
-}
-
-interface BlockComponentProps extends BlockProps {
-  onBlockClick: (blockId: number, blockName: string) => void;
-}
-
-const BlockComponent: React.FC<BlockComponentProps> = ({ course_id, block_id, blockName, lectures, onBlockClick }) => {
-  const handleClick = (event: React.MouseEvent) => {
-    onBlockClick(block_id, blockName);
+const BlockComponent = (props: any) => {
+  const {
+    course_id,
+    course_name,
+    block_id,
+    index,
+    blockName,
+    lectures,
+  } = props;
+  const navigate = useNavigate();
+  const handleBlockClick = () => {
+    navigate(`/courses/lectures`, {
+      state: {
+        course_id: course_id,
+        course_name: course_name,
+        block_id: block_id,
+        block_name: blockName,
+        index: index,
+      },
+    });
   };
-
+  const handleLectureClick = (lecture_id: number, lecture_title: string) => {
+    navigate(`/courses/lectures/info`, {
+      state: {
+        course_id: course_id,
+        course_name: course_name,
+        block_id: block_id,
+        block_name: blockName,
+        index: index,
+        lecture_id: lecture_id,
+        lecture_title: lecture_title,
+      },
+    });
+  };
   return (
-    <Link to={`/courses/${course_id}/blocks/${block_id}`} className="custom-link" onClick={handleClick}>
-      <div className="row-border mt-2 rounded p-3 text-start bold-text block-effect">
-        <p>Block {block_id}|{blockName}</p>
-        <ul>
-          {lectures.map((lecture) => (
-            <li key={lecture.lecture_id}>{lecture.lecture_title}</li>
-          ))}
-        </ul>
-      </div>
-    </Link>
+    <div className="row-border mt-2 rounded p-3 text-start bold-text block-effect">
+      <p key={block_id} onClick={handleBlockClick}>
+        Block {index}|{blockName}
+      </p>
+      <ul>
+        {lectures.map((lecture: any) => (
+          <li
+            key={lecture.lecture_id}
+            onClick={handleLectureClick.bind(
+              this,
+              lecture.lecture_id,
+              lecture.title
+            )}
+          >
+            {lecture.title}
+          </li>
+        ))}
+      </ul>
+    </div>
   );
 };
 

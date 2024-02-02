@@ -1,33 +1,12 @@
-// CategoryItem.tsx
-
 import React, { useState } from "react";
 import CourseViewSections from "./CourseViewSections";
 
-interface Course {
-	course_id: number;
-	title: string;
-	author: string;
-	total_lessons: number;
-	description: string;
-}
 
-interface Category {
-	category_id: number;
-	name: string;
-	description: string;
-	courses: Course[];
-}
-
-interface CategoryItemProps {
-	category: Category;
-}
-
-const CategoryItem: React.FC<CategoryItemProps> = ({ category }) => {
+const CategoryItem = (props:any) => {
+	const {category} = props;
 	const [isExpanded, setIsExpanded] = useState(false);
 
 	const handleExpandClick = () => {
-		console.log("ON click print");
-		console.log(category.courses);
 		setIsExpanded(!isExpanded);
 	};
 	// console.log(category.courses);

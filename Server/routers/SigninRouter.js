@@ -13,10 +13,6 @@ router.use("/", signin_router);
 router.use("/logout", logout_router);
 router.use("/bg", bg_router);
 
-// router.use(express.json());
-// signin Credentials
-// Name, Email, Username, Password
-
 async function checkPassword(password, hashedPassword) {
     const match = await bcrypt.compare(password, hashedPassword);
     return match; // true if the passwords match, false otherwise

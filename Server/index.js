@@ -2,8 +2,8 @@ const db = require("./database/db");
 db.connectToDB();
 
 const express = require("express");
-const cors = require('cors')
-const session = require('express-session');
+const cors = require("cors");
+const session = require("express-session");
 
 const app = express();
 
@@ -16,14 +16,16 @@ const exam_page_router = require("./routers/ExamPageRouter");
 const discussion_page_router = require("./routers/DiscussionPageRouter");
 const content_create_router = require("./routers/ContentCreateRouter");
 
-app.use(session({
-  secret: 'your secret key',
-  resave: false,
-  saveUninitialized: true,
-  cookie: { secure: true, maxAge: 24 * 60 * 60 * 1000 } // 24 hours
-}));
+app.use(
+	session({
+		secret: "your secret key",
+		resave: false,
+		saveUninitialized: true,
+		cookie: { secure: true, maxAge: 24 * 60 * 60 * 1000 }, // 24 hours
+	})
+);
 
-app.use(cors()) // Use this after the variable declaration
+app.use(cors()); // Use this after the variable declaration
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 // app.use(express.static('public')); // Getting access to the public directory
@@ -35,10 +37,10 @@ app.use("/courses", courses_page_router);
 app.use("/home", home_page_router);
 app.use("/exam", exam_page_router);
 app.use("/discussion", discussion_page_router);
-app.use("/content_create", content_create_router);
+app.use("/content-create", content_create_router);
 
 app.listen(3000, () => {
-  db.createTables(); // Initialize the db when the server starts
-  
-  console.log("Listening on server: 3000");
+	db.createTables(); // Initialize the db when the server starts
+
+	console.log("Listening on server: 3000");
 });
