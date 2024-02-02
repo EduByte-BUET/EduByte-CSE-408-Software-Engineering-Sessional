@@ -105,7 +105,6 @@ const createBlocksTable = async () => {
 		CREATE TABLE IF NOT EXISTS blocks (
 			block_id SERIAL PRIMARY KEY,
 			course_id INT REFERENCES courses(course_id),
-			serial_no INT,
 			title VARCHAR(255) NOT NULL,
 			description TEXT,
 			is_live BOOLEAN DEFAULT FALSE,
@@ -133,11 +132,11 @@ const createLectureTable = async () => {
 			lecture_id SERIAL PRIMARY KEY,
 			block_id INT REFERENCES blocks(block_id),
 			title VARCHAR(255) NOT NULL,
-			serial_no INT,
 			description TEXT,                                                      -- Main content of the lecture
 			is_live BOOLEAN DEFAULT FALSE,
 			created_at TIMESTAMP WITHOUT TIME ZONE DEFAULT NOW(),
-			updated_at TIMESTAMP WITHOUT TIME ZONE		
+			updated_at TIMESTAMP WITHOUT TIME ZONE,
+			last_access TIMESTAM WITHOUT TIME ZONE
 		);
 		`, (err, res) => {
 			if (err) {
@@ -158,9 +157,7 @@ const createLessonTable = async () => {
 		CREATE TABLE IF NOT EXISTS lessons (
 			lesson_id SERIAL PRIMARY KEY,
 			lecture_id INT REFERENCES lectures(lecture_id),
-			creator_id INT REFERENCES content_creator(creator_id),
-			serial_no INT,
-		
+			creator_id INT REFERENCES content_creator(creator_id),		
 			title VARCHAR(255) NOT NULL,
 			description TEXT,                                                          -- Main content of the lesson,
 			duration INT,                                                            -- Duration of the lesson (e.g., in minutes)
@@ -239,7 +236,7 @@ const createQuizTable = async () => {
         `
         CREATE TABLE IF NOT EXISTS quizzes (
             quiz_id SERIAL PRIMARY KEY,
-            lesson_id INT REFERENCES lessons(lesson_id),
+            lecture_id INT REFERENCES lessons(lesson_id),
             quiz_title VARCHAR(255) NOT NULL,
             quiz_description TEXT,
             quiz_type VARCHAR(100),                                                 -- 'graded', 'ungraded'
