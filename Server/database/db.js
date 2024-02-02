@@ -101,31 +101,30 @@ const getUser = async (username) => {
 
 const getPopularCourses = async () => {
 	try {
-	  const res = await pool.query(
-		"SELECT c.* FROM courses c ORDER BY total_enrolled DESC;"
-	  );
-	  if (res.rows[0]) {
-		return res.rows.map(row => {
-		  // convert the row object to a popular course object
-		  const course = {
-			course_id: row.course_id,
-			course_title: row.course_title,
-			thumbnail_url: row.thumbnail_url,
-			difficulty_level: row.difficulty_level,
-			category: row.category,
-			total_enrolled: row.total_enrolled,
-			total_lessons: row.total_lessons
-		  };
-		  console.log(course);
-		  return course;
-		});
-	  }
-	  return null;
+		const res = await pool.query(
+			"SELECT c.* FROM courses c ORDER BY total_enrolled DESC;"
+		);
+		if (res.rows[0]) {
+			return res.rows.map((row) => {
+				// convert the row object to a popular course object
+				const course = {
+					course_id: row.course_id,
+					course_title: row.course_title,
+					thumbnail_url: row.thumbnail_url,
+					difficulty_level: row.difficulty_level,
+					category: row.category,
+					total_enrolled: row.total_enrolled,
+					total_lessons: row.total_lessons,
+				};
+				console.log(course);
+				return course;
+			});
+		}
+		return null;
 	} catch (err) {
-	  console.log(err);
+		console.log(err);
 	}
-  };
-  
+};
 
 const getCourse = async (course_id) => {
 	try {
@@ -187,12 +186,11 @@ const getCategories = async () => {
 		}
 
 		return categories;
-	}
-	catch (err) {
+	} catch (err) {
 		console.log(err);
 		return null;
 	}
-}
+};
 
 const getRecommendedCourses = async (user_id) => {
 	try {
@@ -201,11 +199,10 @@ const getRecommendedCourses = async (user_id) => {
 			[user_id]
 		);
 		return res.rows;
-	}
-	catch (err) {
+	} catch (err) {
 		console.log(err);
 	}
-}
+};
 
 // registerToCourse(user_id, course_id, enroll_date, enrollment_status, last_activity)
 const registerToCourse = async (
@@ -228,7 +225,6 @@ const registerToCourse = async (
 	}
 };
 
-// Function to get the blocks and lectures for a course
 const getBlockList = async (course_id) => {
 	try {
 		const courseResult = await pool.query(
@@ -284,8 +280,7 @@ const getBlockList = async (course_id) => {
 		return null;
 	}
 };
-  
-// Function to get the lectures and lessons for a block
+
 const getLectureList = async (block_id) => {
 	try {
 		const blockResult = await pool.query(
@@ -333,131 +328,129 @@ const getLectureList = async (block_id) => {
 };
 
 
-// Function to get the detailed lecture information
-const getLectureInfo = async (lecture_id) => {
+const getLessonList = async (lecture_id) => {
 	try {
-	  // Query to fetch the data from the tables
-	  const res = await pool.query(
-		`SELECT
-		  l.lecture_id,
-		  l.title AS lecture_title,
-		  l.description,
-		  ls.lesson_id,
-		  ls.lesson_type,
-		  ls.title AS lesson_title,
-		  ls.description AS lesson_description,
-		  ls.file_url
-		FROM lectures l
-		JOIN lessons ls ON l.lecture_id = ls.lecture_id
-		WHERE l.lecture_id = $1
-		ORDER BY
-		  ls.serial_no`,
-		[lecture_id]
-	  );
-	  console.log("Lecture id: ", lecture_id);
-  
-	  // Check if the query returned any rows
-	  if (res.rowCount > 0) {
-		// Initialize an empty object to store the lecture data
-		const lecture = {};
-  
-		// Loop through the rows of the query result
-		for (let row of res.rows) {
-		  // If the lecture_id is not in the lecture object, add it and other lecture details
-		  if (!lecture.lecture_id) {
-			lecture.lecture_id = row.lecture_id;
-			lecture.lecture_title = row.lecture_title;
-			lecture.description = row.description;
-			lecture.lessons = []; // Initialize an empty array to store the lessons
-		  }
-  
-		  // Find the index of the lesson with the same lesson_id as the row
-		  let lessonIndex = lecture.lessons.findIndex(
-			(lesson) => lesson.lesson_id === row.lesson_id
-		  );
-  
-		  // If the lesson is not in the lecture object, add it and other lesson details
-		  if (lessonIndex === -1) {
-			lecture.lessons.push({
-			  lesson_id: row.lesson_id,
-			  lesson_type: row.lesson_type,
-			  lesson_title: row.lesson_title,
-			  lesson_description: row.lesson_description,
-			  file_url: row.file_url,
-			});
-		  }
-		}
-  
-		// Create the object to return
-		const details_lecture_info = {
-		  status: "success",
-		  message: "Detailed lecture information retrieved successfully.",
-		  lecture: lecture,
-		};
-  
-		return details_lecture_info;
-	  } else {
-		// If the query returned no rows, return null
-		return null;
-	  }
-	} catch (err) {
-	  // If there is an error, log it and return null
-	  console.log(err);
-	  return null;
-	}
-  };
-
-  const markLesson = async (user_id, course_id, lesson_id) => {
-	try {
-	  const result = await pool.query(
-		`SELECT * FROM course_progress WHERE user_id = $1 AND course_id = $2;`,
-		[user_id, course_id]
-	  );
-  
-	  if (result.rows.length === 0) {
-		// If the user_id and course_id do not exist, insert a new row
-		await pool.query(
-		  `INSERT INTO course_progress (user_id, course_id, lesson_id) VALUES ($1, $2, ARRAY[$3::integer]);`,
-		  [user_id, course_id, lesson_id]
+		const res = await pool.query(
+		    `SELECT
+			l.lecture_id,
+			l.title AS lecture_title,
+			l.description,
+			ls.lesson_id,
+			ls.lesson_type,
+			ls.title AS lesson_title,
+			ls.description AS lesson_description,
+			ls.file_url
+			FROM lectures l
+			JOIN lessons ls ON l.lecture_id = ls.lecture_id
+			WHERE l.lecture_id = $1
+			ORDER BY
+			ls.serial_no`,
+			[lecture_id]
 		);
-		console.log("New row inserted");
-		return "success";
-	  } else {
-		// If the user_id and course_id exist, update the row
-		const oldLessonIds = result.rows[0].lesson_id;
-		await pool.query(
-		  `UPDATE course_progress
+		console.log("Lecture id: ", lecture_id);
+
+		// Check if the query returned any rows
+		if (res.rowCount > 0) {
+			// Initialize an empty object to store the lecture data
+			const lecture = {};
+
+			// Loop through the rows of the query result
+			for (let row of res.rows) {
+				// If the lecture_id is not in the lecture object, add it and other lecture details
+				if (!lecture.lecture_id) {
+					lecture.lecture_id = row.lecture_id;
+					lecture.lecture_title = row.lecture_title;
+					lecture.description = row.description;
+					lecture.lessons = []; // Initialize an empty array to store the lessons
+				}
+
+				// Find the index of the lesson with the same lesson_id as the row
+				let lessonIndex = lecture.lessons.findIndex(
+					(lesson) => lesson.lesson_id === row.lesson_id
+				);
+
+				// If the lesson is not in the lecture object, add it and other lesson details
+				if (lessonIndex === -1) {
+					lecture.lessons.push({
+						lesson_id: row.lesson_id,
+						lesson_type: row.lesson_type,
+						lesson_title: row.lesson_title,
+						lesson_description: row.lesson_description,
+						file_url: row.file_url,
+					});
+				}
+			}
+
+			// Create the object to return
+			const details_lecture_info = {
+				status: "success",
+				message: "Detailed lecture information retrieved successfully.",
+				lecture: lecture,
+			};
+
+			return details_lecture_info;
+		} else {
+			// If the query returned no rows, return null
+			return null;
+		}
+	} catch (err) {
+		// If there is an error, log it and return null
+		console.log(err);
+		return null;
+	}
+};
+
+const markLesson = async (user_id, course_id, lesson_id) => {
+	try {
+		const result = await pool.query(
+			`SELECT * FROM course_progress WHERE user_id = $1 AND course_id = $2;`,
+			[user_id, course_id]
+		);
+
+		if (result.rows.length === 0) {
+			// If the user_id and course_id do not exist, insert a new row
+			await pool.query(
+				`INSERT INTO course_progress (user_id, course_id, lesson_id) VALUES ($1, $2, ARRAY[$3::integer]);`,
+				[user_id, course_id, lesson_id]
+			);
+			console.log("New row inserted");
+			return "success";
+		} else {
+			// If the user_id and course_id exist, update the row
+			const oldLessonIds = result.rows[0].lesson_id;
+			await pool.query(
+				`UPDATE course_progress
 		  SET lesson_id = ARRAY(SELECT DISTINCT UNNEST(lesson_id || ARRAY[$3::integer]))
 		  WHERE user_id = $1 AND course_id = $2;`,
-		  [user_id, course_id, lesson_id]
-		);
-  
-		const updatedResult = await pool.query(
-		  `SELECT * FROM course_progress WHERE user_id = $1 AND course_id = $2;`,
-		  [user_id, course_id]
-		);
-		const newLessonIds = updatedResult.rows[0].lesson_id;
-  
-		if (oldLessonIds.length === newLessonIds.length) {
-		  console.log("Duplicate lesson_id, no update made");
-		  return "";
-		} else {
-		  console.log("Lesson marked successfully");
-		  return "success";
+				[user_id, course_id, lesson_id]
+			);
+
+			const updatedResult = await pool.query(
+				`SELECT * FROM course_progress WHERE user_id = $1 AND course_id = $2;`,
+				[user_id, course_id]
+			);
+			const newLessonIds = updatedResult.rows[0].lesson_id;
+
+			if (oldLessonIds.length === newLessonIds.length) {
+				console.log("Duplicate lesson_id, no update made");
+				return "";
+			} else {
+				console.log("Lesson marked successfully");
+				return "success";
+			}
 		}
-	  }
 	} catch (err) {
-	  console.log(err);
-	  return "";
+		console.log(err);
+		return "";
 	}
-  }
-  
+};
+
 // Function to get the courses data for a user
 const getMyCoursesData = async (user_id) => {
 	try {
-	  // Query to fetch the data from the tables
-	  const res = await pool.query(
-		`SELECT
+		// Query to fetch the data from the tables
+		const res = await pool.query(
+			`SELECT
 		  c.course_id,
 		  c.course_title,
 		  array_length(cp.lesson_id, 1) as lesson_count,
@@ -471,44 +464,43 @@ const getMyCoursesData = async (user_id) => {
 		  c.total_lessons
 		ORDER BY
 		  c.course_id`,
-		[user_id]
-	  );
-  
-	  // Check if the query returned any rows
-	  if (res.rowCount > 0) {
-		// Initialize an empty array to store the courses data
-		const coursesData = [];
-  
-		// Loop through the rows of the query result
-		for (let row of res.rows) {
-		  // Add the course data to the array
-		  coursesData.push({
-			course_id: row.course_id,
-			course_title: row.course_title,
-			lessons_completed: row.lesson_count,
-			total_lessons: row.total_lessons,
-		  });
+			[user_id]
+		);
+
+		// Check if the query returned any rows
+		if (res.rowCount > 0) {
+			// Initialize an empty array to store the courses data
+			const coursesData = [];
+
+			// Loop through the rows of the query result
+			for (let row of res.rows) {
+				// Add the course data to the array
+				coursesData.push({
+					course_id: row.course_id,
+					course_title: row.course_title,
+					lessons_completed: row.lesson_count,
+					total_lessons: row.total_lessons,
+				});
+			}
+
+			// Create the object to return
+			const courses_list = {
+				status: "success",
+				message: "Courses data for the user retrieved successfully.",
+				coursesData: coursesData,
+			};
+
+			return courses_list;
+		} else {
+			// If the query returned no rows, return null
+			return null;
 		}
-  
-		// Create the object to return
-		const courses_list = {
-		  status: "success",
-		  message: "Courses data for the user retrieved successfully.",
-		  coursesData: coursesData,
-		};
-  
-		return courses_list;
-	  } else {
-		// If the query returned no rows, return null
-		return null;
-	  }
 	} catch (err) {
-	  // If there is an error, log it and return null
-	  console.log(err);
-	  return null;
+		// If there is an error, log it and return null
+		console.log(err);
+		return null;
 	}
-  };
-  
+};
 
 module.exports = {
 	createTables,
@@ -522,7 +514,7 @@ module.exports = {
 	registerToCourse,
 	getBlockList,
 	getLectureList,
-	getLectureInfo,
+	getLectureInfo: getLessonList,
 	markLesson,
 	getMyCoursesData,
 	getCategories,
