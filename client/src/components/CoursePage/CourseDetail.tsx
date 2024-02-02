@@ -13,7 +13,7 @@ const CourseDetail = () => {
 	useEffect(() => {
 		const fetchData = async () => {
 			try {
-				console.log("course_id: " + course_id);
+				//console.log("course_id: " + course_id);
 				const response = await api.get(`/courses?course_id=${course_id}`);
 				setCourse(response.data.course);
 			} catch (err) {

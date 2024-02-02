@@ -28,7 +28,7 @@ const CoursesPageHome = () => {
       try {
         const res = await api.get("/courses/popular");
         setPopularCourses(res.data);
-		console.log(res.data);
+		    //console.log(res.data);
       } catch (err) {
         alert("Error occurred. Please try again later.");
       }

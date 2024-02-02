@@ -68,6 +68,7 @@ block_router.route("/").get(async (req, res) => {
 	const blocks_list = await db.getBlockList(course_id);
 	console.log(blocks_list);
 
+
 	if (blocks_list != null) res.status(200); // OK
 	else res.status(404); // Not found
 	res.json(blocks_list);
