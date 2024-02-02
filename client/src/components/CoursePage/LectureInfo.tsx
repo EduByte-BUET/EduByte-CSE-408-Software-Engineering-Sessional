@@ -10,7 +10,7 @@ const LectureInfo = () => {
     course_name,
     block_id,
     block_name,
-    index,
+    block_index,
   } = location.state;
   const [lectureInfo, setLectureInfo] = useState<any>(null);
 
@@ -26,7 +26,8 @@ const LectureInfo = () => {
         course_name: course_name,
         block_id: block_id,
         block_name: block_name,
-        index: index,
+        block_index: block_index,
+        lecture_index: index,
         lecture_id: lecture_id,
         lecture_title: lecture_title,
       },
@@ -38,7 +39,7 @@ const LectureInfo = () => {
       const res = await api.get(
         `courses/blocks/lectures?course_id=${course_id}&block_id=${block_id}`
       );
-      console.log(res.data);
+      //console.log(res.data);
       setLectureInfo(res.data);
     };
 
@@ -56,7 +57,7 @@ const LectureInfo = () => {
           <div className="text-start mt-3">
             <h3>{course_name}</h3>
             <p>
-              <b>| Block {index}</b>
+              <b>| Block {block_index}</b>
             </p>
           </div>
           <div style={{ overflowY: "auto" }}>
@@ -85,7 +86,7 @@ const LectureInfo = () => {
             </p>
             <p>
               <b>
-                Block {index}|{block_name}
+                Block {block_index}|{block_name}
               </b>
             </p>
           </div>
@@ -107,11 +108,11 @@ const LectureInfo = () => {
                 <p>{lecture.description}</p>
                 {lecture.lessons.map((lesson: any) =>
                   lesson.lesson_type === "pdf" ? (
-                    <p>
+                    <p key = {lesson.lesson_id}>
                       <i className="bi bi-file-earmark-text"></i> {lesson.title}
                     </p>
                   ) : (
-                    <p>
+                    <p key = {lesson.lesson_id}>
                       <i className="bi bi-camera-video"></i> {lesson.title}
                     </p>
                   )
