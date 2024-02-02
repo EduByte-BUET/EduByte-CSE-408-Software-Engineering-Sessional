@@ -159,6 +159,16 @@ const getCourse = async (course_id) => {
 	}
 };
 
+const getAllCourses = async () => {
+	try {
+		const res = await pool.query("SELECT course_id, course_title FROM courses");
+		return res.rows; // An array of the courses
+	} catch (err) {
+		console.log(err);
+		return null;
+	}
+};
+
 const getCategories = async () => {
 	try {
 		const categoriesResult = await pool.query("SELECT * FROM categories");
@@ -622,4 +632,5 @@ module.exports = {
 	getMyCoursesData,
 	getCategories,
 	getRecommendedCourses,
+	getAllCourses,
 };
