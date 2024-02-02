@@ -6,16 +6,16 @@ import { useLocation } from "react-router-dom";
 
 const Lesson =() => {
 	const location = useLocation();
-	const {course_id, course_name, block_id, block_name, index, lecture_id, lecture_title} = location.state;
-	const [data, setData] = useState<null>(null);
+	const {course_id, course_name, block_id, block_name, block_index,lecture_index, lecture_id, lecture_title} = location.state;
+	const [data, setData] = useState<any>(null);
 
 	useEffect(() => {
 		const fetchData = async () => {
 			const result = await api.get(
-				`courses/blocks/lectures?course_id=${course_id}&block_id=${block_id}&lecture_id=${lecture_id}`
+				`courses/blocks/lectures/lessons?course_id=${course_id}&block_id=${block_id}&lecture_id=${lecture_id}`
 			);
 			setData(result.data);
-			console.log(result.data);
+			//console.log(result.data);
 		};
 
 		fetchData();
@@ -45,12 +45,12 @@ const Lesson =() => {
 						<h3>{course_name}</h3>
 						<p>
 							<b>
-								| Block {block_id}|Lecture {lecture_id}
+								| Block {block_index}|Lecture {lecture_index}
 							</b>
 						</p>
 					</div>
 					<div style={{ overflowY: "auto" }}>
-						{data.lecture.lessons.map((lesson:any, index:any) => (
+						{data.lessons.map((lesson:any, index:any) => (
 							<div
 								key={lesson.lesson_id}
 								className="row-border mt-2 rounded hover-effect p-3 text-start"
@@ -60,7 +60,7 @@ const Lesson =() => {
 								style={{ cursor: "pointer" }}
 							>
 								<h5>Lesson {index + 1}</h5>
-								<h5>{lesson.lesson_title}</h5>
+								<h5>{lesson.title}</h5>
 								<button
 									type="button"
 									className="btn blue-button w-100"
@@ -80,14 +80,14 @@ const Lesson =() => {
 						</p>
 						<p>
 							<b>
-								Lecture {lecture_id}|{lecture_title}
+								Lecture {lecture_index}|{lecture_title}
 							</b>
 							<br />
-							{data.lecture.description}
+							{data.description}
 						</p>
 					</div>
 					<div style={{ overflowY: "auto" }}>
-						{data.lecture.lessons.map((lesson:any, index:any) => {
+						{data.lessons.map((lesson:any, index:number) => {
 							if (lesson.lesson_type === "pdf") {
 								return (
 									<div
@@ -96,11 +96,11 @@ const Lesson =() => {
 										id={`${index + 1}`}
 									>
 										<p>
-											Lesson {index + 1}|{lesson.lesson_title}
+											Lesson {index + 1}|{lesson.title}
 										</p>
 										<PdfViewer
 											key={lesson.lesson_id}
-											pdf_content={lesson.lesson_content}
+											pdf_content={lesson.description}
 											file_url={lesson.file_url}
 										/>
 									</div>
@@ -113,7 +113,7 @@ const Lesson =() => {
 										id={`${index + 1}`}
 									>
 										<p>
-											Lesson {index + 1}|{lesson.lesson_title}
+											Lesson {index + 1}|{lesson.title}
 										</p>
 										<VideoPlayer videoUrl={lesson.file_url} />
 									</div>
