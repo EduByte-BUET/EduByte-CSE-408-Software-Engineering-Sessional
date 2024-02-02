@@ -21,14 +21,15 @@ const BlockComponent = (props: any) => {
       },
     });
   };
-  const handleLectureClick = (lecture_id: number, lecture_title: string) => {
+  const handleLectureClick = (lecture_index:number, lecture_id: number, lecture_title: string) => {
     navigate(`/courses/lectures/info`, {
       state: {
         course_id: course_id,
         course_name: course_name,
         block_id: block_id,
         block_name: blockName,
-        index: index,
+        block_index:index,
+        lecture_index: lecture_index,
         lecture_id: lecture_id,
         lecture_title: lecture_title,
       },
@@ -40,14 +41,16 @@ const BlockComponent = (props: any) => {
         Block {index}|{blockName}
       </p>
       <ul>
-        {lectures.map((lecture: any) => (
+        {lectures.map((lecture: any,index:number) => (
           <li
             key={lecture.lecture_id}
             onClick={handleLectureClick.bind(
               this,
+              index+1,
               lecture.lecture_id,
               lecture.title
             )}
+            style={{ cursor: "pointer", marginTop: "5px"}}
           >
             {lecture.title}
           </li>
