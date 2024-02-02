@@ -6,56 +6,47 @@ const lecture_router = express.Router();
 const lesson_router = express.Router();
 const register_to_course_router = express.Router();
 const lesson_marked_router = express.Router();
-const store_video_file = express.Router();
-const store_pdf_file = express.Router();
 const category_router = express.Router();
 const popular_course_router = express.Router();
 const recommended_course_router = express.Router();
 
 const db = require("../database/db");
-const fs = require("fs");
 
 router.use("/categories", category_router);
 router.use("/popular", popular_course_router);
 router.use("/recommended", recommended_course_router);
-router.use("/", courses_router);
+router.use("/", courses_router); // "/courses?course_id=1"
 router.use("/blocks", block_router);
 router.use("/blocks/lectures", lecture_router);
 router.use("/blocks/lectures/lessons", lesson_router);
 router.use("/marked", lesson_marked_router);
 router.use("/register", register_to_course_router);
-router.use("/store/video", store_video_file);
-router.use("/store/pdf", store_pdf_file);
 
 category_router.route("/").get(async (req, res) => {
 	console.log("/courses/categories GET");
 	// Get all the categories
 	const categories = await db.getCategories();
 	if (categories != null) res.status(200); // OK
-	else res.status(404); 
+	else res.status(404);
 	res.json(categories);
-}
-);
+});
 popular_course_router.route("/").get(async (req, res) => {
 	console.log("/courses/popular GET");
 	// Get all the popular courses
 	const popular_courses = await db.getPopularCourses();
 	if (popular_courses != null) res.status(200); // OK
-	else res.status(404); 
+	else res.status(404);
 	res.json(popular_courses);
-}
-);
-
+});
 
 recommended_course_router.route("/").get(async (req, res) => {
-    console.log("/courses/recommended GET");
-    // Get all the recommended courses
-    const recommended_courses = await db.getRecommendedCourses();
-    if (recommended_courses != null) res.status(200); // OK
-    else res.status(404); 
-    res.json(recommended_courses);
-}
-);
+	console.log("/courses/recommended GET");
+	// Get all the recommended courses
+	const recommended_courses = await db.getRecommendedCourses();
+	if (recommended_courses != null) res.status(200); // OK
+	else res.status(404);
+	res.json(recommended_courses);
+});
 
 courses_router.route("/").get(async (req, res) => {
 	console.log("/courses GET");
@@ -92,65 +83,8 @@ lecture_router.route("").get(async (req, res) => {
 	console.log("LectureID: ", lecture_id);
 	console.log("block_id: ", block_id);
 
-	// lectures_list = {
-	// 	status: "success",
-	// 	message: "Lectures for the block retrieved successfully.",
-	// 	block: {
-	// 		block_id: 101,
-	// 		block_title: "Fundamentals of Programming",
-	// 		total_lectures: 5,
-	// 		total_quizzes: 2,
-	// 	},
-	// 	lectures: [
-	// 		{
-	// 			lecture_id: 1001,
-	// 			lecture_title: "Introduction to Variables",
-	// 			description: "Understanding the basics of variables in programming.",
-	// 			video_title: "Intro_to_Variables_Video",
-	// 			pdf_title: "Intro_to_Variables_Handout",
-	// 		},
-	// 		{
-	// 			lecture_id: 1002,
-	// 			lecture_title: "Control Structures",
-	// 			description: "Exploring control flow in programming.",
-	// 			video_title: "Intro_to_Variables_Video",
-	// 			pdf_title: "Intro_to_Variables_Handout",
-	// 		},
-	// 	],
-	// };
 	const lectures_list = await db.getLectureList(block_id);
-	// console.log(lectures_list);
 
-	// details_lecture_info = {
-	// 	status: "success",
-	// 	message: "Detailed lecture information retrieved successfully.",
-	// 	lecture: {
-	// 		lecture_id: 1001,
-	// 		lecture_title: "Introduction to Variables",
-	// 		description:
-	// 			"This lecture covers the fundamental concepts of variables in programming.",
-	// 		lessons: [
-	// 			{
-	// 				lesson_id: 1,
-	// 				lesson_type: "pdf",
-	// 				lesson_title: "Intro_to_Variables_Handout",
-	// 				description:
-	// 					"A comprehensive handout on the introduction to variables.",
-	// 				file_url:
-	// 					"https://inspirehep.net/files/81d2b60e6d136b097d7a2eb55f2137d9",
-	// 			},
-	// 			{
-	// 				lesson_id: 2,
-	// 				lesson_type: "video",
-	// 				lesson_title: "Intro_to_Variables_Video",
-	// 				description:
-	// 					"Watch the video to grasp the concepts of variables effectively.",
-	// 				file_url:
-	// 					"https://www.youtube.com/embed/JL_grPUnXzY?si=mQtLZnjhMkVBdRGf",
-	// 			},
-	// 		],
-	// 	},
-	// };
 	const details_lecture_info = await db.getLectureInfo(lecture_id);
 	console.log(details_lecture_info);
 
@@ -211,35 +145,32 @@ lesson_router.route("/").get(async (req, res) => {
 	res.json(lessons_list);
 });
 
-register_to_course_router.route("/").post(async (req, res) => {
-	console.log("/courses/register POST");
-	// Register a user to a course
-	const course_id = req.data.course_id; // Get course_id from frontend
-	const enroll_date = new Date();
-	const enrollment_status = "active";
-	const last_activity = new Date();
+register_to_course_router.route("/")
+	.post(async (req, res) => {
+		console.log("/courses/register POST");
+		// Register a user to a course
+		const course_id = req.body.course_id; // Get course_id from frontend
+		const enroll_date = new Date();
+		const enrollment_status = "active";
+		const last_activity = new Date();
 
-	// console.log(req.session.username);
-	// const user = await db.getUser(req.session.username);
-	const user_id = 1;
-	console.log("user_id: ", user_id);
-	console.log("course_id: ", course_id);
+		// console.log(req.session.username);
+		// const user = await db.getUser(req.session.username);
+		const user_id = 1;
+		console.log("user_id: ", user_id);
+		console.log("course_id: ", course_id);
 
-	// CREATE TABLE IF NOT EXISTS enrolled_courses (
-	// 	user_id INT REFERENCES users(user_id),
-	// 	course_id INT REFERENCES courses(course_id),
-	// 	enroll_date TIMESTAMP WITHOUT TIME ZONE DEFAULT NOW(),
-	// 	feedback TEXT,
-	// 	rating DECIMAL(2, 1),
-	// 	enrollment_status VARCHAR(100),                                         -- 'active', 'completed', 'dropped'
-	// 	last_activity TIMESTAMP WITHOUT TIME ZONE,
-	// 	PRIMARY KEY (user_id, course_id)
-	// );
-	const registered = await db.registerToCourse(user_id, course_id, enroll_date, enrollment_status, last_activity);
+		const registered = await db.registerToCourse(
+			user_id,
+			course_id,
+			enroll_date,
+			enrollment_status,
+			last_activity
+		);
 
-	// if (registered.length > 0) res.status(200).send();
-	// else res.status(404).send(); 
-	res.status(200).send();
+		if (registered.length > 0) res.status(200).send();
+		else res.status(404).send();
+		res.status(200).send();
 });
 
 lesson_marked_router.route("/").post(async (req, res) => {
@@ -254,17 +185,6 @@ lesson_marked_router.route("/").post(async (req, res) => {
 	if (marked.length > 0) res.status(200).send();
 	else res.status(404).send();
 	// res.status(200).send();
-});
-
-store_video_file.post("/", async (req, res) => {
-	console.log("/courses/store/video POST");
-
-
-	const writer = fs.createWriteStream(__dirname + "/../videos/" + video_file_name);
-  	res.data.pipe(writer);
-	const video_file = req.files.file;
-	const video_file_name = video_file.name;
-	console.log(video_file_path);
 });
 
 module.exports = router;
