@@ -6,56 +6,47 @@ const lecture_router = express.Router();
 const lesson_router = express.Router();
 const register_to_course_router = express.Router();
 const lesson_marked_router = express.Router();
-const store_video_file = express.Router();
-const store_pdf_file = express.Router();
 const category_router = express.Router();
 const popular_course_router = express.Router();
 const recommended_course_router = express.Router();
 
 const db = require("../database/db");
-const fs = require("fs");
 
 router.use("/categories", category_router);
 router.use("/popular", popular_course_router);
 router.use("/recommended", recommended_course_router);
-router.use("/", courses_router);
+router.use("/", courses_router); // "/courses?course_id=1"
 router.use("/blocks", block_router);
 router.use("/blocks/lectures", lecture_router);
 router.use("/blocks/lectures/lessons", lesson_router);
 router.use("/marked", lesson_marked_router);
 router.use("/register", register_to_course_router);
-router.use("/store/video", store_video_file);
-router.use("/store/pdf", store_pdf_file);
 
 category_router.route("/").get(async (req, res) => {
 	console.log("/courses/categories GET");
 	// Get all the categories
 	const categories = await db.getCategories();
 	if (categories != null) res.status(200); // OK
-	else res.status(404); 
+	else res.status(404);
 	res.json(categories);
-}
-);
+});
 popular_course_router.route("/").get(async (req, res) => {
 	console.log("/courses/popular GET");
 	// Get all the popular courses
 	const popular_courses = await db.getPopularCourses();
 	if (popular_courses != null) res.status(200); // OK
-	else res.status(404); 
+	else res.status(404);
 	res.json(popular_courses);
-}
-);
-
+});
 
 recommended_course_router.route("/").get(async (req, res) => {
-    console.log("/courses/recommended GET");
-    // Get all the recommended courses
-    const recommended_courses = await db.getRecommendedCourses();
-    if (recommended_courses != null) res.status(200); // OK
-    else res.status(404); 
-    res.json(recommended_courses);
-}
-);
+	console.log("/courses/recommended GET");
+	// Get all the recommended courses
+	const recommended_courses = await db.getRecommendedCourses();
+	if (recommended_courses != null) res.status(200); // OK
+	else res.status(404);
+	res.json(recommended_courses);
+});
 
 courses_router.route("/").get(async (req, res) => {
 	console.log("/courses GET");
@@ -93,8 +84,6 @@ lecture_router.route("").get(async (req, res) => {
 	//console.log("LectureID: ", lecture_id);
 	//console.log("block_id: ", block_id);
 	const lectures_list = await db.getLectureList(block_id);
-
-
 	const details_lecture_info = await db.getLectureInfo(lecture_id);
 	console.log(details_lecture_info);
 
@@ -155,6 +144,7 @@ lesson_router.route("/").get(async (req, res) => {
 	res.json(lessons_list);
 });
 
+
 register_to_course_router.route("/").post(async (req, res) => {
 	console.log("/courses/register POST");
 	// Register a user to a course
@@ -198,17 +188,6 @@ lesson_marked_router.route("/").post(async (req, res) => {
 	if (marked.length > 0) res.status(200).send();
 	else res.status(404).send();
 	// res.status(200).send();
-});
-
-store_video_file.post("/", async (req, res) => {
-	console.log("/courses/store/video POST");
-
-
-	const writer = fs.createWriteStream(__dirname + "/../videos/" + video_file_name);
-  	res.data.pipe(writer);
-	const video_file = req.files.file;
-	const video_file_name = video_file.name;
-	console.log(video_file_path);
 });
 
 module.exports = router;
