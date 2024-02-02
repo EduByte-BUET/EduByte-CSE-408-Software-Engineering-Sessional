@@ -90,8 +90,8 @@ lecture_router.route("").get(async (req, res) => {
 	const course_id = req.query.course_id;
 	const block_id = req.query.block_id;
 	const lecture_id = req.query.lecture_id;
-	console.log("LectureID: ", lecture_id);
-	console.log("block_id: ", block_id);
+	//console.log("LectureID: ", lecture_id);
+	//console.log("block_id: ", block_id);
 	const lectures_list = await db.getLectureList(block_id);
 
 
