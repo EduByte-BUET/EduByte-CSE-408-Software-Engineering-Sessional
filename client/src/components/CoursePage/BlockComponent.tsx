@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 interface Lecture {
   lecture_id: number;
@@ -16,22 +16,17 @@ interface BlockComponentProps extends BlockProps {
   onBlockClick: (blockId: number, blockName: string) => void;
 }
 
-const BlockComponent: React.FC<BlockComponentProps> = ({ course_id, block_id, blockName, lectures, onBlockClick }) => {
-  const handleClick = (event: React.MouseEvent) => {
-    onBlockClick(block_id, blockName);
-  };
-
+const BlockComponent = (props:any) => {
+  const {course_id, block_id, index, blockName, lectures} = props;
   return (
-    <Link to={`/courses/${course_id}/blocks/${block_id}`} className="custom-link" onClick={handleClick}>
       <div className="row-border mt-2 rounded p-3 text-start bold-text block-effect">
-        <p>Block {block_id}|{blockName}</p>
+        <p>Block {index}|{blockName}</p>
         <ul>
-          {lectures.map((lecture) => (
+          {lectures.map((lecture:any) => (
             <li key={lecture.lecture_id}>{lecture.lecture_title}</li>
           ))}
         </ul>
       </div>
-    </Link>
   );
 };
 

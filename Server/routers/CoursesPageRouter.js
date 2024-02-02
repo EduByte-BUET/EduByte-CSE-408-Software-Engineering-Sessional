@@ -77,6 +77,7 @@ block_router.route("/").get(async (req, res) => {
 	// Get data from database using block_id
 
 	const blocks_list = await db.getBlockList(course_id);
+	console.log(blocks_list);
 
 	if (Object.keys(blocks_list).length > 0) res.status(200); // OK
 	else res.status(404); // Not found
@@ -214,7 +215,7 @@ lesson_router.route("/").get(async (req, res) => {
 register_to_course_router.route("/").post(async (req, res) => {
 	console.log("/courses/register POST");
 	// Register a user to a course
-	const course_id = req.data.course_id; // Get course_id from frontend
+	const course_id = req.body.course_id; // Get course_id from frontend
 	const enroll_date = new Date();
 	const enrollment_status = "active";
 	const last_activity = new Date();
