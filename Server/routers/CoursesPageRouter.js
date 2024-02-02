@@ -66,6 +66,7 @@ block_router.route("/").get(async (req, res) => {
 	// Get data from database using block_id
 
 	const blocks_list = await db.getBlockList(course_id);
+	console.log(blocks_list);
 
 	if (blocks_list != null) res.status(200); // OK
 	else res.status(404); // Not found
@@ -132,32 +133,36 @@ lesson_router.route("/").get(async (req, res) => {
 	res.json(lessons_list);
 });
 
-register_to_course_router.route("/")
-	.post(async (req, res) => {
-		console.log("/courses/register POST");
-		// Register a user to a course
-		const course_id = req.body.course_id; // Get course_id from frontend
-		const enroll_date = new Date();
-		const enrollment_status = "active";
-		const last_activity = new Date();
 
-		// console.log(req.session.username);
-		// const user = await db.getUser(req.session.username);
-		const user_id = 1;
-		console.log("user_id: ", user_id);
-		console.log("course_id: ", course_id);
+register_to_course_router.route("/").post(async (req, res) => {
+	console.log("/courses/register POST");
+	// Register a user to a course
+	const course_id = req.body.course_id; // Get course_id from frontend
+	const enroll_date = new Date();
+	const enrollment_status = "active";
+	const last_activity = new Date();
 
-		const registered = await db.registerToCourse(
-			user_id,
-			course_id,
-			enroll_date,
-			enrollment_status,
-			last_activity
-		);
+	// console.log(req.session.username);
+	// const user = await db.getUser(req.session.username);
+	const user_id = 1;
+	console.log("user_id: ", user_id);
+	console.log("course_id: ", course_id);
 
-		if (registered.length > 0) res.status(200).send();
-		else res.status(404).send();
-		res.status(200).send();
+	// CREATE TABLE IF NOT EXISTS enrolled_courses (
+	// 	user_id INT REFERENCES users(user_id),
+	// 	course_id INT REFERENCES courses(course_id),
+	// 	enroll_date TIMESTAMP WITHOUT TIME ZONE DEFAULT NOW(),
+	// 	feedback TEXT,
+	// 	rating DECIMAL(2, 1),
+	// 	enrollment_status VARCHAR(100),                                         -- 'active', 'completed', 'dropped'
+	// 	last_activity TIMESTAMP WITHOUT TIME ZONE,
+	// 	PRIMARY KEY (user_id, course_id)
+	// );
+	const registered = await db.registerToCourse(user_id, course_id, enroll_date, enrollment_status, last_activity);
+
+	// if (registered.length > 0) res.status(200).send();
+	// else res.status(404).send(); 
+	res.status(200).send();
 });
 
 lesson_marked_router.route("/").post(async (req, res) => {
