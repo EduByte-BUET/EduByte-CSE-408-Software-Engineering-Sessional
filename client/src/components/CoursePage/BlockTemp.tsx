@@ -10,7 +10,7 @@ const BlockTemp = (props: any) => {
         course_name: course_name,
         block_id: block_id,
         block_name: block_name,
-        index: index,
+        block_index: index,
       },
     });
   };
@@ -19,6 +19,7 @@ const BlockTemp = (props: any) => {
     <div
       className="row-border mt-2 rounded hover-effect p-3 text-start"
       onClick={handleBlockClick}
+      style={{ cursor: "pointer"}}
     >
       <h5>Block {index}</h5>
       <h5>{block_name}</h5>

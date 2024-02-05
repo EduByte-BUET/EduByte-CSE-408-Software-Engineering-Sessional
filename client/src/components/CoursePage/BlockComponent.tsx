@@ -17,7 +17,7 @@ const BlockComponent = (props: any) => {
         course_name: course_name,
         block_id: block_id,
         block_name: blockName,
-        index: index,
+        block_index: index,
       },
     });
   };
@@ -32,6 +32,7 @@ const BlockComponent = (props: any) => {
         lecture_index: lecture_index,
         lecture_id: lecture_id,
         lecture_title: lecture_title,
+        lectureSize: lectures.length,
       },
     });
   };
@@ -40,7 +41,7 @@ const BlockComponent = (props: any) => {
       <p key={block_id} onClick={handleBlockClick}>
         Block {index}|{blockName}
       </p>
-      <ul>
+      <ul style={{ listStyleType: "none" }}>
         {lectures.map((lecture: any,index:number) => (
           <li
             key={lecture.lecture_id}
@@ -52,7 +53,7 @@ const BlockComponent = (props: any) => {
             )}
             style={{ cursor: "pointer", marginTop: "5px"}}
           >
-            {lecture.title}
+            <i className="fas fa-hand-point-right"></i> {lecture.title}
           </li>
         ))}
       </ul>
