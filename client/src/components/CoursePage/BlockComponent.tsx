@@ -1,32 +1,63 @@
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
 
-interface Lecture {
-  lecture_id: number;
-  lecture_title: string;
-}
-
-interface BlockProps {
-  course_id: number;
-  block_id: number;
-  blockName: string;
-  lectures: Lecture[];
-}
-
-interface BlockComponentProps extends BlockProps {
-  onBlockClick: (blockId: number, blockName: string) => void;
-}
-
-const BlockComponent = (props:any) => {
-  const {course_id, block_id, index, blockName, lectures} = props;
+const BlockComponent = (props: any) => {
+  const {
+    course_id,
+    course_name,
+    block_id,
+    index,
+    blockName,
+    lectures,
+  } = props;
+  const navigate = useNavigate();
+  const handleBlockClick = () => {
+    navigate(`/courses/lectures`, {
+      state: {
+        course_id: course_id,
+        course_name: course_name,
+        block_id: block_id,
+        block_name: blockName,
+        block_index: index,
+      },
+    });
+  };
+  const handleLectureClick = (lecture_index:number, lecture_id: number, lecture_title: string) => {
+    navigate(`/courses/lectures/info`, {
+      state: {
+        course_id: course_id,
+        course_name: course_name,
+        block_id: block_id,
+        block_name: blockName,
+        block_index:index,
+        lecture_index: lecture_index,
+        lecture_id: lecture_id,
+        lecture_title: lecture_title,
+        lectureSize: lectures.length,
+      },
+    });
+  };
   return (
-      <div className="row-border mt-2 rounded p-3 text-start bold-text block-effect">
-        <p>Block {index}|{blockName}</p>
-        <ul>
-          {lectures.map((lecture:any) => (
-            <li key={lecture.lecture_id}>{lecture.lecture_title}</li>
-          ))}
-        </ul>
-      </div>
+    <div className="row-border mt-2 rounded p-3 text-start bold-text block-effect">
+      <p key={block_id} onClick={handleBlockClick}>
+        Block {index}|{blockName}
+      </p>
+      <ul style={{ listStyleType: "none" }}>
+        {lectures.map((lecture: any,index:number) => (
+          <li
+            key={lecture.lecture_id}
+            onClick={handleLectureClick.bind(
+              this,
+              index+1,
+              lecture.lecture_id,
+              lecture.title
+            )}
+            style={{ cursor: "pointer", marginTop: "5px"}}
+          >
+            <i className="fas fa-hand-point-right"></i> {lecture.title}
+          </li>
+        ))}
+      </ul>
+    </div>
   );
 };
 

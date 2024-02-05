@@ -366,7 +366,6 @@ const getLessonList = async (lecture_id) => {
 		return null;
 	}
 };
-
 const markLesson = async (user_id, course_id, lesson_id) => {
 	try {
 		const result = await pool.query(

@@ -68,6 +68,7 @@ block_router.route("/").get(async (req, res) => {
 	const blocks_list = await db.getBlockList(course_id);
 	console.log(blocks_list);
 
+
 	if (blocks_list != null) res.status(200); // OK
 	else res.status(404); // Not found
 	res.json(blocks_list);
@@ -95,7 +96,6 @@ lesson_router.route("/").get(async (req, res) => {
 	else res.status(404); // Not found
 	res.json(lesson_list);
 });
-
 
 register_to_course_router.route("/").post(async (req, res) => {
 	console.log("/courses/register POST");
@@ -128,18 +128,5 @@ register_to_course_router.route("/").post(async (req, res) => {
 	res.status(200).send();
 });
 
-lesson_marked_router.route("/").post(async (req, res) => {
-	console.log("/courses/marked POST");
-	// Mark a lesson as completed
-	const course_id = req.query.course_id; // Get course_id from frontend
-	const lesson_id = req.query.lesson_id; // Get lesson_id from frontend
-	const user_id = 1;
-
-	const marked = await db.markLesson(user_id, course_id, lesson_id);
-
-	if (marked.length > 0) res.status(200).send();
-	else res.status(404).send();
-	// res.status(200).send();
-});
 
 module.exports = router;

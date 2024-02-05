@@ -14,37 +14,6 @@ import Lesson from "./Lesson";
 import "../../css/CoursePage/CoursesPageList.css";
 
 function CoursePageRoot() {
-
-
-    const [courseData, setCourseData] = useState<{
-      course_id: number;
-      courseName: string;
-    } | null>(null);
-
-    const handleCourseData = (data: {
-      course_id: number;
-      courseName: string;
-    }) => {
-      setCourseData(data);
-    };
-    const [blockData, setBlockData] = useState<{
-      block_id: number;
-      blockName: string;
-    } | null>(null);
-    const handleBlockData = (data: { block_id: number; blockName: string }) => {
-      setBlockData(data);
-    };
-    const [lectureData, setLectureData] = useState<{
-      lecture_id: number;
-      lecture_title: string;
-    } | null>(null);
-    const handleLectureData = (data: {
-      lecture_id: number;
-      lecture_title: string;
-    }) => {
-      setLectureData(data);
-    };
-
   return (
     <>
         <Routes>
@@ -63,23 +32,15 @@ function CoursePageRoot() {
             element={<CourseBlocks/>}
           />
           <Route
-            path="/:course_id/blocks/:block_id"
+            path="/lectures"
             element={
-              <LectureInfo
-                courseData={courseData}
-                blockData={blockData}
-                onLectureData={handleLectureData}
-              />
+              <LectureInfo/>
             }
           />
           <Route
-            path="/:course_id/blocks/:block_id/lectures/:lecture_id"
+            path="/lectures/info"
             element={
-              <Lesson
-                courseData={courseData}
-                blockData={blockData}
-                lectureData={lectureData}
-              />
+              <Lesson/>
             }
           />
         </Routes>
