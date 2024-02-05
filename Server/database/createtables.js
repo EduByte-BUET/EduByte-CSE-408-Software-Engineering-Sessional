@@ -132,7 +132,7 @@ const createLectureTable = async () => {
 			lecture_id SERIAL PRIMARY KEY,
 			block_id INT REFERENCES blocks(block_id),
 			title VARCHAR(255) NOT NULL,
-			description TEXT,                                                      -- Main content of the lecture
+			description TEXT,              -- Main content of the lecture
 			is_live BOOLEAN DEFAULT FALSE,
 			created_at TIMESTAMP WITHOUT TIME ZONE DEFAULT NOW(),
 			updated_at TIMESTAMP WITHOUT TIME ZONE,

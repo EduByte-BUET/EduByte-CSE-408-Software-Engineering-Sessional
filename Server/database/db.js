@@ -327,74 +327,41 @@ const getLectureList = async (block_id) => {
 	}
 };
 
-
 const getLessonList = async (lecture_id) => {
 	try {
-		const res = await pool.query(
-		    `SELECT
-			l.lecture_id,
-			l.title AS lecture_title,
-			l.description,
-			ls.lesson_id,
-			ls.lesson_type,
-			ls.title AS lesson_title,
-			ls.description AS lesson_description,
-			ls.file_url
-			FROM lectures l
-			JOIN lessons ls ON l.lecture_id = ls.lecture_id
-			WHERE l.lecture_id = $1
-			ORDER BY
-			ls.serial_no`,
+		const lectureResult = await pool.query(
+			"SELECT l.lecture_id, l.title, l.description, ls.lesson_id, ls.title, ls.description, ls.creator_id, ls.duration, ls.lesson_type, ls.file_url FROM lectures l JOIN lessons ls ON l.lecture_id = ls.lecture_id WHERE l.lecture_id = $1 GROUP BY l.lecture_id, ls.lesson_id ORDER BY ls.lesson_id",
 			[lecture_id]
 		);
-		console.log("Lecture id: ", lecture_id);
+		let lectureRows = lectureResult.rows;
+		let lecture = {};
+		let lessons = [];
 
-		// Check if the query returned any rows
-		if (res.rowCount > 0) {
-			// Initialize an empty object to store the lecture data
-			const lecture = {};
+		for (let i = 0; i < lectureRows.length; i++) {
+			let lectureRow = lectureRows[i];
 
-			// Loop through the rows of the query result
-			for (let row of res.rows) {
-				// If the lecture_id is not in the lecture object, add it and other lecture details
-				if (!lecture.lecture_id) {
-					lecture.lecture_id = row.lecture_id;
-					lecture.lecture_title = row.lecture_title;
-					lecture.description = row.description;
-					lecture.lessons = []; // Initialize an empty array to store the lessons
-				}
-
-				// Find the index of the lesson with the same lesson_id as the row
-				let lessonIndex = lecture.lessons.findIndex(
-					(lesson) => lesson.lesson_id === row.lesson_id
-				);
-
-				// If the lesson is not in the lecture object, add it and other lesson details
-				if (lessonIndex === -1) {
-					lecture.lessons.push({
-						lesson_id: row.lesson_id,
-						lesson_type: row.lesson_type,
-						lesson_title: row.lesson_title,
-						lesson_description: row.lesson_description,
-						file_url: row.file_url,
-					});
-				}
+			if (i === 0) {
+				lecture.lecture_id = lectureRow.lecture_id;
+				lecture.title = lectureRow.title;
+				lecture.description = lectureRow.description;
 			}
-
-			// Create the object to return
-			const details_lecture_info = {
-				status: "success",
-				message: "Detailed lecture information retrieved successfully.",
-				lecture: lecture,
+			let lesson = {
+				lesson_id: lectureRow.lesson_id,
+				title: lectureRow.title,
+				description: lectureRow.description,
+				creator_id: lectureRow.creator_id,
+				duration: lectureRow.duration,
+				lesson_type: lectureRow.lesson_type,
+				file_url: lectureRow.file_url,
 			};
 
-			return details_lecture_info;
-		} else {
-			// If the query returned no rows, return null
-			return null;
+			lessons.push(lesson);
 		}
+
+		lecture.lessons = lessons;
+
+		return lecture;
 	} catch (err) {
-		// If there is an error, log it and return null
 		console.log(err);
 		return null;
 	}
@@ -514,7 +481,7 @@ module.exports = {
 	registerToCourse,
 	getBlockList,
 	getLectureList,
-	getLectureInfo: getLessonList,
+	getLessonList,
 	markLesson,
 	getMyCoursesData,
 	getCategories,

@@ -90,47 +90,10 @@ lesson_router.route("/").get(async (req, res) => {
 	// Get all the lessons under a lecture
 	const lecture_id = req.query.lecture_id;
 
-	lessons_list = {
-		status: "success",
-		message: "Detailed lecture information retrieved successfully.",
-		lecture: {
-			lecture_id: 1001,
-			lecture_title: "Introduction to Variables",
-			author: "Prof. Alice Johnson",
-			content:
-				"This lecture covers the fundamental concepts of variables in programming.",
-			serial: 1,
-			view_count: 500,
-			difficulty: "Intermediate",
-			duration: "30 minutes",
-			creation_time: "2023-02-15T14:30:00Z",
-			lessons: [
-				{
-					lesson_id: 1,
-					lesson_type: "pdf",
-					pdf_id: 2001,
-					lesson_title: "Intro_to_Variables_Handout",
-					lesson_content:
-						"A comprehensive handout on the introduction to variables.",
-					file_url:
-						"https://inspirehep.net/files/81d2b60e6d136b097d7a2eb55f2137d9",
-				},
-				{
-					lesson_id: 2,
-					lesson_type: "video",
-					lesson_title: "Intro_to_Variables_Video",
-					lesson_content:
-						"Watch the video to grasp the concepts of variables effectively.",
-					file_url:
-						"https://www.youtube.com/embed/JL_grPUnXzY?si=mQtLZnjhMkVBdRGf",
-				},
-			],
-		},
-	};
-
-	if (Object.keys(lessons_list).length > 0) res.status(200); // OK
+	const lesson_list = await db.getLessonList(lecture_id);
+	if (lesson_list != null) res.status(200); // OK
 	else res.status(404); // Not found
-	res.json(lessons_list);
+	res.json(lesson_list);
 });
 
 
