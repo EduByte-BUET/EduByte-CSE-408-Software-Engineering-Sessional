@@ -86,6 +86,17 @@ lecture_router.route("").get(async (req, res) => {
 	res.json(lecture_list);
 });
 
+lesson_router.route("/").get(async (req, res) => {
+	console.log("/courses/blocks/lectures/lessons GET");
+	// Get all the lessons under a lecture
+	const lecture_id = req.query.lecture_id;
+
+	const lesson_list = await db.getLessonList(lecture_id);
+	if (lesson_list != null) res.status(200); // OK
+	else res.status(404); // Not found
+	res.json(lesson_list);
+});
+
 register_to_course_router.route("/").post(async (req, res) => {
 	console.log("/courses/register POST");
 	// Register a user to a course
@@ -117,15 +128,5 @@ register_to_course_router.route("/").post(async (req, res) => {
 	res.status(200).send();
 });
 
-lesson_router.route("/").get(async (req, res) => {
-	console.log("/courses/blocks/lectures/lessons GET");
-	// Get all the lessons under a lecture
-	const lecture_id = req.query.lecture_id;
-
-	const lesson_list = await db.getLessonList(lecture_id);
-	if (lesson_list != null) res.status(200); // OK
-	else res.status(404); // Not found
-	res.json(lesson_list);
-});
 
 module.exports = router;

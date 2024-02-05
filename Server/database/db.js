@@ -327,7 +327,6 @@ const getLectureList = async (block_id) => {
 	}
 };
 
-
 const getLessonList = async (lecture_id) => {
 	try {
 		const lectureResult = await pool.query(
