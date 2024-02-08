@@ -31,7 +31,6 @@ signin_router.route("/")
 
     checkPassword(password, hashedPassword).then(match => {
       if (match) {
-        console.log("Successful login", username);
         req.session.username = username;
         
         req.session.save(err => {

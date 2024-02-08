@@ -2,11 +2,22 @@ import React, { useEffect, useState } from "react";
 import api from "../../api/GeneralAPI";
 import PdfViewer from "./PdfViewer";
 import VideoPlayer from "./VideoPlayer";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
-const Lesson =() => {
+const Lesson = () => {
 	const location = useLocation();
-	const {course_id, course_name, block_id, block_name, block_index,lecture_index, lecture_id, lecture_title} = location.state;
+	const navigate = useNavigate();
+	const {
+		course_id,
+		course_name,
+		block_id,
+		block_name,
+		block_index,
+		lecture_index,
+		lecture_id,
+		lecture_title,
+		lectureSize,
+	} = location.state;
 	const [data, setData] = useState<any>(null);
 
 	useEffect(() => {
@@ -19,20 +30,68 @@ const Lesson =() => {
 		};
 
 		fetchData();
-	}, []);
+	}, [course_id, block_id, lecture_id]);
 
 	if (!data) {
 		return <div>Loading...</div>;
 	}
+	const handleNextClick = async () => {
+		const nextLectureIndex = lecture_index + 1;
+		const nextLectureId = lecture_id + 1;
+
+		// Check if the current lecture is the last one
+		if (nextLectureIndex > lectureSize) {
+			// Navigate to the other page
+			try {
+				const res = await api.get(
+					`courses/blocks/lectures?course_id=${course_id}&block_id=${
+						block_id + 1
+					}`
+				);
+
+				if (res.data) {
+					navigate(`/courses/lectures`, {
+						state: {
+							course_id,
+							course_name,
+							block_id: block_id + 1,
+							block_name: res.data.title,
+							block_index: block_index + 1,
+						},
+					});
+				} else {
+					alert("This is the last Block");
+				}
+			} catch (err) {
+				console.error(err);
+				alert("An error occurred while fetching the next block");
+			}
+		} else {
+			navigate(`/courses/lectures/info`, {
+				state: {
+					course_id: course_id,
+					course_name: course_name,
+					block_id: block_id,
+					block_name: block_name,
+					block_index: block_index,
+					lecture_index: nextLectureIndex,
+					lecture_id: nextLectureId,
+					lecture_title: lecture_title,
+					lectureSize: lectureSize,
+				},
+			});
+		}
+	};
 
 	const handleMarkasComplete = async (e: any, lesson_id: number) => {
 		e.preventDefault();
 		try {
-			await api.post(`courses/marked?course_id=${course_id}&lesson_id=${lesson_id}`);
+			await api.get(
+				`courses/marked?course_id=${course_id}&block_id=${block_id}&lecture_id=${lecture_id}&lesson_id=${lesson_id}`
+			);
 			alert("Marked as complete");
 		} catch (err) {
-			console.log(lesson_id);
-			alert("Already marked as complete")
+			alert("Already marked as complete");
 			console.log(err);
 		}
 	};
@@ -50,7 +109,7 @@ const Lesson =() => {
 						</p>
 					</div>
 					<div style={{ overflowY: "auto" }}>
-						{data.lessons.map((lesson:any, index:any) => (
+						{data.lessons.map((lesson: any, index: any) => (
 							<div
 								key={lesson.lesson_id}
 								className="row-border mt-2 rounded hover-effect p-3 text-start"
@@ -64,30 +123,38 @@ const Lesson =() => {
 								<button
 									type="button"
 									className="btn blue-button w-100"
-									onClick={(e) => { handleMarkasComplete(e, lesson.lesson_id); }}
+									onClick={(e) => {
+										handleMarkasComplete(e, lesson.lesson_id);
+									}}
 								>
 									Mark as Completed
 								</button>
 							</div>
 						))}
+						<button
+							type="button"
+							className="btn blue-button w-100 mt-3"
+							onClick={handleNextClick}
+						>
+							Next <i className="fas fa-arrow-right"></i>
+						</button>
 					</div>
 				</div>
 				<div className="col-8 m-2" style={{ overflowY: "auto" }}>
 					<div className="text-start mt-3">
 						<p>
-							<i className="bi bi-house"></i>.{course_name}.
-							{block_name}
+							<i className="fas fa-home"></i>.{course_name}.{block_name}
 						</p>
 						<p>
 							<b>
-								Lecture {lecture_index}|{lecture_title}
+								Lecture {lecture_index}|{data.title}
 							</b>
 							<br />
 							{data.description}
 						</p>
 					</div>
 					<div style={{ overflowY: "auto" }}>
-						{data.lessons.map((lesson:any, index:number) => {
+						{data.lessons.map((lesson: any, index: number) => {
 							if (lesson.lesson_type === "pdf") {
 								return (
 									<div

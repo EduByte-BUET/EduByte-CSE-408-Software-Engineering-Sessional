@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
 import { useLocation } from "react-router-dom";
 import BlockTemp from "./BlockTemp";
 import BlockComponent from "./BlockComponent";
@@ -11,11 +10,12 @@ const CourseBlocks = () => {
 	const { course_id, course_title } = location.state;
 	const [course, setCourse] = useState<any>(null);
 
-
 	useEffect(() => {
 		const fetchData = async () => {
 			try {
-				const response = await api.get(`courses/blocks/?course_id=${course_id}`);
+				const response = await api.get(
+					`courses/blocks/?course_id=${course_id}`
+				);
 				setCourse(response.data);
 				// status: 200
 			} catch (err) {
@@ -23,7 +23,7 @@ const CourseBlocks = () => {
 				console.error(err);
 			}
 		};
-	
+
 		fetchData();
 	}, []);
 
@@ -44,13 +44,13 @@ const CourseBlocks = () => {
 						</p>
 					</div>
 					<div style={{ overflowY: "auto" }}>
-						{course.blocks.map((block:any,index:number) => (
+						{course.blocks.map((block: any, index: number) => (
 							<BlockTemp
 								key={block.block_id}
 								course_id={course_id}
-								course_name = {course_title}
+								course_name={course_title}
 								block_id={block.block_id}
-								index = {index+1}
+								index={index + 1}
 								block_name={block.title}
 							/>
 						))}
@@ -59,17 +59,17 @@ const CourseBlocks = () => {
 				<div className="col-6 m-2" style={{ overflowY: "auto" }}>
 					<div className="text-start mt-3">
 						<p>
-							<i className="bi bi-house"></i>.{course.course_title}
+							<i className="fas fa-home"></i>.{course.course_title}
 						</p>
 					</div>
 					<div style={{ overflowY: "auto" }}>
-						{course.blocks.map((block:any, index:number) => (
+						{course.blocks.map((block: any, index: number) => (
 							<BlockComponent
 								key={block.block_id}
 								course_id={course_id}
-								course_name = {course_title}
+								course_name={course_title}
 								block_id={block.block_id}
-								index = {index+1}
+								index={index + 1}
 								blockName={block.title}
 								lectures={block.lectures}
 							/>

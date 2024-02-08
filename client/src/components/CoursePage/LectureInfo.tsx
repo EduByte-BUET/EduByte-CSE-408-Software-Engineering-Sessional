@@ -14,6 +14,21 @@ const LectureInfo = () => {
   } = location.state;
   const [lectureInfo, setLectureInfo] = useState<any>(null);
 
+  useEffect(() => {
+    const fetchData = async () => {
+      const res = await api.get(
+        `courses/blocks/lectures?course_id=${course_id}&block_id=${block_id}`
+      );
+      //console.log(res.data);
+      setLectureInfo(res.data);
+    };
+
+    fetchData();
+  }, []);
+  let lectureSize = 0;
+  if (lectureInfo && lectureInfo.lectures) {
+  lectureSize = lectureInfo.lectures.length;
+  }
   const navigate = useNavigate();
   const handleLectureClick = (
     index: number,
@@ -30,21 +45,10 @@ const LectureInfo = () => {
         lecture_index: index,
         lecture_id: lecture_id,
         lecture_title: lecture_title,
+        lectureSize: lectureSize,
       },
     });
   };
-
-  useEffect(() => {
-    const fetchData = async () => {
-      const res = await api.get(
-        `courses/blocks/lectures?course_id=${course_id}&block_id=${block_id}`
-      );
-      //console.log(res.data);
-      setLectureInfo(res.data);
-    };
-
-    fetchData();
-  }, []);
 
   if (!lectureInfo) {
     return <Spinner />;
@@ -72,6 +76,7 @@ const LectureInfo = () => {
                   lecture.lecture_id,
                   lecture.title
                 )}
+                style={{ cursor: "pointer" }}
               >
                 <h5>Lecture {index + 1}</h5>
                 <h5>{lecture.title}</h5>
@@ -82,7 +87,7 @@ const LectureInfo = () => {
         <div className="col-6 m-2" style={{ overflowY: "auto" }}>
           <div className="text-start mt-3">
             <p>
-              <i className="bi bi-house"></i>.{course_name}
+              <i className="fas fa-home"></i>.{course_name}
             </p>
             <p>
               <b>
@@ -101,6 +106,7 @@ const LectureInfo = () => {
                   lecture.lecture_id,
                   lecture.title
                 )}
+                style={{ cursor: "pointer" }}
               >
                 <p>
                   Lecture {index + 1}|{lecture.title}
@@ -108,12 +114,12 @@ const LectureInfo = () => {
                 <p>{lecture.description}</p>
                 {lecture.lessons.map((lesson: any) =>
                   lesson.lesson_type === "pdf" ? (
-                    <p key = {lesson.lesson_id}>
-                      <i className="bi bi-file-earmark-text"></i> {lesson.title}
+                    <p key={lesson.lesson_id}>
+                      <i className="fas fa-file-alt"></i> {lesson.title}
                     </p>
                   ) : (
-                    <p key = {lesson.lesson_id}>
-                      <i className="bi bi-camera-video"></i> {lesson.title}
+                    <p key={lesson.lesson_id}>
+                      <i className="fas fa-video"></i> {lesson.title}
                     </p>
                   )
                 )}

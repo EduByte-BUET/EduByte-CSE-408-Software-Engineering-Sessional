@@ -70,7 +70,6 @@ block_router.route("/").get(async (req, res) => {
 	const blocks_list = await db.getBlockList(course_id);
 	console.log(blocks_list);
 
-
 	if (blocks_list != null) res.status(200); // OK
 	else res.status(404); // Not found
 	res.json(blocks_list);
@@ -88,6 +87,17 @@ lecture_router.route("").get(async (req, res) => {
 	res.json(lecture_list);
 });
 
+lesson_router.route("/").get(async (req, res) => {
+	console.log("/courses/blocks/lectures/lessons GET");
+	// Get all the lessons under a lecture
+	const lecture_id = req.query.lecture_id;
+
+	const lesson_list = await db.getLessonList(lecture_id);
+	if (lesson_list != null) res.status(200); // OK
+	else res.status(404); // Not found
+	res.json(lesson_list);
+});
+
 register_to_course_router.route("/").post(async (req, res) => {
 	console.log("/courses/register POST");
 	// Register a user to a course
@@ -102,32 +112,40 @@ register_to_course_router.route("/").post(async (req, res) => {
 	console.log("user_id: ", user_id);
 	console.log("course_id: ", course_id);
 
-	// CREATE TABLE IF NOT EXISTS enrolled_courses (
-	// 	user_id INT REFERENCES users(user_id),
-	// 	course_id INT REFERENCES courses(course_id),
-	// 	enroll_date TIMESTAMP WITHOUT TIME ZONE DEFAULT NOW(),
-	// 	feedback TEXT,
-	// 	rating DECIMAL(2, 1),
-	// 	enrollment_status VARCHAR(100),                                         -- 'active', 'completed', 'dropped'
-	// 	last_activity TIMESTAMP WITHOUT TIME ZONE,
-	// 	PRIMARY KEY (user_id, course_id)
-	// );
-	const registered = await db.registerToCourse(user_id, course_id, enroll_date, enrollment_status, last_activity);
+	const registered = await db.registerToCourse(
+		user_id,
+		course_id,
+		enroll_date,
+		enrollment_status,
+		last_activity
+	);
 
 	// if (registered.length > 0) res.status(200).send();
-	// else res.status(404).send(); 
+	// else res.status(404).send();
 	res.status(200).send();
 });
 
-lesson_router.route("/").get(async (req, res) => {
-	console.log("/courses/blocks/lectures/lessons GET");
-	// Get all the lessons under a lecture
-	const lecture_id = req.query.lecture_id;
+lesson_marked_router.route("/").get(async (req, res) => {
+	console.log("/courses/marked get");
+	// Mark a lesson as completed
+	const course_id = req.query.course_id; // Get course_id from frontend
+	const block_id = req.query.block_id; // Get block_id from frontend
+	const lecture_id = req.query.lecture_id; // Get lecture_id from frontend
+	const lesson_id = req.query.lesson_id; // Get lesson_id from frontend
+	const username = req.session.username; // Get user_id from frontend
+	// console.log(req.session);
+	const user = await db.getUser(username);
+	const user_id = user.user_id;
 
-	const lesson_list = await db.getLessonList(lecture_id);
-	if (lesson_list != null) res.status(200); // OK
-	else res.status(404); // Not found
-	res.json(lesson_list);
+	const marked = await db.markLesson(
+		lesson_id,
+		lecture_id,
+		block_id,
+		course_id,
+		user_id
+	);
+	if (marked.length > 0) res.status(200).send();
+	else res.status(404).send();
 });
 
 module.exports = router;
