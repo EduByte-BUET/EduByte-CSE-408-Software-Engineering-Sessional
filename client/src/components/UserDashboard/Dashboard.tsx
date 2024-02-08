@@ -8,20 +8,20 @@ import dashboardapi from "../../api/GeneralAPI";
 import MyCourses from "./MyCourses";
 import RecommendedCourses from "./RecommendedCourses";
 import UserNotification from "./UserNotification";
-
+import RequestCourse from "./RequestCourse";
 const Dashboard = () => {
-  const { currentUser } = React.useContext(UserContext);
-  const navigate = useNavigate();
-  // If user is not logged in, redirect to home page
-  useEffect(() => {
-    if (!currentUser) {
-      console.log(
-        "User is not logged in. Redirecting to home page..."
-      );
-      navigate("/signin");
-      alert ("Please login first");
-    }
-  }, []);
+  // const { currentUser } = React.useContext(UserContext);
+  // const navigate = useNavigate();
+  // // If user is not logged in, redirect to home page
+  // useEffect(() => {
+  //   if (!currentUser) {
+  //     console.log(
+  //       "User is not logged in. Redirecting to home page..."
+  //     );
+  //     navigate("/signin");
+  //     alert ("Please login first");
+  //   }
+  // }, []);
 
   const [coursesData, setCoursesData] = React.useState<any>(null);
   const [recommendedCoursesData, setRecommendedCoursesData] = React.useState<any>(null);
@@ -45,7 +45,7 @@ const Dashboard = () => {
     const handleMyNotification = async () => {
       try {
         console.log(" 1 ");
-        const res = await dashboardapi.get("/dashboard/admin/notifications");
+        const res = await dashboardapi.get("/dashboard/user/notifications");
         console.log(res);
         setNotificationData(res.data.notificationData);
        
@@ -72,6 +72,7 @@ const Dashboard = () => {
             element={<UserNotification notificationData={notificationData} />}
           />
           <Route path="/savedposts" element={<MyCourses />} />
+          <Route path="/request_course" element={<RequestCourse />} />
         </Routes>
       </div>
     </div>

@@ -131,3 +131,278 @@
   background-color: #007bff;
   color: #fff;
 }
+
+/* content creator profile detail */
+/* Apply CSS to enhance the visual appearance of the profile page */
+.ccreator-profile .card-img-top {
+  height: 250px;
+  object-fit: cover;
+}
+
+.ccreator-profile h2,
+.ccreator-profile h3,
+.ccreator-profile h4,
+.ccreator-profile h5 {
+  color: #0056b3; /* A shade of blue for headings */
+}
+
+.ccreator-profile .list-group-item {
+  border-left: 3px solid #007bff; /* Add a blue border to the left of list items for emphasis */
+}
+
+.ccreator-profile .badge {
+  font-size: 1em; /* Larger badges for better visibility */
+}
+
+.ccreator-profile blockquote {
+  padding-left: 1em;
+  border-left: 5px solid #eee; /* Stylish blockquote for reviews */
+}
+
+.ccreator-profile .btn-outline-primary {
+  border-color: #007bff;
+  color: #007bff;
+}
+
+.ccreator-profile .btn-outline-primary:hover {
+  background-color: #007bff;
+  color: #fff;
+}
+
+/* //  course request by user// */
+/* Base settings */
+.request-course-container {
+  max-width: 800px;
+  margin: 40px auto;
+  padding: 30px;
+  background-color: #fff; /* Light background to keep it clean */
+  border-radius: 15px; /* Soft rounded corners */
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; /* Modern, readable font */
+}
+
+.request-course-container h2 {
+  color: #0056b3; /* Deep, rich blue for contrast and emphasis */
+  margin-bottom: 25px; /* Spacing below the title for better visual separation */
+  text-align: center; /* Center-align the title for focus */
+  font-weight: 600; /* Slightly bolder for prominence */
+}
+
+/* Styling for form rows */
+.request-form-row {
+  display: flex;
+  margin-bottom: 15px; /* Tighter spacing for a compact form */
+  align-items: center; /* Vertically center labels and inputs */
+}
+
+.request-form-row label {
+  flex: 0 0 200px; /* Fixed width for labels for consistency */
+  text-align: center; /* Center-align labels for a balanced, column-like appearance */
+  margin-right: 50px; /* Space between label and input for clarity */
+  color: #007bff; /* Bold blue color for pop and readability */
+  font-weight: bold; /* Bold weight for distinction */
+  font-size: 16px; /* Slightly larger font size for visibility */
+  background-color: #fffcfc; /* Subtle background color to highlight the label area */
+  padding: 5px 10px; /* Padding for a more button-like appearance */
+  border-radius: 5px; /* Rounded corners for a modern, friendly look */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Soft shadow for depth */
+  transition: transform 0.3s ease, box-shadow 0.3s ease; /* Smooth transition for interaction */
+  margin-top: -20px;
+}
+
+/* Input fields and text areas */
+.request-form-row input[type="email"],
+.request-form-row input[type="text"],
+.request-form-row textarea {
+  padding: 8px 12px; /* Adequate padding for ease of entry */
+  border-radius: 5px; /* Gentle rounded corners for a modern look */
+  border: 1px solid #ccc; /* Subtle border */
+  font-size: 14px; /* Comfortable text size */
+  width: 60%;
+}
+
+/* Specifically targeting text areas to shrink them */
+.request-form-row textarea {
+  height: 80px; /* Reduced height for text areas */
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .request-form-row {
+    flex-direction: column; /* Stack label and input vertically on smaller screens */
+    align-items: stretch; /* Stretch items to fill width */
+  }
+
+  .request-form-row label {
+    text-align: left; /* Align labels to start on smaller screens */
+    margin-bottom: 5px; /* Space between label and input */
+  }
+}
+/* /modal in request course/ */
+
+.request-btn-primary {
+  background-color: #0056b3; /* Custom primary color */
+  border: none; /* Remove default border */
+  border-radius: 20px; /* Rounded button edges */
+}
+
+.request-btn-close {
+  background: none;
+  color: #000;
+  opacity: 1;
+}
+
+/* admin course request review */
+.review-requests {
+  background-color: #ffffff; /* Light background for the container */
+  padding: 20px;
+  border-radius: 10px; /* Rounded corners for the container */
+  box-shadow: 0 0 15px rgba(255, 16, 16, 0.1); /* Subtle shadow for depth */
+}
+
+.review-requests h2 {
+  color: #0056b3; /* Deep, rich blue for the heading */
+  margin-bottom: 30px; /* Adequate spacing below the heading */
+}
+
+.request-table {
+  background-color: #ffffff; /* White background for the table */
+  border-radius: 5px; /* Rounded corners for the table */
+  overflow: hidden; /* Ensures the rounded corners are visible */
+}
+
+.request-table th,
+.request-table td {
+  vertical-align: middle; /* Center content vertically in table cells */
+
+  line-height: 2.5; /* Adjust line height for more vertical space if needed */
+}
+
+.btn-success,
+.btn-danger {
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow for buttons */
+}
+
+.btn-success:hover {
+  background-color: #218838; /* Darker green on hover */
+}
+
+.btn-danger:hover {
+  background-color: #c82333; /* Darker red on hover */
+}
+
+/* site statistics */
+
+.site-statistics {
+  padding: 20px;
+  max-width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.site-statistics h2 {
+  margin-bottom: 30px;
+  color: #17a2b8; /* A vibrant color for the main heading */
+}
+
+.statistics-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px;
+  width: 100%;
+  max-width: 1200px;
+}
+
+.stat-category {
+  background-color: #ffffff; /* Bright white background for contrast */
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 5px 15px #ff9a9a26; /* Enhanced shadow for depth */
+}
+
+.stat-category h3 {
+  margin-bottom: 25px;
+  color: #007bff; /* Primary color for category titles */
+  font-size: 20px; /* Slightly larger font size for emphasis */
+  font-weight: bold;
+}
+
+.stat-detail h6 {
+  font-weight: 600;
+  color: #343a40; /* Dark color for contrast and readability */
+  margin-bottom: 5px;
+}
+
+.stat-detail p {
+  font-size: 18px; /* Increased font size for value readability */
+  margin-bottom: 10px;
+  color: #17a2b8; /* A vibrant color for the statistics to make them pop */
+  font-weight: bold; /* Bold font weight for the values to stand out */
+}
+.stat-category-header {
+  background-color: #007bff; /* Choose a color that contrasts well with your page background */
+  color: #ffffff; /* White text for better readability against the darker background */
+  padding: 10px 15px; /* Add some padding for spacing around the text */
+  border-radius: 5px; /* Slightly rounded corners for a modern look */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Optional: subtle shadow for depth */
+  display: inline-block; /* Makes the background only as wide as the text */
+  margin-bottom: 15px; /* Space below the header */
+}
+
+
+/* AdminAllCoursesDashboard.css */
+
+.admin-allcourses-card {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border: none;
+  border-radius: 10px;
+  overflow: hidden;
+  transition: transform 0.3s ease-in-out;
+  height: auto;
+}
+
+
+.admin-allcourses-img {
+  height: 160px;
+  object-fit: cover;
+}
+
+.admin-allcourses-title {
+  font-size: 1.25rem;
+  color: #333;
+  margin-bottom: 0.5rem;
+}
+
+
+.admin-allcourses-text {
+ 
+ font-size: 0.9rem;
+  color: #555;
+
+   display: -webkit-box;
+  -webkit-line-clamp: 2; /* Limit text to 2 lines */
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.2em; /* Adjust based on your design */
+  max-height: 2.4em; /* This should be line-height * number of lines you want to show */
+}
+
+
+.admin-allcourses-footer {
+  background-color: white;
+  border-top: 0;
+}
+
+.admin-allcourses-btn {
+  background-color: #007bff;
+  border: none;
+  width: 100%;
+  padding: 0.5rem;
+  transition: background-color 0.2s ease-in-out;
+}
+
+.admin-allcourses-btn:hover {
+  background-color: #0056b3;
+}

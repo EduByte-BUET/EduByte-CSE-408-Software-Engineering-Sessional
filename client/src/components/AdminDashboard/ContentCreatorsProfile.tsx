@@ -3,7 +3,10 @@ import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import { NavLink, Link } from "react-router-dom";
 import "../../css/dashboard.css";
 import newimage from "../../assets/hero-img.png";
+import { useNavigate } from "react-router-dom";
+
 const ContentCreatorsProfile = () => {
+
   const profiles = [
     {
       name: "Jenny Wilson",
@@ -62,13 +65,16 @@ const ContentCreatorsProfile = () => {
     // ... add more profiles as needed
   ];
 
+const navigate = useNavigate();
+
+
   return (
     <div className="col-md-8 col-lg-9">
       <div className=" justify-content-between align-items-center py-3">
         {/* Add SortBy and SearchBar components */}
       </div>
       <div
-        className="courses-container"
+        className="container"
         style={{ height: "640px", overflowY: "auto" }}
       >
         <div className="container py-5">
@@ -101,7 +107,7 @@ const ContentCreatorsProfile = () => {
                       </span>
                     </p>
                     <p>{profile.bio}</p>
-                    <button className="btn btn-outline-primary btn-sm">
+                    <button className="btn btn-outline-primary btn-sm" onClick={() => navigate('/admin/dashboard/content_creators/info')}>
                       View Details
                     </button>
                   </div>

@@ -13,6 +13,10 @@ import dashboardapi from "../../api/GeneralAPI";
 import AdminNotification from "./AdminNotification";
 import AdminProfile from "./AdminProfile";
 import ContentCreatorsProfile from "./ContentCreatorsProfile";
+import CCreatorDetail from "./CCreatorDetail";
+import CourseRequestsReview from "./CourseRequestsReview";
+import SiteStatistics from "./SiteStatistics";
+import AllCourses from "./AllCourses";
 const Dashboard_admin = () => {
   const { currentUser } = React.useContext(UserContext);
   const navigate = useNavigate();
@@ -31,20 +35,20 @@ const Dashboard_admin = () => {
 
   const [notificationData, setNotificationData] = React.useState<any>(null);
 
-  //  useEffect(() => {
-  //     const handleMyCourses = async () => {
-  //         try {
-  //           const res = await dashboardapi.get("/courses");
-  //           setCoursesData(res.data.coursesData);
-  //         }
-  //         catch (err) {
-  //           console.log(err);
-  //         }
-  //     }
+  // useEffect(() => {
+    //   const handleMyCourses = async () => {
+    //       try {
+    //         const res = await dashboardapi.get("/courses");
+    //         setCoursesData(res.data.coursesData);
+    //       }
+    //       catch (err) {
+    //         console.log(err);
+    //       }
+    //   }
 
-  //     handleMyCourses();
-  //     }
-  //   , []);
+    //   handleMyCourses();
+    //   }
+    // , []);
 
   useEffect(() => {
     const handleMyNotification = async () => {
@@ -67,13 +71,20 @@ const Dashboard_admin = () => {
       <div className="row">
         <AdminProfile />
         <Routes>
-          {/* <Route path="/mycourses" element={<MyCourses coursesData={coursesData} />}  />*/}
-          <Route path="/content_creators" element={<ContentCreatorsProfile />} />
+          <Route path="/allcourses" element={<AllCourses  />}  />
+          <Route
+            path="/content_creators"
+            element={<ContentCreatorsProfile />}
+          />
+          <Route path="/content_creators/info" element={<CCreatorDetail />} />
           <Route
             path="/notifications"
             element={<AdminNotification notificationData={notificationData} />}
           />
           {/* <Route path="/savedposts" element={<MyCourses />} /> */}
+          <Route path="/site_states" element={<SiteStatistics />} />
+
+          <Route path="/review_requests" element={<CourseRequestsReview />} />
         </Routes>
       </div>
     </div>

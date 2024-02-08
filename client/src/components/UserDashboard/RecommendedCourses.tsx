@@ -39,7 +39,7 @@ const RecommendedCourses = () => {
       </div>
       <div
         className="courses-container"
-        style={{ height: "540px", overflowY: "auto" }}
+        style={{ height: "560px", overflowY: "auto" }}
       >
         <div className="courses-list">
           {courses.map((course) => (
@@ -83,6 +83,14 @@ const RecommendedCourses = () => {
             style={{ color: "inherit", textDecoration: "inherit" }}
           >
             Show More Courses <i className="bi bi-arrow-down"></i>
+          </Link>
+        </button>
+        <button className="btn blue-button">
+          <Link
+            to="/user/dashboard/request_course"
+            style={{ color: "inherit", textDecoration: "inherit" }}
+          >
+            Request New Course <i className="bi bi-arrow-down"></i>
           </Link>
         </button>
       </div>

@@ -32,7 +32,7 @@ const AdminProfile = () => {
   };
 
   const handleAllCourses = () => {
-    handleSetActiveLink("/courses");
+    handleSetActiveLink("/allcourses");
   };
 
   const handleContentCreator = () => {
@@ -60,7 +60,7 @@ const AdminProfile = () => {
         <Link
           to="/admin/dashboard/allcourses"
           className={`nav-link dash-navlink ${
-            activeLink === "/courses" ? "active" : ""
+            activeLink === "/allcourses" ? "active" : ""
           }`}
           onClick={handleAllCourses}
         >

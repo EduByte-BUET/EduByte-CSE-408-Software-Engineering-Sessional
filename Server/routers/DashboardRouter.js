@@ -161,6 +161,7 @@ notifications_router.route("/").get(async (req, res) => {
       notificationData: [],
     };
   }
+  
   //  console.log(notifications);
   if (Object.keys(notifications).length  > 0) res.status(200); // OK
   else res.status(400); // Bad Request

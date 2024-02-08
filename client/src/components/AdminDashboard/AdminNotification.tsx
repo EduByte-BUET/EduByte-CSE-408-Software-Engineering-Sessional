@@ -32,7 +32,7 @@ const AdminNotification = (props: any) => {
         {/* Add SortBy and SearchBar components */}
       </div>
       <div
-        className="courses-container"
+        className="container"
         style={{ height: "640px", overflowY: "auto" }}
       >
         <div className="notification-container">
