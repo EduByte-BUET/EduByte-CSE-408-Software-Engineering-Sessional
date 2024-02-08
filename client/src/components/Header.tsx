@@ -1,5 +1,5 @@
 import React from "react";
-import axios from "axios";
+import api from "../api/GeneralAPI";
 import { UserContext } from "./UserContext/UserContext";
 import { Link, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
@@ -14,8 +14,8 @@ function Header() {
 
 	// Getting the logo from the server
 	useEffect(() => {
-		axios
-			.get("http://localhost:3000/home/logo", { responseType: "blob" })
+		api
+			.get("/home/logo", { responseType: "blob" })
 			.then((response) => {
 				var imgURL = URL.createObjectURL(response.data);
 				setLogo(imgURL);
@@ -25,9 +25,7 @@ function Header() {
 
 	return (
 		<Navbar bg="light" expand="lg" className="p-0">
-			<Container
-				className="flex justify-content-between"
-			>
+			<Container className="flex justify-content-between">
 				<Navbar.Brand />
 				{/* Nav.Link ba Link tag use korle full navbar ta link hoye jay, tai onClick{} use korte hoyeche */}
 				<img
@@ -55,13 +53,20 @@ function Header() {
 						Course Upload (Content Creator Only)
 					</Nav.Link>
 
-					{ currentUser ? <Nav.Link as={Link} to="/user/dashboard" className="custom-nav-link">
-						{currentUser} [Logged In]
-					</Nav.Link> : null }
-					{ currentUser==null ? <Nav.Link as={Link} to="/signin" className="custom-nav-link">
-						Signin
-					</Nav.Link> : null }
-
+					{currentUser ? (
+						<Nav.Link
+							as={Link}
+							to="/user/dashboard"
+							className="custom-nav-link"
+						>
+							{currentUser} [Logged In]
+						</Nav.Link>
+					) : null}
+					{currentUser == null ? (
+						<Nav.Link as={Link} to="/signin" className="custom-nav-link">
+							Signin
+						</Nav.Link>
+					) : null}
 				</Nav>
 			</Container>
 		</Navbar>

@@ -32,7 +32,7 @@ const CourseDetail = () => {
 			} catch (err) {
 				console.error(err);
 				alert(
-					"You are already enrolled in this course! or something went wrong"
+					"Kindly login to start the course. If you don't have an account, please sign up first."
 				);
 			}
 		}

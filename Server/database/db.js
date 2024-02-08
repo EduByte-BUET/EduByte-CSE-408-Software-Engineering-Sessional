@@ -366,49 +366,57 @@ const getLessonList = async (lecture_id) => {
 		return null;
 	}
 };
-const markLesson = async (user_id, course_id, lesson_id) => {
-	try {
-		const result = await pool.query(
-			`SELECT * FROM course_progress WHERE user_id = $1 AND course_id = $2;`,
-			[user_id, course_id]
-		);
 
-		if (result.rows.length === 0) {
-			// If the user_id and course_id do not exist, insert a new row
-			await pool.query(
-				`INSERT INTO course_progress (user_id, course_id, lesson_id) VALUES ($1, $2, ARRAY[$3::integer]);`,
-				[user_id, course_id, lesson_id]
-			);
-			console.log("New row inserted");
-			return "success";
-		} else {
-			// If the user_id and course_id exist, update the row
-			const oldLessonIds = result.rows[0].lesson_id;
-			await pool.query(
-				`UPDATE course_progress
-		  SET lesson_id = ARRAY(SELECT DISTINCT UNNEST(lesson_id || ARRAY[$3::integer]))
-		  WHERE user_id = $1 AND course_id = $2;`,
-				[user_id, course_id, lesson_id]
-			);
+const markLesson = async (lesson_id, lecture_id, block_id, course_id, user_id) => {
+    try {
+        const result = await pool.query(
+            `SELECT * FROM course_progress WHERE user_id = $1 AND course_id = $2;`,
+            [user_id, course_id]
+        );
 
-			const updatedResult = await pool.query(
-				`SELECT * FROM course_progress WHERE user_id = $1 AND course_id = $2;`,
-				[user_id, course_id]
-			);
-			const newLessonIds = updatedResult.rows[0].lesson_id;
+        if (result.rows.length === 0) {
+            // If the user_id and course_id do not exist, insert a new row
+            await pool.query(
+                `INSERT INTO course_progress (user_id, course_id, lesson_id, lecture_id, block_id) VALUES ($1, $2, ARRAY[$3::integer], ARRAY[$4::integer], ARRAY[$5::integer]);`,
+                [user_id, course_id, lesson_id, lecture_id, block_id]
+            );
+            console.log("New lesson, lecture and block marked");
+            return "success";
+        } else {
+            // If the user_id and course_id exist, update the row
+            const oldLessonIds = result.rows[0].lesson_id;
+            const oldLectureIds = result.rows[0].lecture_id;
+            const oldBlockIds = result.rows[0].block_id;
 
-			if (oldLessonIds.length === newLessonIds.length) {
-				console.log("Duplicate lesson_id, no update made");
-				return "";
-			} else {
-				console.log("Lesson marked successfully");
-				return "success";
-			}
-		}
-	} catch (err) {
-		console.log(err);
-		return "";
-	}
+            await pool.query(
+                `UPDATE course_progress
+          		SET lesson_id = ARRAY(SELECT DISTINCT UNNEST(lesson_id || ARRAY[$3::integer])),
+          		lecture_id = ARRAY(SELECT DISTINCT UNNEST(lecture_id || ARRAY[$4::integer])),
+          		block_id = ARRAY(SELECT DISTINCT UNNEST(block_id || ARRAY[$5::integer]))
+          		WHERE user_id = $1 AND course_id = $2;`,
+                [user_id, course_id, lesson_id, lecture_id, block_id]
+            );
+
+            const updatedResult = await pool.query(
+                `SELECT * FROM course_progress WHERE user_id = $1 AND course_id = $2;`,
+                [user_id, course_id]
+            );
+            const newLessonIds = updatedResult.rows[0].lesson_id;
+            const newLectureIds = updatedResult.rows[0].lecture_id;
+            const newBlockIds = updatedResult.rows[0].block_id;
+
+            if (oldLessonIds.length === newLessonIds.length && oldLectureIds.length === newLectureIds.length && oldBlockIds.length === newBlockIds.length) {
+                console.log("Duplicate lesson_id, lecture_id, block_id, no update made");
+                return "";
+            } else {
+                console.log("Lesson, lecture and block marked successfully");
+                return "success";
+            }
+        }
+    } catch (err) {
+        console.log(err);
+        return "";
+    }
 };
 
 // Function to get the courses data for a user

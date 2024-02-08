@@ -82,14 +82,13 @@ courses_router.route("/").get(async (req, res) => {
 
 logo_router.route("/").get(async (req, res) => {
 	console.log("/logo GET");
-	console.log("User: ", req.session.username);
 
 	logo = path.join(__dirname, "../public/logo/EduByte_Logo.png");
 
 	fs.access(logo)
 		.then(() => res.status(200)) // OK
 		.catch(() => res.status(404)); // Not found
-	
+
 	res.sendFile(logo);
 });
 
