@@ -53,6 +53,8 @@ courses_router.route("/").get(async (req, res) => {
 	const course_id = req.query.course_id;
 
 	const course_info = await db.getCourse(course_id);
+	console.log("here it is");
+	console.log(course_info);
 	if (course_info) res.status(200); // OK
 	else res.status(404); // Not found
 	res.json(course_info);

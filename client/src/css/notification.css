@@ -1,0 +1,85 @@
+/* CustomNotification.css */
+.notification-container {
+  padding: 1rem;
+  background-color: #f8f9fa; /* Light background to make cards stand out */
+}
+
+.notification-card {
+  max-width: 900px;
+  border-radius: 0.75rem;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  margin-bottom: 1rem; /* Space between cards */
+  overflow: hidden; /* Ensures the border-radius clips the content */
+  transition: box-shadow 0.3s ease-in-out;
+}
+
+.notification-card:hover {
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.notification-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  color: #fff;
+}
+
+.notification-body {
+  padding: 1rem;
+  background-color: #fff;
+}
+.notification-top-bar {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.5rem 1rem;
+  background-color: #ffffff; /* Light background for the top bar */
+  border-top-left-radius: 0.75rem;
+  border-top-right-radius: 0.75rem;
+}
+.notification-title {
+  font-size: 1.2rem;
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+}
+
+.notification-text {
+  font-size: 0.9rem;
+  margin-bottom: 0.75rem;
+}
+
+.notification-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem 1rem;
+  background-color: #ffffff;
+  border-top: 1px solid #dee2e6;
+}
+
+.notification-badge {
+  padding: 0.25rem 0.75rem;
+  border-radius: 1rem;
+  color: #fff;
+  font-size: 0.75rem;
+}
+
+.bg-info {
+  background-color: #17a2b8 !important;
+}
+
+.bg-success {
+  background-color: #28a745 !important;
+}
+
+.bg-warning {
+  background-color: #ffc107 !important;
+}
+
+.bg-danger {
+  background-color: #dc3545 !important;
+}
+
+.bg-secondary {
+  background-color: #6c757d !important;
+}

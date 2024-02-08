@@ -311,6 +311,79 @@ const createCategogoriesTable = async () => {
 	);
 }
 
+const createUserNotificationTable = async () => {
+  // Create the user_notification table if it doesn't exist
+  await pool.query(
+    `
+    CREATE TABLE IF NOT EXISTS user_notification (
+      notification_id SERIAL PRIMARY KEY,
+      user_id INT NOT NULL REFERENCES users(user_id),
+      title VARCHAR(255) NOT NULL,
+      message TEXT NOT NULL,
+      notification_type VARCHAR(50),
+      date_created TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+      status VARCHAR(20) DEFAULT 'Unread'
+    );
+  `,
+    (err, res) => {
+      if (err) {
+        console.error(err);
+        return;
+      }
+      console.log("USER_NOTIFICATION Table creation successful");
+    }
+  );
+};
+
+
+const createAdminNotificationTable = async () => {
+  // Create the admin_notification table if it doesn't exist
+  await pool.query(
+    `
+    CREATE TABLE IF NOT EXISTS admin_notification (
+      notification_id SERIAL PRIMARY KEY,
+      admin_id INT NOT NULL REFERENCES content_creator(creator_id),
+      title VARCHAR(255) NOT NULL,
+      message TEXT NOT NULL,
+      notification_type VARCHAR(50),
+      date_created TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+      status VARCHAR(20) DEFAULT 'Unread'
+    );
+  `,
+    (err, res) => {
+      if (err) {
+        console.error(err);
+        return;
+      }
+      console.log("ADMIN_NOTIFICATION Table creation successful");
+    }
+  );
+};
+
+const createCourseRequestTable = async () => {
+  // Create the course_request table if it doesn't exist
+  await pool.query(
+    `
+    CREATE TABLE IF NOT EXISTS course_request (
+      request_id SERIAL PRIMARY KEY,
+      user_id INT NOT NULL REFERENCES users(user_id), 
+      request_type VARCHAR(50)  NULL,
+      topic VARCHAR(255) NOT NULL,
+      description TEXT NOT NULL,
+      request_date TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+      status VARCHAR(20) DEFAULT 'Pending' 
+    );
+    `,
+    (err, res) => {
+      if (err) {
+        console.error(err);
+        return;
+      }
+      console.log("COURSE_REQUEST Table creation successful");
+    }
+  );
+};
+
 const dropTable = async (table_name) => {
     await pool.query(
         `DROP TABLE IF EXISTS ${table_name};`,
@@ -326,21 +399,23 @@ const dropTable = async (table_name) => {
 }
 
 const initDB = async (newPool) => {
-    pool = newPool;
+  pool = newPool;
 
-    // await dropTable(tables.courses);
-    // await createUsersTable();
-    // await createContentCreatorTable();
-    // await createCourseTable();
-    // await createBlocksTable();
-    // await createLectureTable();
-    // await createLessonTable();
-    // await createEnrolledCoursesTable();
-    // await createRecommendedCoursesTable();
-    // await createQuizTable();
-    // await createCourseProgressTable();
-	// await createCategogoriesTable();
-
+  // await dropTable(tables.courses);
+  // await createUsersTable();
+  // await createContentCreatorTable();
+  // await createCourseTable();
+  // await createBlocksTable();
+  // await createLectureTable();
+  // await createLessonTable();
+  // await createEnrolledCoursesTable();
+  // await createRecommendedCoursesTable();
+  // await createQuizTable();
+  // await createCourseProgressTable();
+  // await createCategogoriesTable();
+   //await createUserNotificationTable();
+  //await createAdminNotificationTable();
+  //  await createCourseRequestTable();
 }
 
 module.exports = {

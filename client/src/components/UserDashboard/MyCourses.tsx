@@ -37,9 +37,9 @@ const MyCourses = (props: any) => {
               <div className="card card-dash mb-3 shadow-sm" key={course.id}>
                 <img src={newimage} className="card-img-top" alt="..." />
                 <div className="card-body card-body-dash">
-                  <h5 className="card-title">{course.course_title}</h5>
+                  <h5 className="card-dash-title">{course.course_title}</h5>
                   <div className="text-part">
-                    <p className="card-text">
+                    <p className="card-dash-text">
                       Lessons completed: {course.lessons_completed}/
                       {course.total_lessons}
                     </p>
@@ -59,7 +59,7 @@ const MyCourses = (props: any) => {
                       Details
                     </a>
                   </div>
-                  <div className="progress-bar"></div>
+                  
                 </div>
               </div>
             ))}
