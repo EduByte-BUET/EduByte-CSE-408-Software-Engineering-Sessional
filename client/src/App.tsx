@@ -15,6 +15,7 @@ import CoursePageRoot from "./components/CoursePage/CoursePageRoot";
 //----home
 import Homepage from "./components/Home/Homepage";
 import Dashboard from "./components/UserDashboard/Dashboard";
+import Dashboard_admin from "./components/AdminDashboard/Dashboard_admin";
 // ----
 import CoursesPage from "./components/CoursePage/CoursesPageHome";
 import CourseDetail from "./components/CoursePage/CourseDetail";
@@ -130,57 +131,58 @@ function App() {
 	}, []);
 
 	return (
-		<>
-			<UserContext.Provider value={{ currentUser, setCurrentUser }}>
-				<Router>
-					<Header />
-					<Routes>
-						<Route
-							path="/signup"
-							element={<SignUpForm background={signin_bg} />}
-						/>
-						<Route
-							path="/signup/institution"
-							element={
-								<SignupInstitution
-									background={signin_bg}
-									options={intitutionOptions}
-								/>
-							}
-						/>
-						<Route
-							path="/signup/experience"
-							element={
-								<SignupExpGoal
-									background={signin_bg}
-									experienceOptions={experienceOptions}
-									goalOptions={goalOptions}
-								/>
-							}
-						/>
-						<Route
-							path="/signup/interests"
-							element={
-								<SignupFieldPref
-									background={signin_bg}
-									fieldOptions={fieldOptions}
-								/>
-							}
-						/>
-						<Route
-							path="/signin"
-							element={<SignInForm background={signin_bg} />}
-						/>
+    <>
+      <UserContext.Provider value={{ currentUser, setCurrentUser }}>
+        <Router>
+          <Header />
+          <Routes>
+            <Route
+              path="/signup"
+              element={<SignUpForm background={signin_bg} />}
+            />
+            <Route
+              path="/signup/institution"
+              element={
+                <SignupInstitution
+                  background={signin_bg}
+                  options={intitutionOptions}
+                />
+              }
+            />
+            <Route
+              path="/signup/experience"
+              element={
+                <SignupExpGoal
+                  background={signin_bg}
+                  experienceOptions={experienceOptions}
+                  goalOptions={goalOptions}
+                />
+              }
+            />
+            <Route
+              path="/signup/interests"
+              element={
+                <SignupFieldPref
+                  background={signin_bg}
+                  fieldOptions={fieldOptions}
+                />
+              }
+            />
+            <Route
+              path="/signin"
+              element={<SignInForm background={signin_bg} />}
+            />
 
-						<Route path="/courses/*" element={<CoursePageRoot/>} />
-						<Route path="/upload" element={<CourseUpload />} />
-						<Route path="/home" element={<Homepage />} />
-						<Route path="/user/dashboard/*" element={<Dashboard />} />
-					</Routes>
-				</Router>
-			</UserContext.Provider>
-		</>
-	);
+            <Route path="/courses/*" element={<CoursePageRoot />} />
+            <Route path="/upload" element={<CourseUpload />} />
+            <Route path="/home" element={<Homepage />} />
+            <Route path="/user/dashboard/*" element={<Dashboard />} />
+            <Route path="/admin/dashboard/*" element={<Dashboard_admin />} />
+          </Routes>
+        </Router>
+      </UserContext.Provider>
+    </>
+  );
 }
 
 export default App;

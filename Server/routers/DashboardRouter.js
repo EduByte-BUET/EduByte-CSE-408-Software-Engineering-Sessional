@@ -115,42 +115,56 @@ recommendations_router.route("/").get(async (req, res) => {
 });
 
 notifications_router.route("/").get(async (req, res) => {
-	console.log("/user/notifications GET");
+  console.log("/user/notifications GET");
 
-	// Client would want to get the notifications from the database
-	// userid (needed to get data form the db) is stored in req.session.userid
-	// A sample json response is given below
-	notifications = {
-		notifications: [
-			{
-				notification_id: 1,
-				type: "announcement",
-				content: "New course available: Data Science Masterclass!",
-				link: "http://example.com/course/data-science-masterclass",
-			},
-			{
-				notification_id: 2,
-				type: "reminder",
-				content: "Atcoder Grand Contest 065 Announcement Contest",
-				link: "http://example.com/contest/atcoder-grand-contest-065",
-			},
-			{
-				notification_id: 3,
-				type: "update",
-				content: "Updated course content for JavaScript for Beginners",
-				link: "http://example.com/course/javascript-for-beginners",
-			},
-			{
-				notification_id: 4,
-				type: "event",
-				content: "Join us for our annual Hackathon!",
-				link: "http://example.com/event/hackathon",
-			},
-		],
-	};
-	if (Object.keys(notifications).length > 0) res.status(200); // OK
-	else res.status(400); // Bad Request
-	res.json(notifications);
+  // Client would want to get the notifications from the database
+  // userid (needed to get data form the db) is stored in req.session.userid
+  // A sample json response is given below
+  // 	notificationData = {
+  //      notifications : [
+  //       {
+  //         notification_id: 1,
+  //         title: "Site Information",
+  //         message:
+  //           "Important site maintenance is scheduled for tomorrow at 10:00 AM.",
+  //         notification_type: "site_information",
+  //         date_created: "2024-02-05T09:00:00Z",
+  //         status: "Unread",
+  //       },
+  //       {
+  //         notification_id: 2,
+  //         title: "New Content Creator",
+  //         message: "A new content creator has joined the platform. Welcome!",
+  //         notification_type: "new_content_creator",
+  //         date_created: "2024-02-04T15:00:00Z",
+  //         status: "Read",
+  //       },
+  //       {
+  //         notification_id: 3,
+  //         title: "New Content Creator",
+  //         message: "A new content creator has joined the platform. Welcome!",
+  //         notification_type: "new_content_creator",
+  //         date_created: "2024-02-04T15:00:00Z",
+  //         status: "Read",
+  //       },
+ 
+
+  //     ]
+  //   };
+
+  const user_id = 1; //req.session.userid
+  let notifications = await db.getUserNotificationData(user_id);
+  if (notifications == null) {
+    notifications = {
+      status: "success",
+      message: "Notificaation data for the user retrieved successfully.",
+      notificationData: [],
+    };
+  }
+  //  console.log(notifications);
+  if (Object.keys(notifications).length  > 0) res.status(200); // OK
+  else res.status(400); // Bad Request
+  res.json(notifications);
 });
 
 saved_posts_router.route("/").get(async (req, res) => {
@@ -374,26 +388,37 @@ admin_notifications_router.route("/").get(async (req, res) => {
 
 	// admin would want to get the notifications from the database
 	// A sample json response is given below
-	notifications = {
-		notifications: [
-			{
-				notification_id: 1,
-				type: "announcement",
-				content: "Monthly check of systems",
-			},
-			{
-				notification_id: 2,
-				type: "reminder",
-				content:
-					"Asta registered as a content creator. View registration request. ",
-			},
-			// Additional notifications...
-		],
-	};
+	// notifications = {
+	// 	notifications: [
+	// 		{
+	// 			notification_id: 1,
+	// 			type: "announcement",
+	// 			content: "Monthly check of systems",
+	// 		},
+	// 		{
+	// 			notification_id: 2,
+	// 			type: "reminder",
+	// 			content:
+	// 				"Asta registered as a content creator. View registration request. ",
+	// 		},
+	// 		// Additional notifications...
+	// 	],
+	// };
+	
+  const admin_id = 1; //req.session.userid
+  let notifications = await db.getAdminNotificationData(admin_id);
+  if (notifications == null) {
+    notifications = {
+      status: "success",
+      message: "Notificaation data for the admin retrieved successfully.",
+      notificationData: [],
+    };
+  }
+    console.log(notifications);
+  if (Object.keys(notifications).length > 0 ) res.status(200); // OK
+  else res.status(400); // Bad Request
+  res.json(notifications);
 
-	if (Object.keys(notifications).length > 0) res.status(200); // OK
-	else res.status(400); // Bad Request
-	res.json(notifications);
 });
 
 module.exports = router;

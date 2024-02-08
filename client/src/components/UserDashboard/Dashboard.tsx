@@ -25,30 +25,52 @@ const Dashboard = () => {
 
   const [coursesData, setCoursesData] = React.useState<any>(null);
   const [recommendedCoursesData, setRecommendedCoursesData] = React.useState<any>(null);
+  const [notificationData, setNotificationData] = React.useState<any>(null);
+  // useEffect(() => {
+  //   const handleMyCourses = async () => {
+  //       try {
+  //         const res = await dashboardapi.get("/courses");
+  //         setCoursesData(res.data.coursesData);
+  //       }
+  //       catch (err) {
+  //         console.log(err);
+  //       }
+  //   }
+
+  //   handleMyCourses();
+  //   }
+  // , []);
 
   useEffect(() => {
-    const handleMyCourses = async () => {
-        try {
-          const res = await dashboardapi.get("/courses");
-          setCoursesData(res.data.coursesData);
-        }
-        catch (err) {
-          console.log(err);
-        }
-    }
+    const handleMyNotification = async () => {
+      try {
+        console.log(" 1 ");
+        const res = await dashboardapi.get("/dashboard/admin/notifications");
+        console.log(res);
+        setNotificationData(res.data.notificationData);
+       
+      } catch (err) {
+        console.log(err);
+      }
+    };
 
-    handleMyCourses();
-    }
-  , []);
+    handleMyNotification();
+  }, []);
 
   return (
     <div className="container">
       <div className="row">
         <UserProfile />
         <Routes>
-          <Route path="/mycourses" element={<MyCourses coursesData={coursesData} />} />
+          <Route
+            path="/mycourses"
+            element={<MyCourses coursesData={coursesData} />}
+          />
           <Route path="/recommendations" element={<RecommendedCourses />} />
-          <Route path="/notifications" element={<UserNotification />} />
+          <Route
+            path="/notifications"
+            element={<UserNotification notificationData={notificationData} />}
+          />
           <Route path="/savedposts" element={<MyCourses />} />
         </Routes>
       </div>

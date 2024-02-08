@@ -43,14 +43,25 @@ const RecommendedCourses = () => {
       >
         <div className="courses-list">
           {courses.map((course) => (
-            <div className="card card-dash mb-3 shadow-sm" key={course.course_id}>
+            <div
+              className="card card-dash mb-3 shadow-sm"
+              key={course.course_id}
+            >
               <img src={newimage} className="card-img-top" alt="..." />
-              <div className="card-body card-body-dash">
-                <div className = "container" style={{display: 'flex' , flexDirection: 'column'}}>
-                  <h5 className="card-title">{course.course_name}</h5>
-                  <p style={{alignContent: 'start' ,paddingTop: '50px'}}>{course.course_intro}</p>
+              <div
+                className="card-body"
+                style={{ display: "flex", justifyContent: "space-between" }}
+              >
+                <div
+                  className="container"
+                  style={{ display: "flex", flexDirection: "column" }}
+                >
+                  <h5 className="card-dash-title">{course.course_name}</h5>
+                  <p style={{ alignContent: "start", paddingTop: "50px" }}>
+                    {course.course_intro}
+                  </p>
                 </div>
-                <div className="text-part">
+                <div style={{ width: "60%" }}>
                   <a
                     href="#"
                     className="btn blue-button"
@@ -66,14 +77,14 @@ const RecommendedCourses = () => {
       </div>
 
       <div className="mt-auto bottom-links ">
-      <button className="btn blue-button">
-            <Link
-              to="/courses"
-              style={{ color: "inherit", textDecoration: "inherit" }}
-            >
-              Show More Courses <i className="bi bi-arrow-down"></i>
-            </Link>
-      </button>
+        <button className="btn blue-button">
+          <Link
+            to="/courses"
+            style={{ color: "inherit", textDecoration: "inherit" }}
+          >
+            Show More Courses <i className="bi bi-arrow-down"></i>
+          </Link>
+        </button>
       </div>
     </div>
   );
