@@ -268,8 +268,8 @@ const createCourseProgressTable = async () => {
 		CREATE TABLE IF NOT EXISTS course_progress (
 			user_id INT REFERENCES users(user_id),
 			course_id INT REFERENCES courses(course_id),
-			block_id INT,
-			lecture_id INT,
+			block_id INT[],
+			lecture_id INT[],
 			lesson_id INT[],
 			-- quiz_id INT REFERENCES quizzes(quiz_id),
 			quiz_attempts INT, -- Number of quiz attempts within the lecture
