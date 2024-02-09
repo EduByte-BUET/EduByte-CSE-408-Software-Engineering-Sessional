@@ -41,6 +41,25 @@ export default function CourseUpload() {
 	const [lessonDescription, setLessonDescription] = useState("");
 	const [file, setFile] = useState<File | null>(null);
 
+	const getCourseTitle = (selCourseid: any) => {
+		const course = courses.find(
+			(course) => course.course_id === parseInt(selCourseid)
+		);
+		if (course === undefined) return "";
+		return course.course_title;
+	};
+	const getBlockTitle = (selBlockid: any) => {
+		const block = blocks.find(
+			(block) => block.block_id === parseInt(selBlockid)
+		);
+		if (block === undefined) return "";
+		return block.title;
+	};
+	const getLectureTitle = (selLectureid: any) => {
+		const lecture = lectures[parseInt(selLectureid)];
+		if (lecture === undefined) return "";
+		return lecture.title;
+	};
 	// Fetch courses
 	useEffect(() => {
 		const fetchData = async () => {
@@ -83,21 +102,38 @@ export default function CourseUpload() {
 		fetchData();
 	}, [selectedBlock]);
 
+	// ------------------------------------------------
+
 	const handleSubmit = async (event: any) => {
 		event.preventDefault();
 		// upload the file to firebase
-		const file_url = await uploadFile(courseTitle, blockTitle, lectureTitle, lessonTitle, file);
-		if (file_url === null) return;
+		// const file_url = await uploadFile(
+		// 	courseTitle,
+		// 	blockTitle,
+		// 	lectureTitle,
+		// 	lessonTitle,
+		// 	file
+		// );
+		// if (file_url === null) return;
 
 		// send the file_url to the server
+		// ------------------------------------------- creator id change korte hobe --------------------------
 		const data = {
+			creator_id: 1,
 			course_id: selectedCourse,
+			course_title: courseTitle,
+			course_description: courseDescription,
 			block_id: selectedBlock,
+			block_title: blockTitle,
+			block_description: blockDescription,
 			lecture_id: selectedLecture,
+			lecture_title: lectureTitle,
+			lecture_description: lectureDescription,
 			lesson_title: lessonTitle,
 			lesson_description: lessonDescription,
-			file_url: file_url,
+			file_url: "file_url",
 		};
+		console.log(data);
 
 		try {
 			const result = await api.post("/content-create/upload/add-lesson", data);
@@ -177,7 +213,10 @@ export default function CourseUpload() {
 								id="courseSelect"
 								className="form-control"
 								value={selectedCourse}
-								onChange={(e) => setSelectedCourse(e.target.value)}
+								onChange={(e) => {
+									setSelectedCourse(e.target.value);
+									setCourseTitle(getCourseTitle(e.target.value));
+								}}
 							>
 								<option value="" disabled hidden>
 									Select a course
@@ -248,7 +287,10 @@ export default function CourseUpload() {
 									id="blockSelect"
 									className="form-control  custom-select"
 									value={selectedBlock}
-									onChange={(e) => setSelectedBlock(e.target.value)}
+									onChange={(e) => {
+										setSelectedBlock(e.target.value);
+										setBlockTitle(getBlockTitle(e.target.value));
+									}}
 								>
 									<option value="" disabled hidden>
 										Select a Block
@@ -320,7 +362,10 @@ export default function CourseUpload() {
 									id="lectureSelect"
 									className="form-control  custom-select"
 									value={selectedLecture}
-									onChange={(e) => setSelectedLecture(e.target.value)}
+									onChange={(e) => {
+										setSelectedLecture(e.target.value);
+										setLectureTitle(getLectureTitle(e.target.value));
+									}}
 								>
 									<option value="" disabled hidden>
 										Select a Lecture
@@ -434,9 +479,12 @@ export default function CourseUpload() {
 					</div>
 
 					<div className="row">
-						<p style={{ color: "crimson", textAlign: "right" }}>
+						<p style={{ color: "crimson", textAlign: "left" }}>
 							<i className="fa-solid fa-info-circle"></i> You may select a video
-							or a pdf file per lesson.
+							or a pdf file per lesson. <br />
+							<i className="fa-solid fa-info-circle"></i> You should not re-use
+							titles for any content, as it may cause confusion for the
+							learners.
 						</p>
 					</div>
 
