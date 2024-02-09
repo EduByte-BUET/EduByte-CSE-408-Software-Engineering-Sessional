@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate,useLocation } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import BlockTemp from "./BlockTemp";
 import BlockComponent from "./BlockComponent";
 import api from "../../api/GeneralAPI";
@@ -30,18 +30,24 @@ const CourseBlocks = () => {
 	if (!course) {
 		return <Spinner />;
 	}
-	const handleCourseClick =()=>{
-		navigate(`/courses/detail`, { state: { course_id: course_id, course_title: course_title } });
-	}
-	const handleHomeClick =()=>{
-		navigate(`/courses`);
-	}
+	const handleCourseClick = () => {
+		navigate(`/courses/detail`, {
+			state: { course_id: course_id, course_title: course_title },
+		});
+	};
+	const handleHomeClick = () => {
+		navigate(`/courses/detail`, {
+			state: { course_id: course_id, course_title: course_title },
+		});
+	};
 	return (
 		<div className="container">
 			<div className="row justify-content-between">
 				<div className="col-5 m-2">
 					<div className="text-start mt-3">
-						<h3 onClick={handleCourseClick} style={{cursor:"pointer"}}>{course.course_title}</h3>
+						<h3 onClick={handleCourseClick} style={{ cursor: "pointer" }}>
+							{course.course_title}
+						</h3>
 						<p>
 							<b>
 								{course.total_lectures} Lectures, {course.total_quizzes} Quizzes
@@ -63,8 +69,8 @@ const CourseBlocks = () => {
 				</div>
 				<div className="col-6 m-2" style={{ overflowY: "auto" }}>
 					<div className="text-start mt-3">
-						<p>
-							<i className="fas fa-home" onClick={handleHomeClick} style={{cursor:"pointer"}}></i>.{course.course_title}
+						<p onClick={handleHomeClick} style={{ cursor: "pointer" }}>
+							<i className="fas fa-home"></i> &nbsp; {course.course_title}
 						</p>
 					</div>
 					<div style={{ overflowY: "auto" }}>

@@ -1,31 +1,33 @@
 .blue-text {
-    color: blue;
-  }
-  .cream-background {
-    background-color: #fbeaf3;
-  }
-  .column-border {
-    border-right: 1px solid #000; 
-  }
-  .row-border {
-    border-bottom: 2px solid #000000; 
-  }
-  .hover-effect {
-    background-color: #e7e2e2;
-  }
-  .hover-effect:hover {
-    background-color: #b8c3fb; 
-  }
-  .block-effect {
-    background-color: #f4e3e3;
-  }
-  .block-effect:hover {
-    background-color: #ecedf2; 
-  }
-  .bold-text {
-    font-weight: bold;
-  }
-  .custom-link {
-    color: inherit; /* Use the color of the parent element */
-    text-decoration: none; /* Remove the underline */
-  }
+	color: blue;
+}
+.cream-background {
+	background-color: #fbeaf3;
+}
+.column-border {
+	border-right: 1px solid #000;
+}
+.row-border {
+	border: 3px solid #000000;
+}
+.hover-effect {
+	background-color: #e7e2e2;
+}
+.hover-effect:hover {
+	background-color: #b8c3fb;
+}
+.block-effect {
+	border: 3px solid #000000;
+	background-color: #d7f1c5;
+}
+.block-effect:hover {
+	background-color: blanchedalmond;
+	cursor: pointer;
+}
+.bold-text {
+	font-weight: bold;
+}
+.custom-link {
+	color: inherit; /* Use the color of the parent element */
+	text-decoration: none; /* Remove the underline */
+}
