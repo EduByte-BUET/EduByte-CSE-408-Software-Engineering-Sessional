@@ -13,23 +13,23 @@ const LectureInfo = () => {
     block_index,
   } = location.state;
   const [lectureInfo, setLectureInfo] = useState<any>(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchData = async () => {
-      const res = await api.get(
-        `courses/blocks/lectures?course_id=${course_id}&block_id=${block_id}`
-      );
-      //console.log(res.data);
-      setLectureInfo(res.data);
+        const res = await api.get(
+          `courses/blocks/lectures?course_id=${course_id}&block_id=${block_id}`
+        );
+        setLectureInfo(res.data);
     };
 
     fetchData();
-  }, []);
-  let lectureSize = 0;
-  if (lectureInfo && lectureInfo.lectures) {
-  lectureSize = lectureInfo.lectures.length;
+  }, [course_id, block_id]);
+
+  if (!lectureInfo) {
+    return <Spinner />;
   }
-  const navigate = useNavigate();
+
   const handleLectureClick = (
     index: number,
     lecture_id: number,
@@ -45,7 +45,14 @@ const LectureInfo = () => {
         lecture_index: index,
         lecture_id: lecture_id,
         lecture_title: lecture_title,
-        lectureSize: lectureSize,
+      },
+    });
+  };
+  const navigateToBlocks = () => {
+    navigate(`/courses/blocks`, {
+      state: {
+        course_id: course_id,
+        course_title: course_name,
       },
     });
   };
@@ -61,7 +68,7 @@ const LectureInfo = () => {
           <div className="text-start mt-3">
             <h3>{course_name}</h3>
             <p>
-              <b>| Block {block_index}</b>
+              <b onClick={navigateToBlocks} style = {{cursor:"pointer"}}>| Block {block_index}</b>
             </p>
           </div>
           <div style={{ overflowY: "auto" }}>

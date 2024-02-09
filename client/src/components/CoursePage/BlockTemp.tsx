@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
 
 const BlockTemp = (props: any) => {
-  const { course_id, course_name, block_id, index, block_name } = props;
+  const { course_id, course_name, block_id, index, block_name, blockSize } = props;
   const navigate = useNavigate();
   const handleBlockClick = () => {
     navigate(`/courses/lectures`, {

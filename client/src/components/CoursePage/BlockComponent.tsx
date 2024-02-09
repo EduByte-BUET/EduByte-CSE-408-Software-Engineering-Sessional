@@ -32,7 +32,6 @@ const BlockComponent = (props: any) => {
         lecture_index: lecture_index,
         lecture_id: lecture_id,
         lecture_title: lecture_title,
-        lectureSize: lectures.length,
       },
     });
   };
