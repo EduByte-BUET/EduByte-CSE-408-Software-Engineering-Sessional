@@ -45,7 +45,6 @@ const Lesson = () => {
   if (!data) {
     return <div>Loading...</div>;
   }
-
   return (
     <div className="container">
       <div className="row justify-content-between">

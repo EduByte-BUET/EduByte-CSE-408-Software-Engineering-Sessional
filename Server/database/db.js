@@ -102,7 +102,7 @@ const getUser = async (username) => {
 const getPopularCourses = async () => {
 	try {
 		const res = await pool.query(
-			"SELECT c.* FROM courses c ORDER BY total_enrolled DESC;"
+			"SELECT * FROM courses c ORDER BY total_enrolled DESC;"
 		);
 		if (res.rows[0]) {
 			return res.rows.map((row) => {
