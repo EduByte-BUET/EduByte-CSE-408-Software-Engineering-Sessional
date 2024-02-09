@@ -78,8 +78,6 @@ function Header() {
             </Nav.Link>
           )}
 
-         
-
           {currentUser && accesslevelData === "user" ? (
             <Nav.Link
               as={Link}
@@ -97,7 +95,6 @@ function Header() {
               {currentUser} [Logged In]
             </Nav.Link>
           ) : null}
-
           {currentUser == null ? (
             <Nav.Link as={Link} to="/signin" className="custom-nav-link">
               Signin
