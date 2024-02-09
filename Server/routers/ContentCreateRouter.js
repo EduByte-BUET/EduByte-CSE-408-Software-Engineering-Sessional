@@ -48,16 +48,36 @@ all_blocks_router.route("/").get(async (req, res) => {
 add_lesson_router.route("/").post(async (req, res) => {
 	console.log("/upload/add-lesson POST");
 
-	const course_id = req.body.course_id;
-	const block_id = req.body.block_id;
+	// If the course is uploaded, it is first sent to the admin for approval
+	console.log(req.body);
+	const courseToBeUploaded = req.body;
 
-	const lesson = req.body.lesson;
-	const lesson_id = await db.addLesson(course_id, block_id, lesson);
-	console.log(lesson_id);
+	const course = {
+		course_id: courseToBeUploaded.course_id,
+		course_title: courseToBeUploaded.course_title,
+		description: courseToBeUploaded.course_description,
+	};
+	const block = {
+		block_id: courseToBeUploaded.block_id,
+		title: courseToBeUploaded.block_title,
+		description: courseToBeUploaded.block_description,
+	};
+	const lecture = {
+		lecture_id: courseToBeUploaded.lecture_id,
+		title: courseToBeUploaded.lecture_title,
+		description: courseToBeUploaded.lecture_description,
+	};
+	const lesson = {
+		title: courseToBeUploaded.lesson_title,
+		description: courseToBeUploaded.lesson_description,
+		file_url: courseToBeUploaded.file_url,
+		creator_id: courseToBeUploaded.creator_id,
+	};
 
-	if (lesson_id) res.status(200); // OK
-	else res.status(404); // Not found
-	res.json(lesson_id);
+	const response = await db.addLessonToPendingCourses(course, block, lecture, lesson);
+
+	if (response !== "") res.status(200).json({message: "Lesson creation request queued successfully"});
+	else res.status(404).json({message: "Lesson creation request failed due to multiple submissions for a lesson"});
 });
 
 module.exports = router;

@@ -367,56 +367,68 @@ const getLessonList = async (lecture_id) => {
 	}
 };
 
-const markLesson = async (lesson_id, lecture_id, block_id, course_id, user_id) => {
-    try {
-        const result = await pool.query(
-            `SELECT * FROM course_progress WHERE user_id = $1 AND course_id = $2;`,
-            [user_id, course_id]
-        );
+const markLesson = async (
+	lesson_id,
+	lecture_id,
+	block_id,
+	course_id,
+	user_id
+) => {
+	try {
+		const result = await pool.query(
+			`SELECT * FROM course_progress WHERE user_id = $1 AND course_id = $2;`,
+			[user_id, course_id]
+		);
 
-        if (result.rows.length === 0) {
-            // If the user_id and course_id do not exist, insert a new row
-            await pool.query(
-                `INSERT INTO course_progress (user_id, course_id, lesson_id, lecture_id, block_id) VALUES ($1, $2, ARRAY[$3::integer], ARRAY[$4::integer], ARRAY[$5::integer]);`,
-                [user_id, course_id, lesson_id, lecture_id, block_id]
-            );
-            console.log("New lesson, lecture and block marked");
-            return "success";
-        } else {
-            // If the user_id and course_id exist, update the row
-            const oldLessonIds = result.rows[0].lesson_id;
-            const oldLectureIds = result.rows[0].lecture_id;
-            const oldBlockIds = result.rows[0].block_id;
+		if (result.rows.length === 0) {
+			// If the user_id and course_id do not exist, insert a new row
+			await pool.query(
+				`INSERT INTO course_progress (user_id, course_id, lesson_id, lecture_id, block_id) VALUES ($1, $2, ARRAY[$3::integer], ARRAY[$4::integer], ARRAY[$5::integer]);`,
+				[user_id, course_id, lesson_id, lecture_id, block_id]
+			);
+			console.log("New lesson, lecture and block marked");
+			return "success";
+		} else {
+			// If the user_id and course_id exist, update the row
+			const oldLessonIds = result.rows[0].lesson_id;
+			const oldLectureIds = result.rows[0].lecture_id;
+			const oldBlockIds = result.rows[0].block_id;
 
-            await pool.query(
-                `UPDATE course_progress
+			await pool.query(
+				`UPDATE course_progress
           		SET lesson_id = ARRAY(SELECT DISTINCT UNNEST(lesson_id || ARRAY[$3::integer])),
           		lecture_id = ARRAY(SELECT DISTINCT UNNEST(lecture_id || ARRAY[$4::integer])),
           		block_id = ARRAY(SELECT DISTINCT UNNEST(block_id || ARRAY[$5::integer]))
           		WHERE user_id = $1 AND course_id = $2;`,
-                [user_id, course_id, lesson_id, lecture_id, block_id]
-            );
+				[user_id, course_id, lesson_id, lecture_id, block_id]
+			);
 
-            const updatedResult = await pool.query(
-                `SELECT * FROM course_progress WHERE user_id = $1 AND course_id = $2;`,
-                [user_id, course_id]
-            );
-            const newLessonIds = updatedResult.rows[0].lesson_id;
-            const newLectureIds = updatedResult.rows[0].lecture_id;
-            const newBlockIds = updatedResult.rows[0].block_id;
+			const updatedResult = await pool.query(
+				`SELECT * FROM course_progress WHERE user_id = $1 AND course_id = $2;`,
+				[user_id, course_id]
+			);
+			const newLessonIds = updatedResult.rows[0].lesson_id;
+			const newLectureIds = updatedResult.rows[0].lecture_id;
+			const newBlockIds = updatedResult.rows[0].block_id;
 
-            if (oldLessonIds.length === newLessonIds.length && oldLectureIds.length === newLectureIds.length && oldBlockIds.length === newBlockIds.length) {
-                console.log("Duplicate lesson_id, lecture_id, block_id, no update made");
-                return "";
-            } else {
-                console.log("Lesson, lecture and block marked successfully");
-                return "success";
-            }
-        }
-    } catch (err) {
-        console.log(err);
-        return "";
-    }
+			if (
+				oldLessonIds.length === newLessonIds.length &&
+				oldLectureIds.length === newLectureIds.length &&
+				oldBlockIds.length === newBlockIds.length
+			) {
+				console.log(
+					"Duplicate lesson_id, lecture_id, block_id, no update made"
+				);
+				return "";
+			} else {
+				console.log("Lesson, lecture and block marked successfully");
+				return "success";
+			}
+		}
+	} catch (err) {
+		console.log(err);
+		return "";
+	}
 };
 
 // Function to get the courses data for a user
@@ -475,97 +487,272 @@ const getMyCoursesData = async (user_id) => {
 		return null;
 	}
 };
+/*
+const course = {
+		course_id: courseToBeUploaded.course_id,
+		course_title: courseToBeUploaded.course_title,
+		description: courseToBeUploaded.course_description,
+	};
+	const block = {
+		block_id: courseToBeUploaded.block_id,
+		title: courseToBeUploaded.block_title,
+		description: courseToBeUploaded.block_description,
+	};
+	const lecture = {
+		lecture_id: courseToBeUploaded.lecture_id,
+		title: courseToBeUploaded.lecture_title,
+		description: courseToBeUploaded.lecture_description,
+	};
+	const lesson = {
+		title: courseToBeUploaded.lesson_title,
+		description: courseToBeUploaded.lesson_description,
+		file_url: courseToBeUploaded.file_url,
+		creator_id: courseToBeUploaded.creator_id,
+	};
+*/
+const addLesson = async (course, block, lecture, lesson) => {
+	try {
+		await pool.query("BEGIN");
 
+		let courseId = course.course_id;
+		if (!courseId) {
+			const courseInsertResult = await pool.query(
+				"INSERT INTO courses (course_title, description) VALUES ($1, $2) RETURNING course_id",
+				[course.course_title, course.description]
+			);
+			courseId = courseInsertResult.rows[0].course_id;
+		}
 
+		let blockId = block.block_id;
+		if (!blockId) {
+			const blockInsertResult = await pool.query(
+				"INSERT INTO blocks (course_id, title, description) VALUES ($1, $2, $3) RETURNING block_id",
+				[courseId, block.title, block.description]
+			);
+			blockId = blockInsertResult.rows[0].block_id;
+		}
+
+		let lectureId = lecture.lecture_id;
+		if (!lectureId) {
+			const lectureInsertResult = await pool.query(
+				"INSERT INTO lectures (block_id, title, description) VALUES ($1, $2, $3) RETURNING lecture_id",
+				[blockId, lecture.title, lecture.description]
+			);
+			lectureId = lectureInsertResult.rows[0].lecture_id;
+		}
+
+		const lessonInsertResult = await pool.query(
+			"INSERT INTO lessons (lecture_id, creator_id, title, description, created_at, updated_at) VALUES ($1, $2, $3, $4, NOW(), NOW()) RETURNING lesson_id",
+			[lectureId, lesson.creator_id, lesson.title, lesson.description]
+		);
+
+		await pool.query("COMMIT");
+
+		return lessonInsertResult.rows[0].lesson_id;
+	} catch (error) {
+		await pool.query("ROLLBACK");
+		console.error("Error adding lesson:", error);
+		throw error;
+	}
+};
+
+const addLessonToPendingCourses = async (course, block, lecture, lesson) => {
+	try {
+		await pool.query("BEGIN");
+
+		const [
+			course_id,
+			course_title,
+			course_description,
+			block_id,
+			block_title,
+			block_description,
+			lecture_id,
+			lecture_title,
+			lecture_description,
+			lesson_title,
+			lesson_description,
+			file_url,
+			creator_id,
+		] = [
+			course.course_id,
+			course.course_title,
+			course.description,
+			block.block_id,
+			block.title,
+			block.description,
+			lecture.lecture_id,
+			lecture.title,
+			lecture.description,
+			lesson.title,
+			lesson.description,
+			lesson.file_url,
+			lesson.creator_id,
+		];
+
+		await pool.query(
+			"INSERT INTO pending_courses (creator_id, course_id, course_title, course_description, block_id, block_title, block_description, lecture_id, lecture_title, lecture_description, lesson_title, lesson_description, file_url) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)",
+			[
+				creator_id || null,
+				course_id || null,
+				course_title || null,
+				course_description || null,
+				block_id || null,
+				block_title || null,
+				block_description || null,
+				lecture_id || null,
+				lecture_title || null,
+				lecture_description || null,
+				lesson_title || null,
+				lesson_description || null,
+				file_url || null,
+			]
+		);
+
+		await pool.query("COMMIT");
+		console.log("Lesson added to pending_courses successfully");
+
+		return "success";
+	} catch (error) {
+		await pool.query("ROLLBACK");
+		console.error("Error adding lesson:", error);
+		return "";
+	}
+};
+
+const approveLesson = async (pending_id) => {
+	try {
+		// Fetch data from the database
+		const lessonData = await pool.query("SELECT * FROM pending_courses");
+
+		// Organize the fetched data into objects and add lessons to the respective tables
+		for (const row of lessonData.rows) {
+			const course = {
+				course_id: row.course_id || "",
+				course_title: row.course_title || "",
+				description: row.course_description || "",
+			};
+
+			const block = {
+				block_id: row.block_id || "",
+				title: row.block_title || "",
+				description: row.block_description || "",
+			};
+
+			const lecture = {
+				lecture_id: row.lecture_id || "",
+				title: row.lecture_title || "",
+				description: row.lecture_description || "",
+			};
+
+			const lesson = {
+				title: row.lesson_title || "",
+				description: row.lesson_description || "",
+				file_url: row.file_url || "",
+				creator_id: row.creator_id || "",
+			};
+
+			// Add the lesson to the respective tables using addLesson function
+			const lessonId = await addLesson(course, block, lecture, lesson);
+
+			// Remove the entry from pending_courses table
+			await pool.query("DELETE FROM pending_courses WHERE pending_id = $1", [
+				pending_id,
+			]);
+
+			console.log(`Lesson added successfully with lesson_id ${lessonId}`);
+		}
+
+		console.log("All lessons added successfully");
+	} catch (error) {
+		console.error("Error fetching and adding lessons:", error);
+	}
+};
 
 // Function to get the notification data for a user
 const getUserNotificationData = async (user_id) => {
-  try {
-    // Query to fetch the data from the tables
-    const res = await pool.query(
-      "SELECT * FROM user_notification WHERE user_id = $1",
-      [user_id]
-    );
+	try {
+		// Query to fetch the data from the tables
+		const res = await pool.query(
+			"SELECT * FROM user_notification WHERE user_id = $1",
+			[user_id]
+		);
 
-    // Check if the query returned any rows
-    if (res.rowCount > 0) {
-      const notificationData = res.rows;
-  
-      
+		// Check if the query returned any rows
+		if (res.rowCount > 0) {
+			const notificationData = res.rows;
 
-      // Create the object to return
-      const notification_list = {
-        status: "success",
-        message: "Notification data for the user retrieved successfully.",
-        notificationData: notificationData,
-      };
+			// Create the object to return
+			const notification_list = {
+				status: "success",
+				message: "Notification data for the user retrieved successfully.",
+				notificationData: notificationData,
+			};
 
-      return notification_list;
-    } else {
-      // If the query returned no rows, return null
-      return null;
-    }
-  } catch (err) {
-    // If there is an error, log it and return null
-    console.log(err);
-    return null;
-  }
+			return notification_list;
+		} else {
+			// If the query returned no rows, return null
+			return null;
+		}
+	} catch (err) {
+		// If there is an error, log it and return null
+		console.log(err);
+		return null;
+	}
 };
-
 
 // Function to get the notification data for a user
 const getAdminNotificationData = async (admin_id) => {
-  try {
-    // Query to fetch the data from the tables
-    const res = await pool.query(
-      "SELECT * FROM admin_notification WHERE admin_id = $1",
-      [admin_id]
-    );
+	try {
+		// Query to fetch the data from the tables
+		const res = await pool.query(
+			"SELECT * FROM admin_notification WHERE admin_id = $1",
+			[admin_id]
+		);
 
-    // Check if the query returned any rows
-    if (res.rowCount > 0) {
-      const notificationData = res.rows;
-  
-      
+		// Check if the query returned any rows
+		if (res.rowCount > 0) {
+			const notificationData = res.rows;
 
-      // Create the object to return
-      const notification_list = {
-        status: "success",
-        message: "Notification data for the user retrieved successfully.",
-        notificationData: notificationData,
-      };
+			// Create the object to return
+			const notification_list = {
+				status: "success",
+				message: "Notification data for the user retrieved successfully.",
+				notificationData: notificationData,
+			};
 
-      return notification_list;
-    } else {
-      // If the query returned no rows, return null
-      return null;
-    }
-  } catch (err) {
-    // If there is an error, log it and return null
-    console.log(err);
-    return null;
-  }
+			return notification_list;
+		} else {
+			// If the query returned no rows, return null
+			return null;
+		}
+	} catch (err) {
+		// If there is an error, log it and return null
+		console.log(err);
+		return null;
+	}
 };
 
-
 module.exports = {
-  createTables,
-  connectToDB,
-  checkUsername,
-  addUser,
-  getUser,
-  getCourse,
-  getPopularCourses,
-  getUserPassword,
-  registerToCourse,
-  getBlockList,
-  getLectureList,
-  getLessonList,
-  markLesson,
-  getMyCoursesData,
-  getCategories,
-  getRecommendedCourses,
-  getAllCourses,
-  getUserNotificationData,
-  getAdminNotificationData,
+	createTables,
+	connectToDB,
+	checkUsername,
+	addUser,
+	getUser,
+	getCourse,
+	getPopularCourses,
+	getUserPassword,
+	registerToCourse,
+	getBlockList,
+	getLectureList,
+	getLessonList,
+	markLesson,
+	getMyCoursesData,
+	getCategories,
+	getRecommendedCourses,
+	getAllCourses,
+	getUserNotificationData,
+	getAdminNotificationData,
+	addLesson,
+	addLessonToPendingCourses,
 };
