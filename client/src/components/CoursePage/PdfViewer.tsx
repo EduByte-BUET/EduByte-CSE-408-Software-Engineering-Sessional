@@ -1,19 +1,24 @@
-import React from 'react';
+import React from "react";
 
 type PdfViewerProps = {
-  pdf_content: string;
-  file_url: string;
+	file_url: string;
 };
 
-const PdfViewer: React.FC<PdfViewerProps> = ({pdf_content, file_url }) => {
-  return (
-    <div>
-      <p>{pdf_content}</p>
-      <a href={file_url} target="_blank" rel="noopener noreferrer">Download PDF</a>
-      {/* <iframe src={file_url} style={{width: '100%', height: '500px'}}></iframe> */}
-      <embed src={file_url} type="application/pdf" width="100%" height="600px" />
-    </div>
-  );
+const PdfViewer: React.FC<PdfViewerProps> = ({ file_url }) => {
+	return (
+		<div style={{ width: "100%", height: "80vh", overflow: "hidden" }}>
+			<object
+				data={file_url}
+				type="application/pdf"
+				style={{ width: "90%", height: "100%" }}
+			>
+				<p>
+					Your browser does not support PDFs. You can{" "}
+					<a href={file_url}>download the PDF</a> instead.
+				</p>
+			</object>
+		</div>
+	);
 };
 
 export default PdfViewer;
