@@ -17,8 +17,8 @@ const tables = {
 const pool = new Pool({
 	user: "postgres",
 	host: "localhost",
-	database: "test",
-	password: "connectdb",
+	database: "postgres",
+	password: "123",
 	port: 5432,
 });
 
@@ -476,22 +476,96 @@ const getMyCoursesData = async (user_id) => {
 	}
 };
 
+
+
+// Function to get the notification data for a user
+const getUserNotificationData = async (user_id) => {
+  try {
+    // Query to fetch the data from the tables
+    const res = await pool.query(
+      "SELECT * FROM user_notification WHERE user_id = $1",
+      [user_id]
+    );
+
+    // Check if the query returned any rows
+    if (res.rowCount > 0) {
+      const notificationData = res.rows;
+  
+      
+
+      // Create the object to return
+      const notification_list = {
+        status: "success",
+        message: "Notification data for the user retrieved successfully.",
+        notificationData: notificationData,
+      };
+
+      return notification_list;
+    } else {
+      // If the query returned no rows, return null
+      return null;
+    }
+  } catch (err) {
+    // If there is an error, log it and return null
+    console.log(err);
+    return null;
+  }
+};
+
+
+// Function to get the notification data for a user
+const getAdminNotificationData = async (admin_id) => {
+  try {
+    // Query to fetch the data from the tables
+    const res = await pool.query(
+      "SELECT * FROM admin_notification WHERE admin_id = $1",
+      [admin_id]
+    );
+
+    // Check if the query returned any rows
+    if (res.rowCount > 0) {
+      const notificationData = res.rows;
+  
+      
+
+      // Create the object to return
+      const notification_list = {
+        status: "success",
+        message: "Notification data for the user retrieved successfully.",
+        notificationData: notificationData,
+      };
+
+      return notification_list;
+    } else {
+      // If the query returned no rows, return null
+      return null;
+    }
+  } catch (err) {
+    // If there is an error, log it and return null
+    console.log(err);
+    return null;
+  }
+};
+
+
 module.exports = {
-	createTables,
-	connectToDB,
-	checkUsername,
-	addUser,
-	getUser,
-	getCourse,
-	getPopularCourses,
-	getUserPassword,
-	registerToCourse,
-	getBlockList,
-	getLectureList,
-	getLessonList,
-	markLesson,
-	getMyCoursesData,
-	getCategories,
-	getRecommendedCourses,
-	getAllCourses,
+  createTables,
+  connectToDB,
+  checkUsername,
+  addUser,
+  getUser,
+  getCourse,
+  getPopularCourses,
+  getUserPassword,
+  registerToCourse,
+  getBlockList,
+  getLectureList,
+  getLessonList,
+  markLesson,
+  getMyCoursesData,
+  getCategories,
+  getRecommendedCourses,
+  getAllCourses,
+  getUserNotificationData,
+  getAdminNotificationData,
 };

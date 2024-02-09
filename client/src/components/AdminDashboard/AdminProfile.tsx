@@ -5,7 +5,7 @@ import newimage from "../../assets/hero-img.png";
 import api from "../../api/GeneralAPI";
 import { UserContext } from "../UserContext/UserContext";
 
-const UserProfile = () => {
+const AdminProfile = () => {
   const [activeLink, setActiveLink] = useState(""); // Default active link
   const currentUser = React.useContext(UserContext);
 
@@ -31,20 +31,20 @@ const UserProfile = () => {
     }
   };
 
-  const handleMyCourses = () => {
-    handleSetActiveLink("/courses");
+  const handleAllCourses = () => {
+    handleSetActiveLink("/allcourses");
   };
 
-  const handleRecommendations = () => {
-    handleSetActiveLink("/recommendations");
+  const handleContentCreator = () => {
+    handleSetActiveLink("/content_creator");
   };
 
   const handleNotifications = () => {
     handleSetActiveLink("/notifications");
   };
 
-  const handleSavedPosts = () => {
-    handleSetActiveLink("/savedposts");
+  const handleSiteStats = () => {
+    handleSetActiveLink("/site_states");
   };
 
   return (
@@ -58,40 +58,41 @@ const UserProfile = () => {
         style={{ width: "87%", margin: "10px auto" }}
       >
         <Link
-          to="/user/dashboard/mycourses"
+          to="/admin/dashboard/allcourses"
           className={`nav-link dash-navlink ${
-            activeLink === "/courses" ? "active" : ""
+            activeLink === "/allcourses" ? "active" : ""
           }`}
-          onClick={handleMyCourses}
+          onClick={handleAllCourses}
         >
           Courses
         </Link>
         <Link
-          to="/user/dashboard/recommendations"
+          to="/admin/dashboard/content_creators"
           className={`nav-link dash-navlink ${
-            activeLink === "/recommendations" ? "active" : ""
+            activeLink === "/content_creator" ? "active" : ""
           }`}
-          onClick={handleRecommendations}
+          onClick={handleContentCreator}
         >
-          Recommendations
+          Content Creators
+        </Link>
+
+        <Link
+          to="/admin/dashboard/site_states"
+          className={`nav-link dash-navlink ${
+            activeLink === "/site_states" ? "active" : ""
+          }`}
+          onClick={handleSiteStats}
+        >
+          Site Stats
         </Link>
         <Link
-          to="/user/dashboard/notifications"
+          to="/admin/dashboard/notifications"
           className={`nav-link dash-navlink ${
             activeLink === "/notifications" ? "active" : ""
           }`}
           onClick={handleNotifications}
         >
           Notifications
-        </Link>
-        <Link
-          to="/user/dashboard/savedposts"
-          className={`nav-link dash-navlink ${
-            activeLink === "/savedposts" ? "active" : ""
-          }`}
-          onClick={handleSavedPosts}
-        >
-          Saved Posts
         </Link>
       </nav>
       <button className="btn blue-button m-3" onClick={() => navigate("/home")}>
@@ -104,4 +105,4 @@ const UserProfile = () => {
   );
 };
 
-export default UserProfile;
+export default AdminProfile;

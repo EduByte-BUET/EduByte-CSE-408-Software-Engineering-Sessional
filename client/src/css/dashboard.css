@@ -2,10 +2,8 @@
   box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
   padding-bottom: 1rem;
 
-height: 650px;
-
+  height: 650px;
 }
-
 
 .text-center {
   padding-bottom: 1rem;
@@ -22,60 +20,26 @@ height: 650px;
 .dash-navlink {
   display: block;
   margin: 0.5rem 0;
-  padding: 0.75rem 1rem;
+  padding: 0.5rem 2rem;
   background-color: #f8f9fa;
-  border-radius: 0.375rem; /* Slightly rounded corners for the links */
+  border-radius: 0.275rem; /* Slightly rounded corners for the links */
   color: #007bff;
-  transition: background-color 0.2s, color 0.2s;
+
   font-size: 1.1rem; /* Bigger font size */
   font-weight: 500; /* Slightly bolder font */
 }
 
 .dash-navlink:hover,
 .dash-navlink:focus {
- 
   background-color: #e2e6ea;
   color: #0056b3; /* Slightly darker blue on hover/focus */
-   border-left: 4px solid #0056b3; 
+  border-left: 2px solid #0056b3;
 }
 
 .dash-navlink.active {
   color: #fff;
   background-color: #58a1f0;
-  border-left: 4px solid #0056b3; /* Left border to highlight active link */
-}
-
-
-.home-navlink {
-   display: block;
-  margin: 0.5rem 0;
-  padding: 0.75rem 1rem;
-  background-color: #d1f063;
-  border-radius: 0.375rem; /* Slightly rounded corners for the links */
-  color: #17170e;
-  transition: background-color 0.2s, color 0.2s;
-  font-size: 1.1rem; /* Bigger font size */
-  font-weight: 500; /* Slightly bolder font */
-  margin-top: 50px;
-  
-}
-.logout-navlink {
-   display: block;
-  margin: 0.5rem 0;
-  padding: 0.75rem 1rem;
-  background-color: #fc824e;
-  border-radius: 0.375rem; /* Slightly rounded corners for the links */
-  color: #17170e;
-  transition: background-color 0.2s, color 0.2s;
-  font-size: 1.1rem; /* Bigger font size */
-  font-weight: 500; /* Slightly bolder font */
-  margin-top: 30px;
-  
-}
-
-.home-navlink:hover, .logout-navlink:hover{
-transform: scale(1.02); /* Scales up the link a bit */
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  border-left: 2px solid #0056b3; /* Left border to highlight active link */
 }
 
 .bottom-links {
@@ -85,38 +49,12 @@ transform: scale(1.02); /* Scales up the link a bit */
   /* Fixes the position at the bottom */
   bottom: 0; /* Aligns at the bottom of the sidebar */
   width: calc(100% - 1rem); /* Full width of the sidebar minus some padding */
-  background-color: rgb(255, 255, 255); /* Inherits the sidebar's background color */
+  background-color: rgb(
+    255,
+    255,
+    255
+  ); /* Inherits the sidebar's background color */
   padding: 0.5rem 0; /* Adds some padding above and below the links */
- 
-}
-
-.bottom-courses{
-  display: block;
-  margin: 0.5rem 0.1;
-  padding: 0.75rem 8rem;
-  background-color: #f4acce;
-  border-radius: 0.375rem; /* Slightly rounded corners for the links */
-  color: #17170e;
-  transition: background-color 0.2s, color 0.2s;
-  font-size: 1.1rem; /* Bigger font size */
-  font-weight: 500; /* Slightly bolder font */
- 
-}
-
-.show-courses{
-  display: block;
-  margin: 0.5rem 0.1;
-  padding: 0.75rem 14rem;
-  background-color: #f4acce;
-  border-radius: 0.375rem; /* Slightly rounded corners for the links */
-  color: #17170e;
-  transition: background-color 0.2s, color 0.2s;
-  font-size: 1.1rem; /* Bigger font size */
-  font-weight: 500; /* Slightly bolder font */
-}
-bottom-courses:hover,
-.show-courses:hover{
-   box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
 }
 
 .mt-auto {
@@ -124,41 +62,29 @@ bottom-courses:hover,
   padding-top: 1rem;
 }
 
-/* Ensure links take full width for better click area */
-.nav.flex-column {
-  width: 100%;
-  margin: 10px;
-}
-
-/* Spacing between nav items */
-.nav-item + .nav-item {
-  margin-top: 10px;
-}
-
-.card-title {
+.card-dash-title {
   color: #0056b3; /* A shade of blue */
- 
+  font-weight: bold;
 }
 
-.card-text {
+.card-dash-text {
   color: #666; /* Dark gray */
+  font-size: large;
 }
 
 .card-dash {
   max-width: 60em;
   max-height: 17em;
   flex-direction: row;
-  
-
   border-radius: 15px; /* Rounded corners for the card */
 }
 
-.card-body-dash{
+.card-body-dash {
   display: flex;
   justify-content: space-between;
 }
 
-.text-part{
+.text-part {
   width: 60%;
 }
 
@@ -167,6 +93,316 @@ bottom-courses:hover,
   margin: auto;
   padding: 1em;
   border-radius: 0.7em;
-
 }
 
+/* // Content Creator Page // */
+.content-creator-card {
+  background-color: #ffffff;
+  border-radius: 15px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  border: none;
+  overflow: hidden;
+  width: 100%;
+}
+
+.content-creator-avatar {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  border: 3px solid #f8f9fa;
+}
+
+.content-creator-rating {
+  font-weight: bold;
+  color: #ffc107;
+}
+
+.content-creator-courses,
+.content-creator-students {
+  font-weight: 500;
+}
+
+.btn-outline-primary {
+  border-color: #007bff;
+  color: #007bff;
+}
+
+.btn-outline-primary:hover {
+  background-color: #007bff;
+  color: #fff;
+}
+
+/* content creator profile detail */
+/* Apply CSS to enhance the visual appearance of the profile page */
+.ccreator-profile .card-img-top {
+  height: 250px;
+  object-fit: cover;
+}
+
+.ccreator-profile h2,
+.ccreator-profile h3,
+.ccreator-profile h4,
+.ccreator-profile h5 {
+  color: #0056b3; /* A shade of blue for headings */
+}
+
+.ccreator-profile .list-group-item {
+  border-left: 3px solid #007bff; /* Add a blue border to the left of list items for emphasis */
+}
+
+.ccreator-profile .badge {
+  font-size: 1em; /* Larger badges for better visibility */
+}
+
+.ccreator-profile blockquote {
+  padding-left: 1em;
+  border-left: 5px solid #eee; /* Stylish blockquote for reviews */
+}
+
+.ccreator-profile .btn-outline-primary {
+  border-color: #007bff;
+  color: #007bff;
+}
+
+.ccreator-profile .btn-outline-primary:hover {
+  background-color: #007bff;
+  color: #fff;
+}
+
+/* //  course request by user// */
+/* Base settings */
+.request-course-container {
+  max-width: 800px;
+  margin: 40px auto;
+  padding: 30px;
+  background-color: #fff; /* Light background to keep it clean */
+  border-radius: 15px; /* Soft rounded corners */
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; /* Modern, readable font */
+}
+
+.request-course-container h2 {
+  color: #0056b3; /* Deep, rich blue for contrast and emphasis */
+  margin-bottom: 25px; /* Spacing below the title for better visual separation */
+  text-align: center; /* Center-align the title for focus */
+  font-weight: 600; /* Slightly bolder for prominence */
+}
+
+/* Styling for form rows */
+.request-form-row {
+  display: flex;
+  margin-bottom: 15px; /* Tighter spacing for a compact form */
+  align-items: center; /* Vertically center labels and inputs */
+}
+
+.request-form-row label {
+  flex: 0 0 200px; /* Fixed width for labels for consistency */
+  text-align: center; /* Center-align labels for a balanced, column-like appearance */
+  margin-right: 50px; /* Space between label and input for clarity */
+  color: #007bff; /* Bold blue color for pop and readability */
+  font-weight: bold; /* Bold weight for distinction */
+  font-size: 16px; /* Slightly larger font size for visibility */
+  background-color: #fffcfc; /* Subtle background color to highlight the label area */
+  padding: 5px 10px; /* Padding for a more button-like appearance */
+  border-radius: 5px; /* Rounded corners for a modern, friendly look */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Soft shadow for depth */
+  transition: transform 0.3s ease, box-shadow 0.3s ease; /* Smooth transition for interaction */
+  margin-top: -20px;
+}
+
+/* Input fields and text areas */
+.request-form-row input[type="email"],
+.request-form-row input[type="text"],
+.request-form-row textarea {
+  padding: 8px 12px; /* Adequate padding for ease of entry */
+  border-radius: 5px; /* Gentle rounded corners for a modern look */
+  border: 1px solid #ccc; /* Subtle border */
+  font-size: 14px; /* Comfortable text size */
+  width: 60%;
+}
+
+/* Specifically targeting text areas to shrink them */
+.request-form-row textarea {
+  height: 80px; /* Reduced height for text areas */
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .request-form-row {
+    flex-direction: column; /* Stack label and input vertically on smaller screens */
+    align-items: stretch; /* Stretch items to fill width */
+  }
+
+  .request-form-row label {
+    text-align: left; /* Align labels to start on smaller screens */
+    margin-bottom: 5px; /* Space between label and input */
+  }
+}
+/* /modal in request course/ */
+
+.request-btn-primary {
+  background-color: #0056b3; /* Custom primary color */
+  border: none; /* Remove default border */
+  border-radius: 20px; /* Rounded button edges */
+}
+
+.request-btn-close {
+  background: none;
+  color: #000;
+  opacity: 1;
+}
+
+/* admin course request review */
+.review-requests {
+  background-color: #ffffff; /* Light background for the container */
+  padding: 20px;
+  border-radius: 10px; /* Rounded corners for the container */
+  box-shadow: 0 0 15px rgba(255, 16, 16, 0.1); /* Subtle shadow for depth */
+}
+
+.review-requests h2 {
+  color: #0056b3; /* Deep, rich blue for the heading */
+  margin-bottom: 30px; /* Adequate spacing below the heading */
+}
+
+.request-table {
+  background-color: #ffffff; /* White background for the table */
+  border-radius: 5px; /* Rounded corners for the table */
+  overflow: hidden; /* Ensures the rounded corners are visible */
+}
+
+.request-table th,
+.request-table td {
+  vertical-align: middle; /* Center content vertically in table cells */
+
+  line-height: 2.5; /* Adjust line height for more vertical space if needed */
+}
+
+.btn-success,
+.btn-danger {
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow for buttons */
+}
+
+.btn-success:hover {
+  background-color: #218838; /* Darker green on hover */
+}
+
+.btn-danger:hover {
+  background-color: #c82333; /* Darker red on hover */
+}
+
+/* site statistics */
+
+.site-statistics {
+  padding: 20px;
+  max-width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.site-statistics h2 {
+  margin-bottom: 30px;
+  color: #17a2b8; /* A vibrant color for the main heading */
+}
+
+.statistics-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px;
+  width: 100%;
+  max-width: 1200px;
+}
+
+.stat-category {
+  background-color: #ffffff; /* Bright white background for contrast */
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 5px 15px #ff9a9a26; /* Enhanced shadow for depth */
+}
+
+.stat-category h3 {
+  margin-bottom: 25px;
+  color: #007bff; /* Primary color for category titles */
+  font-size: 20px; /* Slightly larger font size for emphasis */
+  font-weight: bold;
+}
+
+.stat-detail h6 {
+  font-weight: 600;
+  color: #343a40; /* Dark color for contrast and readability */
+  margin-bottom: 5px;
+}
+
+.stat-detail p {
+  font-size: 18px; /* Increased font size for value readability */
+  margin-bottom: 10px;
+  color: #17a2b8; /* A vibrant color for the statistics to make them pop */
+  font-weight: bold; /* Bold font weight for the values to stand out */
+}
+.stat-category-header {
+  background-color: #007bff; /* Choose a color that contrasts well with your page background */
+  color: #ffffff; /* White text for better readability against the darker background */
+  padding: 10px 15px; /* Add some padding for spacing around the text */
+  border-radius: 5px; /* Slightly rounded corners for a modern look */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Optional: subtle shadow for depth */
+  display: inline-block; /* Makes the background only as wide as the text */
+  margin-bottom: 15px; /* Space below the header */
+}
+
+
+/* AdminAllCoursesDashboard.css */
+
+.admin-allcourses-card {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border: none;
+  border-radius: 10px;
+  overflow: hidden;
+  transition: transform 0.3s ease-in-out;
+  height: auto;
+}
+
+
+.admin-allcourses-img {
+  height: 160px;
+  object-fit: cover;
+}
+
+.admin-allcourses-title {
+  font-size: 1.25rem;
+  color: #333;
+  margin-bottom: 0.5rem;
+}
+
+
+.admin-allcourses-text {
+ 
+ font-size: 0.9rem;
+  color: #555;
+
+   display: -webkit-box;
+  -webkit-line-clamp: 2; /* Limit text to 2 lines */
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.2em; /* Adjust based on your design */
+  max-height: 2.4em; /* This should be line-height * number of lines you want to show */
+}
+
+
+.admin-allcourses-footer {
+  background-color: white;
+  border-top: 0;
+}
+
+.admin-allcourses-btn {
+  background-color: #007bff;
+  border: none;
+  width: 100%;
+  padding: 0.5rem;
+  transition: background-color 0.2s ease-in-out;
+}
+
+.admin-allcourses-btn:hover {
+  background-color: #0056b3;
+}
