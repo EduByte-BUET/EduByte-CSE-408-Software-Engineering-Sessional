@@ -17,8 +17,8 @@ const tables = {
 const pool = new Pool({
 	user: "postgres",
 	host: "localhost",
-	database: "postgres",
-	password: "123",
+	database: "test",
+	password: "connectdb",
 	port: 5432,
 });
 
@@ -102,7 +102,7 @@ const getUser = async (username) => {
 const getPopularCourses = async () => {
 	try {
 		const res = await pool.query(
-			"SELECT c.* FROM courses c ORDER BY total_enrolled DESC;"
+			"SELECT * FROM courses c ORDER BY total_enrolled DESC;"
 		);
 		if (res.rows[0]) {
 			return res.rows.map((row) => {
