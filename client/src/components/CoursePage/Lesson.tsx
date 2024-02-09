@@ -104,7 +104,7 @@ const Lesson = () => {
 						<h3>{course_name}</h3>
 						<p>
 							<b>
-								| Block {block_index}|Lecture {lecture_index}
+								| Block {block_index} | Lecture {lecture_index}
 							</b>
 						</p>
 					</div>
@@ -147,7 +147,7 @@ const Lesson = () => {
 						</p>
 						<p>
 							<b>
-								Lecture {lecture_index}|{data.title}
+								Lecture {lecture_index} | {data.title}
 							</b>
 							<br />
 							{data.description}
