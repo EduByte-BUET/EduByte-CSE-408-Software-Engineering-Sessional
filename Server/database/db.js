@@ -64,6 +64,21 @@ const getUserPassword = async (username) => {
 	}
 };
 
+const getAccessLevel = async (username) => {
+  try {
+    const res = await pool.query(
+      "SELECT access_level FROM users WHERE username = $1",
+      [username]
+    );
+    if (res.rows[0]) {
+      return res.rows[0].access_level;
+    }
+    return null;
+  } catch (err) {
+    console.log(err);
+  }
+};
+
 const addUser = async (user) => {
 	try {
 		await pool.query(
@@ -755,4 +770,5 @@ module.exports = {
 	getAdminNotificationData,
 	addLesson,
 	addLessonToPendingCourses,
+  getAccessLevel,
 };

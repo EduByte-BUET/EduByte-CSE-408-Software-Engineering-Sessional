@@ -31,10 +31,15 @@ function Login(props: any) {
 				password: user.password,
 			});
 
-			if (response) {
+			if (response && response.data) {
+
 				// Current user is in the system now
+				const {access_level } =response.data;
 				currentUser.setCurrentUser(user.username);
 
+				console.log('here i am in frontend signin');
+				console.log(currentUser.currentUser);
+		
 				navigate("/home", { state: user });
 				resetFields();
 			}
