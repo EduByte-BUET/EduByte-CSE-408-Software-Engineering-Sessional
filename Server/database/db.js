@@ -2,6 +2,7 @@ const { Pool } = require("pg");
 const { initDB } = require("./createtables");
 
 const tables = {
+
 	users: "users",
 	content_creator: "content_creator",
 	courses: "courses",
@@ -679,6 +680,7 @@ const approveLesson = async (pending_id) => {
 
 // Quiz section
 const fetchQuizData = async () => {
+
 	try {
 		await pool.query("BEGIN");
 
