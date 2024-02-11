@@ -67,6 +67,14 @@ const Lesson = () => {
       );
     }
   };
+  const handleExamClick = () => {
+	navigate(`/quiz`, {
+	  state: {
+		lecture_id: lecture_id,
+		lecture_name: lecture_title,
+	  },
+	});
+  }
 
   if (!data) {
     return <div>Loading...</div>;
@@ -118,13 +126,25 @@ const Lesson = () => {
           </div>
 
           {/* Button to mark the lessons as completed */}
-          <button
+          <div className="row justify-content-center">
+		  <button
             onClick={handleButtonClick}
             type="button"
             className="btn blue-button mt-4 w-50"
           >
             Next lecture
           </button>
+		  </div>
+
+		  <div className="row justify-content-center">
+		  <button
+            onClick={handleExamClick}
+            type="button"
+            className="btn blue-button mt-4 w-50"
+          >
+            Go to Exam <i className="fa fa-arrow-right"></i>
+          </button>
+		  </div>
         </div>
         <div className="col-md-8 mt-3">
           <div
