@@ -367,63 +367,49 @@ const getLessonList = async (lecture_id) => {
 	}
 };
 
-const markLesson = async (
-	lesson_id,
-	lecture_id,
-	block_id,
-	course_id,
-	user_id
-) => {
+const markLecture = async (lecture_id, block_id, course_id, user_id) => {
 	try {
+		const lectureExistsResult = await pool.query(
+			`SELECT * FROM course_progress WHERE user_id = $1 AND course_id = $2 AND lecture_id @> $3;`,
+			[user_id, course_id, [lecture_id]] // Convert lecture_id to an array
+		);
+
+		if (lectureExistsResult.rows.length > 0) {
+			console.log("Lecture already marked as completed");
+			return "";
+		}
+
+		const lessonIdsResult = await pool.query(
+			`SELECT lesson_id FROM lessons WHERE lecture_id = $1;`,
+			[lecture_id]
+		);
+
+		const lessonIds = lessonIdsResult.rows.map((row) => row.lesson_id);
+
 		const result = await pool.query(
 			`SELECT * FROM course_progress WHERE user_id = $1 AND course_id = $2;`,
 			[user_id, course_id]
 		);
 
 		if (result.rows.length === 0) {
-			// If the user_id and course_id do not exist, insert a new row
 			await pool.query(
-				`INSERT INTO course_progress (user_id, course_id, lesson_id, lecture_id, block_id) VALUES ($1, $2, ARRAY[$3::integer], ARRAY[$4::integer], ARRAY[$5::integer]);`,
-				[user_id, course_id, lesson_id, lecture_id, block_id]
+				`INSERT INTO course_progress (user_id, course_id, lesson_id, lecture_id, block_id) VALUES ($1, $2, $3, $4, $5);`,
+				[user_id, course_id, lessonIds, [lecture_id], [block_id]] // Convert lecture_id and block_id to arrays
 			);
-			console.log("New lesson, lecture and block marked");
+			console.log("New lesson, lecture, and block marked");
 			return "success";
 		} else {
-			// If the user_id and course_id exist, update the row
-			const oldLessonIds = result.rows[0].lesson_id;
-			const oldLectureIds = result.rows[0].lecture_id;
-			const oldBlockIds = result.rows[0].block_id;
-
 			await pool.query(
 				`UPDATE course_progress
-          		SET lesson_id = ARRAY(SELECT DISTINCT UNNEST(lesson_id || ARRAY[$3::integer])),
-          		lecture_id = ARRAY(SELECT DISTINCT UNNEST(lecture_id || ARRAY[$4::integer])),
-          		block_id = ARRAY(SELECT DISTINCT UNNEST(block_id || ARRAY[$5::integer]))
-          		WHERE user_id = $1 AND course_id = $2;`,
-				[user_id, course_id, lesson_id, lecture_id, block_id]
+          		SET lesson_id = lesson_id || $1, -- Concatenate arrays
+          		lecture_id = lecture_id || $2,
+          		block_id = block_id || $3
+          		WHERE user_id = $4 AND course_id = $5;`,
+				[lessonIds, [lecture_id], [block_id], user_id, course_id] // Convert lecture_id and block_id to arrays
 			);
 
-			const updatedResult = await pool.query(
-				`SELECT * FROM course_progress WHERE user_id = $1 AND course_id = $2;`,
-				[user_id, course_id]
-			);
-			const newLessonIds = updatedResult.rows[0].lesson_id;
-			const newLectureIds = updatedResult.rows[0].lecture_id;
-			const newBlockIds = updatedResult.rows[0].block_id;
-
-			if (
-				oldLessonIds.length === newLessonIds.length &&
-				oldLectureIds.length === newLectureIds.length &&
-				oldBlockIds.length === newBlockIds.length
-			) {
-				console.log(
-					"Duplicate lesson_id, lecture_id, block_id, no update made"
-				);
-				return "";
-			} else {
-				console.log("Lesson, lecture and block marked successfully");
-				return "success";
-			}
+			console.log("Lesson, lecture, and block marked successfully");
+			return "success";
 		}
 	} catch (err) {
 		console.log(err);
@@ -669,6 +655,38 @@ const approveLesson = async (pending_id) => {
 	}
 };
 
+// Quiz section
+const fetchQuizData = async () => {
+    try {
+        await pool.query("BEGIN");
+
+        const queryText = 'SELECT * FROM quizzes WHERE quiz_id = $1';
+        const queryValues = [1]; // Assuming quiz_id = 1
+
+        const result = await pool.query(queryText, queryValues);
+
+        await pool.query("COMMIT");
+
+        const quizData = result.rows[0];
+
+        return {
+            quiz_id: quizData.quiz_id,
+            lecture_id: quizData.lecture_id,
+            quiz_title: quizData.quiz_title,
+            quiz_duration: quizData.quiz_duration,
+            quiz_type: quizData.quiz_type,
+            quiz_description: JSON.parse(quizData.quiz_description),
+            quiz_pass_score: quizData.quiz_pass_score,
+            quiz_questions: JSON.parse(quizData.quiz_questions)
+        };
+    } catch (error) {
+        await pool.query("ROLLBACK");
+        console.error('Error fetching quiz data:', error);
+        throw error;
+    }
+};
+
+
 // Function to get the notification data for a user
 const getUserNotificationData = async (user_id) => {
 	try {
@@ -746,7 +764,7 @@ module.exports = {
 	getBlockList,
 	getLectureList,
 	getLessonList,
-	markLesson,
+	markLesson: markLecture,
 	getMyCoursesData,
 	getCategories,
 	getRecommendedCourses,
@@ -755,4 +773,6 @@ module.exports = {
 	getAdminNotificationData,
 	addLesson,
 	addLessonToPendingCourses,
+	approveLesson,
+	fetchQuizData,
 };

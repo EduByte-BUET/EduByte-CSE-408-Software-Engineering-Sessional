@@ -132,19 +132,13 @@ lesson_marked_router.route("/").get(async (req, res) => {
 	const course_id = req.query.course_id; // Get course_id from frontend
 	const block_id = req.query.block_id; // Get block_id from frontend
 	const lecture_id = req.query.lecture_id; // Get lecture_id from frontend
-	const lesson_id = req.query.lesson_id; // Get lesson_id from frontend
 	const username = req.session.username; // Get user_id from frontend
-	// console.log(req.session);
+	
 	const user = await db.getUser(username);
 	const user_id = user.user_id;
 
-	const marked = await db.markLesson(
-		lesson_id,
-		lecture_id,
-		block_id,
-		course_id,
-		user_id
-	);
+	const marked = await db.markLesson(lecture_id, block_id, course_id, user_id);
+
 	if (marked.length > 0) res.status(200).send();
 	else res.status(404).send();
 });

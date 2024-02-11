@@ -42,6 +42,28 @@ const Lesson = () => {
 		});
 	};
 
+	const handleButtonClick = async () => {
+		try {
+			await api.get(`/courses/marked?course_id=${course_id}&block_id=${block_id}&lecture_id=${lecture_id}`);
+
+			alert("Lecture marked as completed.");
+			
+			navigate(`/courses/lectures`, {
+				state: {
+					course_id: course_id,
+					course_name: course_name,
+					block_id: block_id,
+					block_name: block_name,
+					block_index: block_index,
+				},
+			});
+		}
+
+		catch (err) {
+			alert("Congrats! You already completed this lecture, move on adventurer!!");
+		}
+	};
+
 	if (!data) {
 		return <div>Loading...</div>;
 	}
@@ -90,6 +112,14 @@ const Lesson = () => {
 							</div>
 						))}
 					</div>
+					{/* Button to mark the lessons as completed */}
+					<button
+						onClick={handleButtonClick}
+						type="button"
+						className="btn blue-button mt-4 w-50"
+					>
+						Next lecture
+					</button>
 				</div>
 				<div
 					className="col-md-8 mt-3 text-start"
