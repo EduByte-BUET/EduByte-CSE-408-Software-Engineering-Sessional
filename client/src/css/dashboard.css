@@ -350,7 +350,6 @@
   margin-bottom: 15px; /* Space below the header */
 }
 
-
 /* AdminAllCoursesDashboard.css */
 
 .admin-allcourses-card {
@@ -361,7 +360,6 @@
   transition: transform 0.3s ease-in-out;
   height: auto;
 }
-
 
 .admin-allcourses-img {
   height: 160px;
@@ -374,13 +372,11 @@
   margin-bottom: 0.5rem;
 }
 
-
 .admin-allcourses-text {
- 
- font-size: 0.9rem;
+  font-size: 0.9rem;
   color: #555;
 
-   display: -webkit-box;
+  display: -webkit-box;
   -webkit-line-clamp: 2; /* Limit text to 2 lines */
   -webkit-box-orient: vertical;
   overflow: hidden;
@@ -388,7 +384,6 @@
   line-height: 1.2em; /* Adjust based on your design */
   max-height: 2.4em; /* This should be line-height * number of lines you want to show */
 }
-
 
 .admin-allcourses-footer {
   background-color: white;
@@ -406,3 +401,23 @@
 .admin-allcourses-btn:hover {
   background-color: #0056b3;
 }
+
+/* ///course review upload table  */
+/* Add this to your dashboard.css or equivalent stylesheet */
+.table-no-lines {
+  border-collapse: collapse; /* Ensure that the border collapse style is applied */
+}
+
+.table-no-lines th,
+.table-no-lines td {
+  border: none !important; /* Remove borders from table cells */
+  padding: 4px; /* Adjust padding as needed */
+}
+
+.table-no-lines tr.table-spacer td {
+  padding: 10px 0; /* Adjust the space for visual separation between sections */
+}
+/* 
+.table-spacer td {
+  padding: 10px 0; 
+} */

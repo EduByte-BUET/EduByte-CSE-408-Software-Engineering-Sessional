@@ -17,8 +17,8 @@ const tables = {
 const pool = new Pool({
 	user: "postgres",
 	host: "localhost",
-	database: "test",
-	password: "connectdb",
+	database: "postgres",
+	password: "123",
 	port: 5432,
 });
 
@@ -567,6 +567,7 @@ const addLesson = async (course, block, lecture, lesson) => {
 	try {
 		await pool.query("BEGIN");
 
+
 		let courseId = course.course_id;
 		if (!courseId) {
 			const courseInsertResult = await pool.query(
@@ -753,6 +754,240 @@ const fetchQuizData = async () => {
 	}
 };
 
+const DeleteReviewLesson = async (pending_id) => {
+  try {
+    // Remove the entry from the pending_courses table
+    await pool.query("DELETE FROM pending_courses WHERE pending_id = $1", [
+      pending_id,
+    ]);
+
+    console.log(`Lesson with pending_id ${pending_id} deleted successfully.`);
+  } catch (error) {
+    console.error("Error deleting lesson:", error);
+  }
+};
+
+
+// Quiz section
+const fetchQuizData = async (lecture_id) => {
+    try {
+        await pool.query("BEGIN");
+
+        const queryText = 'SELECT * FROM quizzes WHERE lecture_id = $1';
+       
+        const queryValues = [lecture_id]; // Assuming quiz_id = 1
+
+        const result = await pool.query(queryText, queryValues);
+
+        await pool.query("COMMIT");
+        console.log(result);
+        const quizData = result.rows[0];
+
+        //console.log(quizData);
+
+        return {
+            quiz_id: quizData.quiz_id,
+            lecture_id: quizData.lecture_id,
+            quiz_title: quizData.quiz_title,
+            quiz_duration: quizData.quiz_duration,
+            quiz_type: quizData.quiz_type,
+            quiz_description: quizData.quiz_description,
+            quiz_pass_score: quizData.quiz_pass_score,
+            quiz_questions: quizData.quiz_questions,
+        };
+    } catch (error) {
+        await pool.query("ROLLBACK");
+        console.error('Error fetching quiz data:', error);
+        throw error;
+    }
+};
+//questions info
+
+// Quiz section
+const fetchQuestionData = async (question_ids) => {
+  try {
+    await pool.query("BEGIN");
+
+    const queryText = 'SELECT * FROM question WHERE question_id = ANY($1)';
+    // Use ANY() to match multiple values in an array
+
+    const queryValues = [question_ids];
+
+    const result = await pool.query(queryText, queryValues);
+
+    await pool.query("COMMIT");
+    console.log(result);
+
+    const questionDataList = result.rows.map(questionData => ({
+      question_id: questionData.question_id,
+      question_type: questionData.question_type,
+      question: questionData.question,
+      sample_info: questionData.sample_info,
+      question_answer: questionData.question_answer,
+    }));
+
+    return questionDataList;
+  } catch (error) {
+    await pool.query("ROLLBACK");
+    console.error('Error fetching question data:', error);
+    throw error;
+  }
+};
+const addUserAnswer = async (user_id, lecture_id, question_id, user_answer) => {
+  try {
+    await pool.query("BEGIN");
+
+    const queryText = 'INSERT INTO result (user_id, lecture_id, question_id, user_answer) VALUES ($1, $2, $3, $4) RETURNING user_id';
+    const queryValues = [user_id, lecture_id, question_id, user_answer];
+    const result = await pool.query(queryText, queryValues);
+
+    user_id = result.rows[0].user_id;
+
+    await pool.query("COMMIT");
+    return user_id;
+  } catch (error) {
+    await pool.query("ROLLBACK");
+    console.error('Error adding user answer:', error);
+    throw error;
+  }
+}
+const addAiInfo = async (question_id, obtained_mark, comment) => {
+  try {
+    await pool.query("BEGIN");
+
+    const queryText = `UPDATE result 
+    SET obtained_mark = $2, 
+        comment = $3
+    WHERE question_id = $1
+    RETURNING question_id`;
+    const queryValues = [question_id, obtained_mark, comment];
+    const result = await pool.query(queryText, queryValues);
+    console.log(result);
+
+    if (result.rows.length === 0) {
+      throw new Error(`No row with question_id ${question_id} found`);
+    }
+
+    await pool.query("COMMIT");
+    return question_id;
+  } catch (error) {
+    await pool.query("ROLLBACK");
+    console.error('Error adding AI info:', error);
+    throw error;
+  }
+}
+const getResultsSummaryForLecture = async (lecture_id) =>{
+  try {
+    const queryText = `
+      SELECT
+        r.lecture_id,
+        SUM(r.obtained_mark) AS total_obtained_mark,
+        COUNT(r.question_id) AS total_questions,
+        ARRAY_AGG(
+          JSON_BUILD_OBJECT(
+            'question_text', q.question,
+            'question_answer', q.question_answer
+          )
+        ) AS questions
+      FROM result r
+      JOIN question q ON r.question_id = q.question_id
+      WHERE r.lecture_id = $1
+      GROUP BY r.lecture_id`;
+
+    const result = await pool.query(queryText, [lecture_id]);
+
+    if (result.rows.length === 0) {
+      console.log(`No results found for lecture_id ${lecture_id}`);
+      return null;
+    }
+
+    const summary = {
+      totalObtainedMark: result.rows[0].total_obtained_mark,
+      totalQuestions: result.rows[0].total_questions,
+      questions: result.rows[0].questions,
+    };
+
+    return summary;
+  } catch (error) {
+    console.error('Error fetching results summary with detailed questions:', error);
+    throw error;
+  }
+}
+
+
+const getUploadReviewData = async (user_id) => {
+  try {
+    // Query to fetch the data from the tables
+    const res = await pool.query("SELECT * FROM pending_courses");
+
+    // Check if the query returned any rows
+    if (res.rowCount > 0) {
+      const uploadData = res.rows;
+
+      // Create the object to return
+      const upload_list = {
+        status: "success",
+        message: "Upload data for the admin retrieved successfully.",
+        uploadData: uploadData,
+      };
+
+      return upload_list;
+    } else {
+      // If the query returned no rows, return null
+      return null;
+    }
+  } catch (err) {
+    // If there is an error, log it and return null
+    console.log(err);
+    return null;
+  }
+};
+const getAdminCoursesData = async () => {
+  try {
+    // Query to fetch the desired data from the courses table
+    const res = await pool.query(
+      `SELECT
+          course_id,
+          course_title,
+          difficulty_level,
+          category,
+          estimated_duration,
+          total_enrolled,
+          total_lectures,
+          thumbnail_url
+        FROM courses
+        ORDER BY course_id`
+    );
+
+    // Check if the query returned any rows
+    if (res.rowCount > 0) {
+      // If yes, return the rows
+      const coursesData = res.rows;
+
+      // Create the object to return
+      const coursesList = {
+        status: "success",
+        message: "Courses data retrieved successfully.",
+        coursesData: coursesData,
+      };
+
+      return coursesList;
+    } else {
+      // If the query returned no rows, return an appropriate message
+      return {
+        status: "error",
+        message: "No courses found.",
+      };
+    }
+  } catch (err) {
+    // If there is an error, log it and return an error message
+    console.error(err);
+    return {
+      status: "error",
+      message: "An error occurred while fetching courses data.",
+    };
+  }
+};
 // Function to get the notification data for a user
 const getUserNotificationData = async (user_id) => {
 	try {
@@ -786,13 +1021,12 @@ const getUserNotificationData = async (user_id) => {
 };
 
 // Function to get the notification data for a user
-const getAdminNotificationData = async (admin_id) => {
-	try {
-		// Query to fetch the data from the tables
-		const res = await pool.query(
-			"SELECT * FROM admin_notification WHERE admin_id = $1",
-			[admin_id]
-		);
+const getAdminNotificationData = async (user_id) => {
+  try {
+    // Query to fetch the data from the tables
+    const res = await pool.query(
+      "SELECT * FROM admin_notification",
+    );
 
 		// Check if the query returned any rows
 		if (res.rowCount > 0) {
@@ -840,8 +1074,17 @@ module.exports = {
 	addLesson,
 	addLessonToPendingCourses,
 	getAccessLevel,
+  getAdminCoursesData,
+  getUploadReviewData,
+  DeleteReviewLesson,
+  approveLesson,
 	approveLesson,
 	fetchQuizData,
+  fetchQuestionData,
+  addUserAnswer,
+  addAiInfo,
+  getResultsSummaryForLecture,
 	getLectureCount,
 	isLectureViewed,
+
 };
