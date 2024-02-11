@@ -403,32 +403,23 @@ const markLecture = async (lecture_id, block_id, course_id, user_id) => {
 		const lessonIds = lessonIdsResult.rows.map((row) => row.lesson_id);
 
 		const result = await pool.query(
-			`SELECT * FROM course_progress WHERE user_id = $1 AND course_id = $2;`,
-			[user_id, course_id]
+			`SELECT * FROM course_progress WHERE user_id = $1 AND course_id = $2 AND block_id = $3;`,
+			[user_id, course_id, block_id]
 		);
 
 		if (result.rows.length === 0) {
 			await pool.query(
 				`INSERT INTO course_progress (user_id, course_id, lesson_id, lecture_id, block_id) VALUES ($1, $2, $3, $4, $5);`,
-				[user_id, course_id, lessonIds, [lecture_id], [block_id]] // Convert lecture_id and block_id to arrays
+				[user_id, course_id, lessonIds, [lecture_id], block_id] // Convert lecture_id and block_id to arrays
 			);
 			return "success";
 		} else {
-			const list_block_ids = result.rows[0].block_id;
-			// Keeping the block_ids unique
-			list_block_ids.map((id) => {
-				if (id !== parseInt(block_id)) {
-					list_block_ids.push(block_id);
-				}
-			});
-
 			await pool.query(
 				`UPDATE course_progress
           		SET lesson_id = lesson_id || $1, -- Concatenate arrays
-          		lecture_id = lecture_id || $2,
-          		block_id = $3
-          		WHERE user_id = $4 AND course_id = $5;`,
-				[lessonIds, [lecture_id], list_block_ids, user_id, course_id] // Convert lecture_id and block_id to arrays
+          		lecture_id = lecture_id || $2
+          		WHERE user_id = $3 AND course_id = $4 AND block_id = $5;`,
+				[lessonIds, [lecture_id], user_id, course_id, block_id] // Convert lecture_id and block_id to arrays
 			);
 
 			console.log("Lesson, lecture, and block marked successfully");
@@ -439,6 +430,46 @@ const markLecture = async (lecture_id, block_id, course_id, user_id) => {
 		return "";
 	}
 };
+
+const getLectureCount = async (user_id, course_id, block_id) => {
+	try {
+		const result = await pool.query(
+			"SELECT lecture_id FROM course_progress WHERE user_id = $1 AND course_id = $2 AND block_id = $3",
+			[user_id, course_id, block_id]
+		);
+		if (result.rows.length > 0) {
+			const lectureCount = result.rows[0].lecture_id.length;
+			return lectureCount;
+		} else {
+			return null;
+		}
+	}
+	catch (err) {
+		console.log(err);
+		return null;
+	}
+}
+
+const isLectureViewed = async (user_id, course_id, block_id, lecture_id) => {
+	try {
+		const result = await pool.query(
+			"SELECT lecture_id FROM course_progress WHERE user_id = $1 AND course_id = $2 AND block_id = $3",
+			[user_id, course_id, block_id]
+		);
+		if (result.rows.length > 0) {
+			const lectureIds = result.rows[0].lecture_id;
+
+			if (lectureIds.includes(parseInt(lecture_id))) {
+				return true;
+			}
+		}
+		return false;
+	}
+	catch (err) {
+		console.log(err);
+		return false;
+	}
+}
 
 // Function to get the courses data for a user
 const getMyCoursesData = async (user_id) => {
@@ -889,4 +920,6 @@ module.exports = {
   approveLesson,
 	approveLesson,
 	fetchQuizData,
+	getLectureCount,
+	isLectureViewed,
 };

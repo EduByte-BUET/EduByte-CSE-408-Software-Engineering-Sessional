@@ -331,13 +331,13 @@ const createCourseProgressTable = async () => {
 		CREATE TABLE IF NOT EXISTS course_progress (
 			user_id INT REFERENCES users(user_id),
 			course_id INT REFERENCES courses(course_id),
-			block_id INT[],
+			block_id INT REFERENCES blocks(block_id),
 			lecture_id INT[],
 			lesson_id INT[],
 			-- quiz_id INT REFERENCES quizzes(quiz_id),
 			quiz_attempts INT, -- Number of quiz attempts within the lecture
 			quiz_score DECIMAL(5, 2), -- Latest or highest quiz score		
-			PRIMARY KEY (user_id, course_id)
+			PRIMARY KEY (user_id, course_id, block_id)
 		);
 		
 		`,
@@ -407,6 +407,7 @@ const createAdminNotificationTable = async () => {
     CREATE TABLE IF NOT EXISTS admin_notification (
       notification_id SERIAL PRIMARY KEY,
       user_id INT REFERENCES users(user_id),
+
       title VARCHAR(255) NOT NULL,
       message TEXT NOT NULL,
       notification_type VARCHAR(50),
@@ -461,16 +462,19 @@ const dropTable = async (table_name) => {
 
 // Constraints
 const addUniqueConstraint = async () => {
-  try {
-    await pool.query(
-      `CREATE UNIQUE INDEX IF NOT EXISTS unique_pending_courses_index
+	try {
+		await pool.query(
+			`CREATE UNIQUE INDEX IF NOT EXISTS unique_pending_courses_index
        ON pending_courses (lesson_title);`
-    );
-    console.log("Unique constraint added successfully");
-  } catch (error) {
-    console.error("Error adding unique constraint:", error);
-    throw error;
-  }
+
+
+		);
+		console.log("Unique constraint added successfully");
+	} catch (error) {
+		console.error("Error adding unique constraint:", error);
+		throw error;
+	}
+
 };
 
 const initDB = async (newPool) => {
@@ -495,8 +499,9 @@ const initDB = async (newPool) => {
 	//  await createQuestionTable();
 
 
-  // Constraints
-  // await addUniqueConstraint();
+	// Constraints
+	// await addUniqueConstraint();
+
 };
 
 module.exports = {
