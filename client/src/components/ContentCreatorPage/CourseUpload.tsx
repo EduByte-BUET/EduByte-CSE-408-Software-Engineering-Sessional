@@ -119,20 +119,20 @@ export default function CourseUpload() {
 		// send the file_url to the server
 		// ------------------------------------------- creator id change korte hobe --------------------------
 		const data = {
-			creator_id: 1,
-			course_id: selectedCourse,
-			course_title: courseTitle,
-			course_description: courseDescription,
-			block_id: selectedBlock,
-			block_title: blockTitle,
-			block_description: blockDescription,
-			lecture_id: selectedLecture,
-			lecture_title: lectureTitle,
-			lecture_description: lectureDescription,
-			lesson_title: lessonTitle,
-			lesson_description: lessonDescription,
-			file_url: "file_url",
-		};
+      creator_id: 1,
+      course_id: selectedCourse,
+      course_title: courseTitle,
+      course_description: courseDescription,
+      block_id: selectedBlock,
+      block_title: blockTitle,
+      block_description: blockDescription,
+      lecture_id: selectedLecture,
+      lecture_title: lectureTitle,
+      lecture_description: lectureDescription,
+      lesson_title: lessonTitle,
+      lesson_description: lessonDescription,
+      file_url: file,
+    };
 		console.log(data);
 
 		try {

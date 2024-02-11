@@ -29,15 +29,19 @@ signin_router.route("/").post(async (req, res) => {
   }
   const hashedPassword = await db.getUserPassword(username);
   const access_level = await db.getAccessLevel(username);
+  const user = await db.getUser(username);
+ 
 
   checkPassword(password, hashedPassword).then((match) => {
     if (match) {
       req.session.username = username;
       req.session.access_level = access_level;
+      req.session.user_id = user.user_id;
 
       console.log("after login ");
       console.log(" username " + req.session.username);
       console.log(" access_level " + req.session.access_level);
+       console.log("user_id " + req.session.user_id);
 
       req.session.save((err) => {
         if (err) {
