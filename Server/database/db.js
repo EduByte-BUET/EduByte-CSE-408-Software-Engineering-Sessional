@@ -131,7 +131,6 @@ const getPopularCourses = async () => {
 					total_enrolled: row.total_enrolled,
 					total_lessons: row.total_lessons,
 				};
-				console.log(course);
 				return course;
 			});
 		}
@@ -523,8 +522,10 @@ const getCoursesEnrolled = async (user_id) => {
 				total_lessons: course_title_and_total_lessons.rows[0].total_lessons,
 				course_description: course_title_and_total_lessons.rows[0].description,
 				thumbnail_url: course_title_and_total_lessons.rows[0].thumbnail_url,
-				difficulty_level: course_title_and_total_lessons.rows[0].difficulty_level,
-				estimated_duration: course_title_and_total_lessons.rows[0].estimated_duration,
+				difficulty_level:
+					course_title_and_total_lessons.rows[0].difficulty_level,
+				estimated_duration:
+					course_title_and_total_lessons.rows[0].estimated_duration,
 				category: course_title_and_total_lessons.rows[0].category,
 			};
 
