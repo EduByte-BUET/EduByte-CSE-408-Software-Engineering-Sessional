@@ -43,7 +43,18 @@ const Lesson = () => {
       },
     });
   };
-
+    	const navigateToNextLecture = () => {
+		navigate(`/courses/lectures`, {
+			state: {
+				course_id: course_id,
+				course_name: course_name,
+				block_id: block_id,
+				block_name: block_name,
+				block_index: block_index,
+			},
+		});
+	};
+    
   const handleButtonClick = async () => {
     try {
       await api.get(
@@ -52,19 +63,12 @@ const Lesson = () => {
 
       alert("Lecture marked as completed.");
 
-      navigate(`/courses/lectures`, {
-        state: {
-          course_id: course_id,
-          course_name: course_name,
-          block_id: block_id,
-          block_name: block_name,
-          block_index: block_index,
-        },
-      });
+      navigateToNextLecture();
     } catch (err) {
       alert(
         "Congrats! You already completed this lecture, move on adventurer!!"
       );
+      navigateToNextLecture();
     }
   };
   const handleExamClick = () => {
