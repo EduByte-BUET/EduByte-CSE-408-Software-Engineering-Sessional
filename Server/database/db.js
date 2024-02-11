@@ -12,6 +12,7 @@ const tables = {
   recommended_courses: "recommended_courses",
   course_progress: "course_progress",
   quizzes: "quizzes",
+  questions: "questions",
 };
 
 const pool = new Pool({
@@ -677,23 +678,24 @@ const fetchQuizData = async () => {
         await pool.query("BEGIN");
 
         const queryText = 'SELECT * FROM quizzes WHERE quiz_id = $1';
+        console.log(queryText);
         const queryValues = [1]; // Assuming quiz_id = 1
 
-        const result = await pool.query(queryText, queryValues);
+        // const result = await pool.query(queryText, queryValues);
 
-        await pool.query("COMMIT");
+        // await pool.query("COMMIT");
 
-        const quizData = result.rows[0];
+        // const quizData = result.rows[0];
 
-        return {
-            quiz_id: quizData.quiz_id,
-            lecture_id: quizData.lecture_id,
-            quiz_title: quizData.quiz_title,
-            quiz_duration: quizData.quiz_duration,
-            quiz_type: quizData.quiz_type,
-            quiz_description: JSON.parse(quizData.quiz_description),
-            quiz_pass_score: quizData.quiz_pass_score,
-            quiz_questions: JSON.parse(quizData.quiz_questions)
+        // return {
+        //     quiz_id: quizData.quiz_id,
+        //     lecture_id: quizData.lecture_id,
+        //     quiz_title: quizData.quiz_title,
+        //     quiz_duration: quizData.quiz_duration,
+        //     quiz_type: quizData.quiz_type,
+        //     quiz_description: JSON.parse(quizData.quiz_description),
+        //     quiz_pass_score: quizData.quiz_pass_score,
+        //     quiz_questions: JSON.parse(quizData.quiz_questions)
         };
     } catch (error) {
         await pool.query("ROLLBACK");
