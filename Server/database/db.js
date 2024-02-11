@@ -17,8 +17,8 @@ const tables = {
 const pool = new Pool({
   user: "postgres",
   host: "localhost",
-  database: "postgres",
-  password: "123",
+  database: "test",
+  password: "connectdb",
   port: 5432,
 });
 
