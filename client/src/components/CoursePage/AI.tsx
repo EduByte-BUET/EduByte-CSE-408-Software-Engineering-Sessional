@@ -1,43 +1,28 @@
 import React, { useState } from "react";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import "bootstrap/dist/css/bootstrap.min.css";
+import { HarmCategory } from "@google/generative-ai";
+import { HarmBlockThreshold } from "@google/generative-ai";
 
-const API_KEY = "AIzaSyBGsUe0I5WUAk2d8n4EBi6JMKDhHcYnjjY"; // Replace with your actual API key
-const MODEL_NAME = "gemini-pro"; // Replace with your actual model name
+const API_KEY = "My_API_KEY";
+const MODEL_NAME = "gemini-pro";
 
 const AI: React.FC = () => {
-  const [image, setImage] = useState<string>("");
   const [message, setMessage] = useState<string>("");
-  const [response, setResponse] = useState<string>("");
-
-  const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files![0];
-    const reader = new FileReader();
-
-    reader.onloadend = () => {
-      setImage(reader.result as string);
-    };
-
-    reader.onerror = () => {
-      alert("Error reading the image file. Please try again.");
-    };
-
-    reader.readAsDataURL(file);
-  };
+  const [chatHistory, setChatHistory] = useState<string[]>([]);
 
   const handleInputChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
     setMessage(event.target.value);
   };
 
   const handleSubmit = async () => {
-    if (!image && !message) {
-      alert("Please choose an image or enter a message.");
+    if (!message) {
+      alert("Please enter a message.");
       return;
     }
 
     const genAI = new GoogleGenerativeAI(API_KEY);
     const model = genAI.getGenerativeModel({ model: MODEL_NAME });
-
     const generationConfig = {
       temperature: 0.9,
       topK: 1,
@@ -46,17 +31,28 @@ const AI: React.FC = () => {
     };
 
     const safetySettings = [
-      // Your safety settings here
+      {
+        category: HarmCategory.HARM_CATEGORY_HARASSMENT,
+        threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE,
+      },
+      {
+        category: HarmCategory.HARM_CATEGORY_HATE_SPEECH,
+        threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE,
+      },
+      {
+        category: HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT,
+        threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE,
+      },
+      {
+        category: HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT,
+        threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE,
+      },
     ];
 
-    type Part = { text: string } | { inlineData: { data: string; mimeType: string } };
+    type Part = { text: string };
 
     const parts: Part[] = [];
     if (message) parts.push({ text: message });
-    if (image) {
-      const mimeType = getImageMimeType(image);
-      parts.push({ inlineData: { data: image.split(",")[1], mimeType } });
-    }
 
     const conversationHistory = [
       {
@@ -84,64 +80,69 @@ const AI: React.FC = () => {
     });
 
     try {
-      const result = await chat.sendMessage("How can you help me?");
+      const result = await chat.sendMessage(message);
       const response = result.response;
       console.log(response.text());
-      setResponse(response.text());
-      setImage(""); // Clear the image state after successful submission
+      setChatHistory([
+        ...chatHistory,
+        `User: ${message}`,
+        `AI: ${response.text()}`,
+      ]);
+      setMessage("");
     } catch (error) {
-      console.error(error);
-      setResponse("An error occurred. Please try again later.");
-    }
-  };
-
-  const getImageMimeType = (imageData: string): string => {
-    const base64Data = imageData.split(",")[1];
-    const binaryData = atob(base64Data);
-    const byte = binaryData.charCodeAt(0);
-
-    switch (byte) {
-      case 0xff:
-        return "image/jpeg";
-      case 0x89:
-        return "image/png";
-      default:
-        return "image/png"; // Default to PNG if the type is not recognized
+      if (error instanceof Error) {
+        console.error(error.message);
+        setChatHistory([...chatHistory, `Error: ${error.message}`]);
+      } else {
+        console.error(error);
+        setChatHistory([...chatHistory, `Error: An unknown error occurred.`]);
+      }
     }
   };
 
   return (
-    <div className="container mt-4">
-      <h2 className="mb-4">AI Assistant</h2>
+    <div className="container mt-4" style={{ backgroundColor: '#f0f0f0', borderRadius: '10px'  }}>
+      <h2 className="mb-4 text-start">Edurika</h2>
 
-      <div className="custom-file mb-4">
-        <input
-          type="file"
-          className="custom-file-input"
-          id="customFile"
-          accept="image/*"
-          onChange={handleImageUpload}
-        />
-        <label className="custom-file-label" htmlFor="customFile">
-          Choose image (optional)
-        </label>
+      <div
+        style={{
+          height: "200px",
+          overflowY: "scroll",
+          border: "1px solid #ccc",
+          padding: "10px",
+          marginBottom: "10px",
+        }}
+      >
+        {chatHistory.map((message, index) => (
+          <div
+            className="text-start"
+            key={index}
+            style={{
+              border: "1px solid #ccc",
+              padding: "10px",
+              marginBottom: "10px",
+            }}
+          >
+            {message}
+          </div>
+        ))}
       </div>
-
-      <div className="form-group">
+      <div className="row justify-content-between">
+      <div className="col-10 form-group">
         <textarea
           className="form-control"
           id="message"
           value={message}
           onChange={handleInputChange}
-          placeholder="Enter your message (optional)"
+          placeholder="Enter your message"
         />
       </div>
-
-      <button className="btn btn-primary mb-4" onClick={handleSubmit}>
-        Send
-      </button>
-
-      <div>{response}</div>
+      <div className="col-2 d-flex align-items-end justify-content-end">
+    <button className="btn btn-primary mb-4" onClick={handleSubmit}>
+      Send
+    </button>
+  </div>
+      </div>
     </div>
   );
 };
