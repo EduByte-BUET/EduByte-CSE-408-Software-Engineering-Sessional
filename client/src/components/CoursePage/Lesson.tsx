@@ -3,6 +3,8 @@ import api from "../../api/GeneralAPI";
 import PdfViewer from "./PdfViewer";
 import VideoPlayer from "./VideoPlayer";
 import { useLocation, useNavigate } from "react-router-dom";
+import AI from "./AI";
+import AIImage from "./AI_Image";
 
 const Lesson = () => {
 	const location = useLocation();
@@ -112,6 +114,9 @@ const Lesson = () => {
 							</div>
 						))}
 					</div>
+                    			<AI/>
+      <p>It's in progress</p>
+      <AIImage/>
 					{/* Button to mark the lessons as completed */}
 					<button
 						onClick={handleButtonClick}
