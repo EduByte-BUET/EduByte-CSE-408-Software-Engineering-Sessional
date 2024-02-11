@@ -58,8 +58,7 @@ courses_router.route("/").get(async (req, res) => {
 	const course_id = req.query.course_id;
 
 	const course_info = await db.getCourse(course_id);
-	console.log("here it is");
-	console.log(course_info);
+
 	if (course_info) res.status(200); // OK
 	else res.status(404); // Not found
 	res.json(course_info);
@@ -141,7 +140,7 @@ lesson_marked_router.route("/").get(async (req, res) => {
 	const user = await db.getUser(username);
 	const user_id = user.user_id;
 
-	const marked = await db.markLesson(lecture_id, block_id, course_id, user_id);
+	const marked = await db.markLecture(lecture_id, block_id, course_id, user_id);
 
 	if (marked.length > 0) res.status(200).send();
 	else res.status(404).send();

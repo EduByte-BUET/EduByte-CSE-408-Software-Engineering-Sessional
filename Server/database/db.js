@@ -2,7 +2,6 @@ const { Pool } = require("pg");
 const { initDB } = require("./createtables");
 
 const tables = {
-
 	users: "users",
 	content_creator: "content_creator",
 	courses: "courses",
@@ -443,12 +442,11 @@ const getLectureCount = async (user_id, course_id, block_id) => {
 		} else {
 			return null;
 		}
-	}
-	catch (err) {
+	} catch (err) {
 		console.log(err);
 		return null;
 	}
-}
+};
 
 const isLectureViewed = async (user_id, course_id, block_id, lecture_id) => {
 	try {
@@ -464,69 +462,83 @@ const isLectureViewed = async (user_id, course_id, block_id, lecture_id) => {
 			}
 		}
 		return false;
-	}
-	catch (err) {
+	} catch (err) {
 		console.log(err);
 		return false;
 	}
-}
+};
 
 // Function to get the courses data for a user
-const getMyCoursesData = async (user_id) => {
+const getCoursesEnrolled = async (user_id) => {
 	try {
-		// Query to fetch the data from the tables
-		const res = await pool.query(
-			`SELECT
-		  c.course_id,
-		  c.course_title,
-		  array_length(cp.lesson_id, 1) as lesson_count,
-		  c.total_lessons
-		FROM courses c
-		INNER JOIN course_progress cp ON c.course_id = cp.course_id AND cp.user_id = $1
-		GROUP BY
-		  c.course_id,
-		  lesson_count,
-		  c.course_title,
-		  c.total_lessons
-		ORDER BY
-		  c.course_id`,
-			[user_id]
-		);
+		let queryText = `
+            SELECT DISTINCT
+                course_id
+            FROM
+                course_progress
+            WHERE
+                user_id = $1;
+        `;
+		let queryValues = [user_id];
+		const enrolled_courses = await pool.query(queryText, queryValues);
 
-		// Check if the query returned any rows
-		if (res.rowCount > 0) {
-			// Initialize an empty array to store the courses data
-			const coursesData = [];
+		let courseArray = [];
 
-			// Loop through the rows of the query result
-			for (let row of res.rows) {
-				// Add the course data to the array
-				coursesData.push({
-					course_id: row.course_id,
-					course_title: row.course_title,
-					lessons_completed: row.lesson_count,
-					total_lessons: row.total_lessons,
-				});
+		for (const course of enrolled_courses.rows) {
+			let lessons_completed = 0;
+
+			queryText = `
+                SELECT
+                    lesson_id
+                FROM
+                    course_progress
+                WHERE
+                    user_id = $1 AND course_id = $2;
+            `;
+			queryValues = [user_id, course.course_id];
+			const lesson_list = await pool.query(queryText, queryValues);
+
+			for (const arr of lesson_list.rows) {
+				lessons_completed += arr.lesson_id.length;
 			}
 
-			// Create the object to return
-			const courses_list = {
-				status: "success",
-				message: "Courses data for the user retrieved successfully.",
-				coursesData: coursesData,
+			queryText = `
+                SELECT
+                    course_title, total_lessons, description, thumbnail_url, difficulty_level, estimated_duration, category
+                FROM
+                    courses
+                WHERE
+                    course_id = $1;
+            `;
+			queryValues = [course.course_id];
+			const course_title_and_total_lessons = await pool.query(
+				queryText,
+				queryValues
+			);
+
+			const courseInfo = {
+				course_id: course.course_id,
+				course_title: course_title_and_total_lessons.rows[0].course_title,
+				lessons_completed: lessons_completed,
+				total_lessons: course_title_and_total_lessons.rows[0].total_lessons,
+				course_description: course_title_and_total_lessons.rows[0].description,
+				thumbnail_url: course_title_and_total_lessons.rows[0].thumbnail_url,
+				difficulty_level: course_title_and_total_lessons.rows[0].difficulty_level,
+				estimated_duration: course_title_and_total_lessons.rows[0].estimated_duration,
+				category: course_title_and_total_lessons.rows[0].category,
 			};
 
-			return courses_list;
-		} else {
-			// If the query returned no rows, return null
-			return null;
+			courseArray.push(courseInfo);
 		}
-	} catch (err) {
-		// If there is an error, log it and return null
-		console.log(err);
+
+		console.log(courseArray);
+		return courseArray;
+	} catch (error) {
+		console.error("Error fetching enrolled courses:", error);
 		return null;
 	}
 };
+
 /*
 const course = {
 		course_id: courseToBeUploaded.course_id,
@@ -711,7 +723,6 @@ const approveLesson = async (pending_id) => {
 
 // Quiz section
 const fetchQuizData = async () => {
-
 	try {
 		await pool.query("BEGIN");
 
@@ -818,8 +829,8 @@ module.exports = {
 	getBlockList,
 	getLectureList,
 	getLessonList,
-	markLesson: markLecture,
-	getMyCoursesData,
+	markLecture,
+	getCoursesEnrolled,
 	getCategories,
 	getRecommendedCourses,
 	getAllCourses,
