@@ -97,7 +97,7 @@ const UserProfile = () => {
       <button className="btn blue-button m-3" onClick={() => navigate("/home")}>
         <i className="bi bi-house"></i> Home
       </button>
-      <button className="btn blue-button m-3" onClick={handleLogout}>
+      <button className="btn red-button m-3" onClick={handleLogout}>
         Logout
       </button>
     </div>

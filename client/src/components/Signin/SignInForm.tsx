@@ -37,7 +37,6 @@ function Login(props: any) {
 				const {access_level } =response.data;
 				currentUser.setCurrentUser(user.username);
 
-				console.log('here i am in frontend signin');
 				console.log(currentUser.currentUser);
 		
 				navigate("/home", { state: user });
