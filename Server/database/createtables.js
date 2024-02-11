@@ -12,6 +12,7 @@ const tables = {
 	course_progress: "course_progress",
 	quizzes: "quizzes",
 	question: "question",
+	result: "result",
 };
 
 const createUsersTable = async () => {
@@ -321,6 +322,32 @@ const createQuestionTable = async () => {
 	  }
 	);
   };
+
+//result_of the quiz
+const createResultTable = async () => {
+	await pool.query(
+	  `
+	  CREATE TABLE IF NOT EXISTS result (
+		  result_id SERIAL PRIMARY KEY,
+		  user_id INT REFERENCES users(user_id),
+		  lecture_id INT REFERENCES lectures(lecture_id),
+		  question_id INT REFERENCES question(question_id),
+		  user_answer TEXT,
+		  obtained_mark DECIMAL(5, 2),
+		  comment TEXT
+	  );
+	  `,
+	  (err, res) => {
+		if (err) {
+		  console.error(err);
+		  return;
+		}
+  
+		console.log("Result Table creation successful");
+	  }
+	);
+  };
+  
   
 
 const createCourseProgressTable = async () => {
@@ -494,6 +521,7 @@ const initDB = async (newPool) => {
 	// await createCourseRequestTable();
 	// await createPendingCoursesTable();
 	//  await createQuestionTable();
+	// await createResultTable();
 
 
 	// Constraints
