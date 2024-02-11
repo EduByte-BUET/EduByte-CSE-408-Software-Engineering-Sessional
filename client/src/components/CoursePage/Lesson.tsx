@@ -3,6 +3,8 @@ import api from "../../api/GeneralAPI";
 import PdfViewer from "./PdfViewer";
 import VideoPlayer from "./VideoPlayer";
 import { useLocation, useNavigate } from "react-router-dom";
+import AI from "./AI";
+import AIImage from "./AI_Image";
 
 const Lesson = () => {
   const location = useLocation();
@@ -49,7 +51,7 @@ const Lesson = () => {
   return (
     <div className="container">
       <div className="row justify-content-between">
-        <div className="col-3 m-2">
+        <div className="col-5 m-2">
           <div className="text-start mt-3">
             <h3>{course_name}</h3>
             <p>
@@ -69,9 +71,13 @@ const Lesson = () => {
                 <h5>{lesson.title}</h5>
               </div>
             ))}
+			{/* integrate an AI chatbot UI here */}
+			<AI/>
+      <p>It's in progress</p>
+      <AIImage/>
           </div>
         </div>
-        <div className="col-8 m-2" style={{ overflowY: "auto" }}>
+        <div className="col-6 m-2" style={{ overflowY: "auto" }}>
           <div className="text-start mt-3">
             <p>
               <i className="fas fa-home"></i>.{course_name}.{block_name}
