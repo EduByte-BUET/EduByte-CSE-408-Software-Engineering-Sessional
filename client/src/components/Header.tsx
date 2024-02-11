@@ -29,11 +29,7 @@ function Header() {
     const handleAccessLevel = async () => {
       try {
         const res = await dashboardapi.get("/user/signin/accesslevel");
-        console.log(res);
         setAccessLevelData(res.data.access_level);
-        console.log("I am in navbar");
-        console.log(res.data.access_level);
-        console.log(accesslevelData);
       } catch (err) {
         console.log(err);
       }

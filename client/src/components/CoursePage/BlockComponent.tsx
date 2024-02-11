@@ -15,6 +15,7 @@ const BlockComponent = (props: any) => {
 			},
 		});
 	};
+	
 	const handleLectureClick = (
 		lecture_index: number,
 		lecture_id: number,

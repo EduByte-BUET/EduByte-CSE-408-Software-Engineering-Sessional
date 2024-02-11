@@ -5,8 +5,7 @@ import { Spinner } from "react-bootstrap";
 
 const LectureInfo = () => {
 	const location = useLocation();
-	const { course_id, course_name, block_id, block_name, block_index } =
-		location.state;
+	const { course_id, course_name, block_id, block_name, block_index } = location.state;
 	const [lectureInfo, setLectureInfo] = useState<any>(null);
 	const navigate = useNavigate();
 

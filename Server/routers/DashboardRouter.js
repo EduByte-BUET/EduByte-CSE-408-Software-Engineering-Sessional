@@ -115,7 +115,7 @@ recommendations_router.route("/").get(async (req, res) => {
 });
 
 notifications_router.route("/").get(async (req, res) => {
-  console.log("/user/notifications GET");
+	console.log("/user/notifications GET");
 
   // Client would want to get the notifications from the database
   // userid (needed to get data form the db) is stored in req.session.userid

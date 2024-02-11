@@ -283,9 +283,7 @@ const createQuizTable = async () => {
             quiz_type VARCHAR(100),                                                 -- 'graded', 'ungraded'
             quiz_duration INT,                                                        -- Duration of the quiz (e.g., in minutes)
             quiz_pass_score DECIMAL(5, 2),                                     -- Pass score for the quiz
-            quiz_questions TEXT,                                                    -- Could be a JSON string
-            created_at TIMESTAMP WITHOUT TIME ZONE DEFAULT NOW(),
-            updated_at TIMESTAMP WITHOUT TIME ZONE
+            quiz_questions TEXT                                                    -- Could be a JSON string
         );
         
         `,
