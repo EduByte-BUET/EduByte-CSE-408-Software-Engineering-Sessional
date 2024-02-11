@@ -44,25 +44,31 @@ const Lesson = () => {
 		});
 	};
 
+	const navigateToNextLecture = () => {
+		navigate(`/courses/lectures`, {
+			state: {
+				course_id: course_id,
+				course_name: course_name,
+				block_id: block_id,
+				block_name: block_name,
+				block_index: block_index,
+			},
+		});
+	};
+
 	const handleButtonClick = async () => {
 		try {
-			await api.get(`/courses/marked?course_id=${course_id}&block_id=${block_id}&lecture_id=${lecture_id}`);
+			await api.get(
+				`/courses/marked?course_id=${course_id}&block_id=${block_id}&lecture_id=${lecture_id}`
+			);
 
 			alert("Lecture marked as completed.");
-			
-			navigate(`/courses/lectures`, {
-				state: {
-					course_id: course_id,
-					course_name: course_name,
-					block_id: block_id,
-					block_name: block_name,
-					block_index: block_index,
-				},
-			});
-		}
-
-		catch (err) {
-			alert("Congrats! You already completed this lecture, move on adventurer!!");
+			navigateToNextLecture();
+		} catch (err) {
+			alert(
+				"Congrats! You already completed this lecture, move on adventurer!!"
+			);
+			navigateToNextLecture();
 		}
 	};
 
@@ -114,9 +120,9 @@ const Lesson = () => {
 							</div>
 						))}
 					</div>
-                    			<AI/>
-      <p>It's in progress</p>
-      <AIImage/>
+					<AI />
+					<p>It's in progress</p>
+					<AIImage />
 					{/* Button to mark the lessons as completed */}
 					<button
 						onClick={handleButtonClick}
