@@ -77,7 +77,6 @@ function Header() {
               Course Upload (Content Creator Only)
             </Nav.Link>
           )}
-
           {currentUser && accesslevelData === "user" ? (
             <Nav.Link
               as={Link}
