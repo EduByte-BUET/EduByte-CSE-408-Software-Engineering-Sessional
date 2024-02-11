@@ -16,65 +16,25 @@ router.use("/user/saved_posts", saved_posts_router);
 // Name, Email, Username, Password
 
 courses_router.route("/").get(async (req, res) => {
-  console.log("/user/courses GET");
+	console.log("/user/courses GET");
 
-  // Client would want to get the courses from the database
-  // userid (needed to get data form the db) is stored in req.session.userid
-  // A sample json response is given below
-  // courses = {
-  // 	courses: [
-  // 		{
-  // 			course_id: 1,
-  // 			course_name: "Introduction to Programming",
-  // 			total_completed_lecture: 5,
-  // 			total_lecture: 10,
-  // 			total_completed_quiz: 3,
-  // 			total_quiz: 10,
-  // 			avg_quiz_score: 85,
-  // 		},
-  // 		{
-  // 			course_id: 2,
-  // 			course_name: "Web Development Basics",
-  // 			total_completed_lecture: 8,
-  // 			total_lecture: 10,
-  // 			total_completed_quiz: 5,
-  // 			total_quiz: 10,
-  // 			avg_quiz_score: 92,
-  // 		},
-  // 		{
-  // 			course_id: 3,
-  // 			course_name: "Data Structures and Algorithms",
-  // 			total_completed_lecture: 7,
-  // 			total_lecture: 15,
-  // 			total_completed_quiz: 4,
-  // 			total_quiz: 8,
-  // 			avg_quiz_score: 88,
-  // 		},
-  // 		{
-  // 			course_id: 4,
-  // 			course_name: "Database Systems",
-  // 			total_completed_lecture: 6,
-  // 			total_lecture: 12,
-  // 			total_completed_quiz: 3,
-  // 			total_quiz: 6,
-  // 			avg_quiz_score: 90,
-  // 		},
-  // 	],
-  // };
+	const user = await db.getUser(req.session.username); // req.session.userid;
+	const user_id = user.user_id;
 
-  const user_id = 1; // req.session.userid;
-  let courses = await db.getMyCoursesData(user_id);
-  if (courses == null) {
-    courses = {
-      status: "success",
-      message: "Courses data for the user retrieved successfully.",
-      coursesData: [],
-    };
-  }
+	let courses = await db.getCoursesEnrolled(user_id);
+	console.log(courses);
+	if (courses.length === 0) {
+		res.status(400);
+		courses = {
+			status: "success",
+			message: "Courses data for the user retrieved successfully.",
+			coursesData: [],
+		};
+	}
 
-  if (courses !== null) res.status(200); // OK
-  else res.status(400); // Bad Request
-  res.json(courses);
+	res.status(200);
+	res.json(courses);
+
 });
 
 recommendations_router.route("/").get(async (req, res) => {
@@ -116,6 +76,7 @@ recommendations_router.route("/").get(async (req, res) => {
 
 notifications_router.route("/").get(async (req, res) => {
 	console.log("/user/notifications GET");
+
 
   // Client would want to get the notifications from the database
   // userid (needed to get data form the db) is stored in req.session.userid

@@ -23,23 +23,9 @@ const Dashboard = () => {
   //   }
   // }, []);
 
-  const [coursesData, setCoursesData] = React.useState<any>(null);
+  const [coursesData, setCoursesData] = React.useState<[any]>();
   const [recommendedCoursesData, setRecommendedCoursesData] = React.useState<any>(null);
   const [notificationData, setNotificationData] = React.useState<any>(null);
-  // useEffect(() => {
-  //   const handleMyCourses = async () => {
-  //       try {
-  //         const res = await dashboardapi.get("/courses");
-  //         setCoursesData(res.data.coursesData);
-  //       }
-  //       catch (err) {
-  //         console.log(err);
-  //       }
-  //   }
-
-  //   handleMyCourses();
-  //   }
-  // , []);
 
   useEffect(() => {
     const handleMyNotification = async () => {
@@ -64,7 +50,7 @@ const Dashboard = () => {
         <Routes>
           <Route
             path="/mycourses"
-            element={<MyCourses coursesData={coursesData} />}
+            element={<MyCourses />}
           />
           <Route path="/recommendations" element={<RecommendedCourses />} />
           <Route
