@@ -63,6 +63,7 @@ const CourseBlocks = () => {
 								block_id={block.block_id}
 								index={index + 1}
 								block_name={block.title}
+								lectures={block.lectures}
 							/>
 						))}
 					</div>
