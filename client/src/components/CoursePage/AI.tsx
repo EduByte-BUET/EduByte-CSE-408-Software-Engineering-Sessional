@@ -138,7 +138,7 @@ const AI: React.FC = () => {
         />
       </div>
       <div className="col-2 d-flex align-items-end justify-content-end">
-    <button className="btn btn-primary mb-4" onClick={handleSubmit}>
+    <button className="btn blue-button mb-4" onClick={handleSubmit}>
       Send
     </button>
   </div>

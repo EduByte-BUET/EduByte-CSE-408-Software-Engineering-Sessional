@@ -9,6 +9,8 @@ const lesson_marked_router = express.Router();
 const category_router = express.Router();
 const popular_course_router = express.Router();
 const recommended_course_router = express.Router();
+const lecture_count = express.Router();
+const isLectureViewed = express.Router();
 
 const db = require("../database/db");
 
@@ -21,6 +23,8 @@ router.use("/blocks/lectures", lecture_router);
 router.use("/blocks/lectures/lessons", lesson_router);
 router.use("/marked", lesson_marked_router);
 router.use("/register", register_to_course_router);
+router.use("/blocks/lecture_count", lecture_count);
+router.use("/blocks/lectures/isLectureViewed", isLectureViewed);
 
 category_router.route("/").get(async (req, res) => {
 	console.log("/courses/categories GET");
@@ -54,8 +58,7 @@ courses_router.route("/").get(async (req, res) => {
 	const course_id = req.query.course_id;
 
 	const course_info = await db.getCourse(course_id);
-	console.log("here it is");
-	console.log(course_info);
+
 	if (course_info) res.status(200); // OK
 	else res.status(404); // Not found
 	res.json(course_info);
@@ -137,10 +140,37 @@ lesson_marked_router.route("/").get(async (req, res) => {
 	const user = await db.getUser(username);
 	const user_id = user.user_id;
 
-	const marked = await db.markLesson(lecture_id, block_id, course_id, user_id);
+	const marked = await db.markLecture(lecture_id, block_id, course_id, user_id);
 
 	if (marked.length > 0) res.status(200).send();
 	else res.status(404).send();
+});
+
+lecture_count.get("/", async (req, res) => {
+	console.log("/courses/blocks/lecture_count GET");
+	const course_id = req.query.course_id;
+	const block_id = req.query.block_id;
+
+	const user = await db.getUser(req.session.username);
+	const user_id = user.user_id;
+
+	const lecture_count = await db.getLectureCount(user_id, course_id, block_id);
+	if (lecture_count != null) res.status(200).json(lecture_count); // OK
+	else res.status(404).send(); // Not found
+});
+
+isLectureViewed.get("/", async (req, res) => {
+	console.log("/courses/blocks/lectures/isLectureViewed GET");
+	const lecture_id = req.query.lecture_id;
+	const block_id = req.query.block_id;
+	const course_id = req.query.course_id;
+
+	const user = await db.getUser(req.session.username);
+	const user_id = user.user_id;
+
+	const isLectureViewed = await db.isLectureViewed(user_id, course_id, block_id, lecture_id);
+	if (isLectureViewed === true) res.status(200).send(true); // OK
+	else res.status(404).send(false); // Not found
 });
 
 module.exports = router;

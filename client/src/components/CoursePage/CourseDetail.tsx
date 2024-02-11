@@ -3,12 +3,11 @@ import { useLocation, useNavigate } from "react-router-dom";
 import VideoPlayer from "./VideoPlayer";
 import api from "../../api/GeneralAPI";
 
-
 const CourseDetail = () => {
 	const [course, setCourse] = useState<any>(null);
 	const location = useLocation();
 	const navigate = useNavigate();
-	const {course_id, course_title} = location.state;
+	const { course_id, course_title } = location.state;
 
 	useEffect(() => {
 		const fetchData = async () => {
@@ -28,7 +27,12 @@ const CourseDetail = () => {
 		if (course !== null) {
 			try {
 				await api.post("/courses/register", { course_id: course_id });
-				navigate(`/courses/blocks`,{ state: { course_id: course.course_id, course_title: course.course_title } });
+				navigate(`/courses/blocks`, {
+					state: {
+						course_id: course.course_id,
+						course_title: course.course_title,
+					},
+				});
 			} catch (err) {
 				console.error(err);
 				alert(
@@ -45,7 +49,7 @@ const CourseDetail = () => {
 	return (
 		<div className="container">
 			<div className="row justify-content-between">
-				<div className="col mt-6 text-start">
+				<div className="col mt-5 text-start">
 					<h4 className="blue-text">{course.course_title}</h4>
 					<p>{course.description}</p>
 					<button
@@ -56,8 +60,8 @@ const CourseDetail = () => {
 						Start Course <i className="bi bi-arrow-right"></i>
 					</button>
 				</div>
-				<div className="col mt-3">
-					<img src={course.thumbnail_url} alt="Course Photo" />
+				<div className="col mt-5">
+					<img src={course.thumbnail_url} alt="Course Photo" height={200} />
 				</div>
 			</div>
 			<div className="row cream-background mt-3">
@@ -77,7 +81,7 @@ const CourseDetail = () => {
 				<div className="col-4 text-start p-3">
 					<h5>Skills required</h5>
 					<ul>
-						{course.skills_acquired.map((skill:string, index:number) => (
+						{course.skills_acquired.map((skill: string, index: number) => (
 							<li key={index}>{skill}</li>
 						))}
 					</ul>

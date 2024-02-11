@@ -2,6 +2,7 @@ import React, { FC, useEffect, useState } from "react";
 import api from "../../api/GeneralAPI";
 import { useNavigate, useLocation } from "react-router-dom";
 import { Spinner } from "react-bootstrap";
+import LectureTemp from "./LectureTemp";
 
 const LectureInfo = () => {
 	const location = useLocation();
@@ -86,20 +87,14 @@ const LectureInfo = () => {
 					<div style={{ overflowY: "auto" }}>
 						{lectureInfo.lectures.map((lecture: any, index: any) => (
 							// Use the lecture id as the key
-							<div
+							<LectureTemp
 								key={lecture.lecture_id}
-								className="row-border mt-2 rounded hover-effect p-3 text-start"
-								onClick={handleLectureClick.bind(
-									this,
-									index + 1,
-									lecture.lecture_id,
-									lecture.title
-								)}
-								style={{ cursor: "pointer" }}
-							>
-								<h5>Lecture {index + 1}</h5>
-								<h5>{lecture.title}</h5>
-							</div>
+								course_id={course_id}
+								block_id={block_id}
+								lecture={lecture}
+								index={index}
+								handleLectureClick={handleLectureClick}
+							/>
 						))}
 					</div>
 				</div>

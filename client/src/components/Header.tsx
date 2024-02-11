@@ -73,8 +73,7 @@ function Header() {
               Course Upload (Content Creator Only)
             </Nav.Link>
           )}
-
-          {currentUser ? (
+          {currentUser && accesslevelData === "user" ? (
             <Nav.Link
               as={Link}
               to="/user/dashboard"

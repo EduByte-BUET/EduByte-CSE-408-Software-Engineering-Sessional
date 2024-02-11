@@ -1,8 +1,8 @@
 import { useNavigate } from "react-router-dom";
 
 const BlockComponent = (props: any) => {
-	const { course_id, course_name, block_id, index, blockName, lectures } =
-		props;
+	const { course_id, course_name, block_id, index, blockName, lectures } = props;
+	
 	const navigate = useNavigate();
 	const handleBlockClick = () => {
 		navigate(`/courses/lectures`, {
@@ -15,6 +15,7 @@ const BlockComponent = (props: any) => {
 			},
 		});
 	};
+
 	const handleLectureClick = (
 		lecture_index: number,
 		lecture_id: number,
@@ -33,6 +34,7 @@ const BlockComponent = (props: any) => {
 			},
 		});
 	};
+
 	return (
 		<div className="row-border mt-2 rounded p-3 text-start bold-text block-effect">
 			<p key={block_id} onClick={handleBlockClick}>
