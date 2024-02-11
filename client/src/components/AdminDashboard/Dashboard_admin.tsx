@@ -5,6 +5,7 @@ import {
   Route,
   Routes,
   useNavigate,
+  useLocation,
 } from "react-router-dom";
 import "../../css/dashboard.css";
 
@@ -15,11 +16,14 @@ import AdminProfile from "./AdminProfile";
 import ContentCreatorsProfile from "./ContentCreatorsProfile";
 import CCreatorDetail from "./CCreatorDetail";
 import CourseRequestsReview from "./CourseRequestsReview";
+import CourseUploadsReview from "./CourseUploadsReview";
+import CourseUploadDetail from "./CourseUploadDetail";
 import SiteStatistics from "./SiteStatistics";
 import AllCourses from "./AllCourses";
 const Dashboard_admin = () => {
   const { currentUser } = React.useContext(UserContext);
   const navigate = useNavigate();
+  const location =useLocation();
   //If user is not logged in, redirect to home page
   //   useEffect(() => {
   //     if (!currentUser) {
@@ -34,6 +38,8 @@ const Dashboard_admin = () => {
   const [coursesData, setCoursesData] = React.useState<any>(null);
 
   const [notificationData, setNotificationData] = React.useState<any>(null);
+  const [courseUploadRequestData, setCourseUploadRequestData] =
+    React.useState<any>(null);
 
   // useEffect(() => {
     //   const handleMyCourses = async () => {
@@ -66,12 +72,45 @@ const Dashboard_admin = () => {
     handleMyNotification();
   }, []);
 
+    useEffect(() => {
+      const handleCourses = async () => {
+        try {
+          const res = await dashboardapi.get("/dashboard/admin/courses");
+          console.log(res);
+          setCoursesData(res.data.coursesData);
+        } catch (err) {
+          console.log(err);
+        }
+      };
+
+      handleCourses();
+    },[]);
+     useEffect(() => {
+       const handleUploadRequestData = async () => {
+         try {
+           const res = await dashboardapi.get("/dashboard/admin/review_upload");
+           console.log(res);
+           setCourseUploadRequestData(res.data.uploadData);
+         } catch (err) {
+           console.log(err);
+         }
+       };
+
+       handleUploadRequestData();
+     },[location.key]);
+
+
+
+
   return (
     <div className="container">
       <div className="row">
         <AdminProfile />
         <Routes>
-          <Route path="/allcourses" element={<AllCourses  />}  />
+          <Route
+            path="/allcourses"
+            element={<AllCourses coursesData={coursesData} />}
+          />
           <Route
             path="/content_creators"
             element={<ContentCreatorsProfile />}
@@ -85,6 +124,18 @@ const Dashboard_admin = () => {
           <Route path="/site_states" element={<SiteStatistics />} />
 
           <Route path="/review_requests" element={<CourseRequestsReview />} />
+          <Route
+            path="/review_uploads"
+            element={
+              <CourseUploadsReview
+                courseUploadRequestData={courseUploadRequestData}
+              />
+            }
+          />
+          <Route
+            path="/review_uploads/detail"
+            element={<CourseUploadDetail />}
+          />
         </Routes>
       </div>
     </div>

@@ -17,8 +17,8 @@ const tables = {
 const pool = new Pool({
 	user: "postgres",
 	host: "localhost",
-	database: "test",
-	password: "connectdb",
+	database: "postgres",
+	password: "123",
 	port: 5432,
 });
 
@@ -752,6 +752,93 @@ const fetchQuizData = async () => {
 	}
 };
 
+const DeleteReviewLesson = async (pending_id) => {
+  try {
+    // Remove the entry from the pending_courses table
+    await pool.query("DELETE FROM pending_courses WHERE pending_id = $1", [
+      pending_id,
+    ]);
+
+    console.log(`Lesson with pending_id ${pending_id} deleted successfully.`);
+  } catch (error) {
+    console.error("Error deleting lesson:", error);
+  }
+};
+
+
+const getUploadReviewData = async (user_id) => {
+  try {
+    // Query to fetch the data from the tables
+    const res = await pool.query("SELECT * FROM pending_courses");
+
+    // Check if the query returned any rows
+    if (res.rowCount > 0) {
+      const uploadData = res.rows;
+
+      // Create the object to return
+      const upload_list = {
+        status: "success",
+        message: "Upload data for the admin retrieved successfully.",
+        uploadData: uploadData,
+      };
+
+      return upload_list;
+    } else {
+      // If the query returned no rows, return null
+      return null;
+    }
+  } catch (err) {
+    // If there is an error, log it and return null
+    console.log(err);
+    return null;
+  }
+};
+const getAdminCoursesData = async () => {
+  try {
+    // Query to fetch the desired data from the courses table
+    const res = await pool.query(
+      `SELECT
+          course_id,
+          course_title,
+          difficulty_level,
+          category,
+          estimated_duration,
+          total_enrolled,
+          total_lectures,
+          thumbnail_url
+        FROM courses
+        ORDER BY course_id`
+    );
+
+    // Check if the query returned any rows
+    if (res.rowCount > 0) {
+      // If yes, return the rows
+      const coursesData = res.rows;
+
+      // Create the object to return
+      const coursesList = {
+        status: "success",
+        message: "Courses data retrieved successfully.",
+        coursesData: coursesData,
+      };
+
+      return coursesList;
+    } else {
+      // If the query returned no rows, return an appropriate message
+      return {
+        status: "error",
+        message: "No courses found.",
+      };
+    }
+  } catch (err) {
+    // If there is an error, log it and return an error message
+    console.error(err);
+    return {
+      status: "error",
+      message: "An error occurred while fetching courses data.",
+    };
+  }
+};
 // Function to get the notification data for a user
 const getUserNotificationData = async (user_id) => {
 	try {
@@ -785,13 +872,12 @@ const getUserNotificationData = async (user_id) => {
 };
 
 // Function to get the notification data for a user
-const getAdminNotificationData = async (admin_id) => {
-	try {
-		// Query to fetch the data from the tables
-		const res = await pool.query(
-			"SELECT * FROM admin_notification WHERE admin_id = $1",
-			[admin_id]
-		);
+const getAdminNotificationData = async (user_id) => {
+  try {
+    // Query to fetch the data from the tables
+    const res = await pool.query(
+      "SELECT * FROM admin_notification",
+    );
 
 		// Check if the query returned any rows
 		if (res.rowCount > 0) {
@@ -839,6 +925,10 @@ module.exports = {
 	addLesson,
 	addLessonToPendingCourses,
 	getAccessLevel,
+  getAdminCoursesData,
+  getUploadReviewData,
+  DeleteReviewLesson,
+  approveLesson,
 	approveLesson,
 	fetchQuizData,
 	getLectureCount,
