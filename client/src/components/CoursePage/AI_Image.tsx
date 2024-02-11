@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import "bootstrap/dist/css/bootstrap.min.css";
 
-const API_KEY = "AIzaSyC7U9eH7FCkx-aHYObkzURzrxFPA2Us5nk";
+const API_KEY = "My_API_KEY";
 const MODEL_NAME = "gemini-pro-vision";
 
 const AIImage: React.FC = () => {

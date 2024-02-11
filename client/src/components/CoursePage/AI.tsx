@@ -4,7 +4,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import { HarmCategory } from "@google/generative-ai";
 import { HarmBlockThreshold } from "@google/generative-ai";
 
-const API_KEY = "AIzaSyC7U9eH7FCkx-aHYObkzURzrxFPA2Us5nk";
+const API_KEY = "My_API_KEY";
 const MODEL_NAME = "gemini-pro";
 
 const AI: React.FC = () => {
