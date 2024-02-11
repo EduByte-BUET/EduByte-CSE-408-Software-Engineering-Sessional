@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import "bootstrap/dist/css/bootstrap.min.css";
 
-const API_KEY = "AIzaSyBGsUe0I5WUAk2d8n4EBi6JMKDhHcYnjjY"; // Replace with your actual API key
+const API_KEY = "My_API_KEY";
 const MODEL_NAME = "gemini-pro-vision";
 
 const AIImage: React.FC = () => {
@@ -30,25 +30,29 @@ const AIImage: React.FC = () => {
   };
 
   const handleSubmit = async () => {
-    if (!image && !message) {
-      alert("Please choose an image or enter a message.");
+    if (!image || !message) {
+      alert("Please choose an image and enter a message.");
       return;
     }
-  
+
     const genAI = new GoogleGenerativeAI(API_KEY);
     const model = genAI.getGenerativeModel({ model: MODEL_NAME });
-  
-    type Part = { text: string } | { inlineData: { data: string; mimeType: string } };
-  
+
+    type Part =
+      | { text: string }
+      | { inlineData: { data: string; mimeType: string } };
+
     const parts: Part[] = [];
     if (message) parts.push({ text: message });
     if (image) {
       const mimeType = getImageMimeType(image);
       parts.push({ inlineData: { data: image.split(",")[1], mimeType } });
     }
-  
+
     try {
-      const result = await model.generateContent(parts.length > 0 ? parts : [{ text: "Hello" }]);
+      const result = await model.generateContent(
+        parts.length > 0 ? parts : [{ text: "Hello" }]
+      );
       const response = result.response;
       console.log(response.text());
       setResponse(response.text());
@@ -75,9 +79,12 @@ const AIImage: React.FC = () => {
   };
 
   return (
-    <div className="container mt-4">
-      <h2 className="mb-4">AI Assistant</h2>
-
+    <div
+      className="container mt-4"
+      style={{ backgroundColor: "#c5dafc", borderRadius: "10px" }}
+    >
+      <h2 className="mb-4 text-start">Edurika</h2>
+      <h3 className="text-start">Doubt about Diagram? Ask Here!</h3>
       <div className="custom-file mb-4">
         <input
           type="file"
@@ -87,25 +94,40 @@ const AIImage: React.FC = () => {
           onChange={handleImageUpload}
         />
         <label className="custom-file-label" htmlFor="customFile">
-          Choose image (optional)
+          <h5 className="text-start">
+            AI will assist you in understanding the diagram.
+          </h5>
         </label>
       </div>
-
-      <div className="form-group">
-        <textarea
-          className="form-control"
-          id="message"
-          value={message}
-          onChange={handleInputChange}
-          placeholder="Enter your message (optional)"
-        />
+      <div className="row justify-content-between">
+        <div className="col-10 form-group">
+          <textarea
+            className="form-control"
+            id="message"
+            value={message}
+            onChange={handleInputChange}
+            placeholder="Enter your query about diagram (optional)"
+          />
+        </div>
+        <div className="col-2 d-flex align-items-end justify-content-end">
+          <button className="btn btn-primary mb-4" onClick={handleSubmit}>
+            Send
+          </button>
+        </div>
       </div>
 
-      <button className="btn btn-primary mb-4" onClick={handleSubmit}>
-        Send
-      </button>
-
-      <div>{response}</div>
+      <div
+        style={{
+          maxHeight: "200px",
+          overflowY: "auto",
+          border: "1px solid #ccc",
+          padding: "10px",
+          borderRadius: "10px",
+          backgroundColor: "white",
+        }}
+      >
+        {response}
+      </div>
     </div>
   );
 };
