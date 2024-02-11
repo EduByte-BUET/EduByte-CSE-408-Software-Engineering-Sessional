@@ -114,9 +114,9 @@ const Lesson = () => {
 							</div>
 						))}
 					</div>
-                    			<AI/>
-      <p>It's in progress</p>
-      <AIImage/>
+          <AI/>
+          <p>It's in progress</p>
+          <AIImage/>
 					{/* Button to mark the lessons as completed */}
 					<button
 						onClick={handleButtonClick}
