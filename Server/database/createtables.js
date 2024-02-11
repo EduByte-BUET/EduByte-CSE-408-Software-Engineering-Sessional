@@ -1,16 +1,17 @@
 let { pool } = require("pg");
 
 const tables = {
-  users: "users",
-  content_creator: "content_creator",
-  courses: "courses",
-  blocks: "blocks",
-  lectures: "lectures",
-  lessons: "lessons",
-  enrolled_courses: "enrolled_courses",
-  recommended_courses: "recommended_courses",
-  course_progress: "course_progress",
-  quizzes: "quizzes",
+	users: "users",
+	content_creator: "content_creator",
+	courses: "courses",
+	blocks: "blocks",
+	lectures: "lectures",
+	lessons: "lessons",
+	enrolled_courses: "enrolled_courses",
+	recommended_courses: "recommended_courses",
+	course_progress: "course_progress",
+	quizzes: "quizzes",
+	question: "question",
 };
 
 const createUsersTable = async () => {
@@ -283,7 +284,7 @@ const createQuizTable = async () => {
             quiz_type VARCHAR(100),                                                 -- 'graded', 'ungraded'
             quiz_duration INT,                                                        -- Duration of the quiz (e.g., in minutes)
             quiz_pass_score DECIMAL(5, 2),                                     -- Pass score for the quiz
-            quiz_questions TEXT                                                    -- Could be a JSON string
+            quiz_questions INT[]                                                    -- Could be a JSON string
         );
         
         `,
@@ -293,10 +294,34 @@ const createQuizTable = async () => {
         return;
       }
 
-      console.log("QUIZZES Table creation successful");
-    }
-  );
+			console.log("QUIZZES Table creation successful");
+		}
+	);
 };
+//quiz_questions
+const createQuestionTable = async () => {
+	await pool.query(
+	  `
+	  CREATE TABLE IF NOT EXISTS Question (
+		  question_id SERIAL PRIMARY KEY,
+		  question_type VARCHAR(100), -- Specify the type of question (e.g., multiple-choice, coding)
+		  question TEXT, -- The actual question text
+		  sample_info TEXT, -- Additional information or example related to the question
+		  question_answer TEXT -- The correct answer to the question
+		  -- Add other fields related to the question
+	  );
+	  `,
+	  (err, res) => {
+		if (err) {
+		  console.error(err);
+		  return;
+		}
+  
+		console.log("Question Table creation successful");
+	  }
+	);
+  };
+  
 
 const createCourseProgressTable = async () => {
   // Create the course_progress table if it doesn't exist
@@ -451,22 +476,24 @@ const addUniqueConstraint = async () => {
 const initDB = async (newPool) => {
   pool = newPool;
 
-  // await dropTable(tables.courses);
-  // await createUsersTable();
-  // await createContentCreatorTable();
-  // await createCourseTable();
-  // await createBlocksTable();
-  // await createLectureTable();
-  // await createLessonTable();
-  // await createEnrolledCoursesTable();
-  // await createRecommendedCoursesTable();
-  // await createQuizTable();
-  // await createCourseProgressTable();
-  // await createCategogoriesTable();
- // await createUserNotificationTable();
-  //await createAdminNotificationTable();
-  // await createCourseRequestTable();
-  // await createPendingCoursesTable();
+	// await dropTable(tables.courses);
+	// await createUsersTable();
+	// await createContentCreatorTable();
+	// await createCourseTable();
+	// await createBlocksTable();
+	// await createLectureTable();
+	// await createLessonTable();
+	// await createEnrolledCoursesTable();
+	// await createRecommendedCoursesTable();
+	//  await createQuizTable();
+	// await createCourseProgressTable();
+	// await createCategogoriesTable();
+	// await createUserNotificationTable();
+	// await createAdminNotificationTable();
+	// await createCourseRequestTable();
+	// await createPendingCoursesTable();
+	//  await createQuestionTable();
+
 
   // Constraints
   // await addUniqueConstraint();
