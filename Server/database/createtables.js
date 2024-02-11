@@ -1,17 +1,17 @@
 let { pool } = require("pg");
 
 const tables = {
-    users: "users",
-    content_creator: "content_creator",
-    courses: "courses",
-    blocks: "blocks",
-    lectures: "lectures",
-    lessons: "lessons",
-    enrolled_courses: "enrolled_courses",
-    recommended_courses: "recommended_courses",
-    course_progress: "course_progress",
-    quizzes: "quizzes"
-}
+	users: "users",
+	content_creator: "content_creator",
+	courses: "courses",
+	blocks: "blocks",
+	lectures: "lectures",
+	lessons: "lessons",
+	enrolled_courses: "enrolled_courses",
+	recommended_courses: "recommended_courses",
+	course_progress: "course_progress",
+	quizzes: "quizzes",
+};
 
 const createUsersTable = async () => {
 	// Create the users table if it doesn't exist
@@ -29,7 +29,8 @@ const createUsersTable = async () => {
 			goal VARCHAR(100) NOT NULL,
 			interests VARCHAR(100)[] NOT NULL
             )
-        `, (err, res) => {
+        `,
+		(err, res) => {
 			if (err) {
 				console.error(err);
 				return;
@@ -41,10 +42,10 @@ const createUsersTable = async () => {
 };
 
 const createContentCreatorTable = async () => {
-    // Create the content_creator table if it doesn't exist
-    // SERIAL - auto-incrementing integer
-    await pool.query(
-        `
+	// Create the content_creator table if it doesn't exist
+	// SERIAL - auto-incrementing integer
+	await pool.query(
+		`
             CREATE TABLE IF NOT EXISTS content_creator (
             creator_id SERIAL PRIMARY KEY,
             fullname VARCHAR(100) NOT NULL,
@@ -52,16 +53,17 @@ const createContentCreatorTable = async () => {
             email VARCHAR(50) UNIQUE NOT NULL,
             password VARCHAR(50) NOT NULL
             );
-        `, (err, res) => {
-            if (err) {
-                console.error(err);
-                return;
-            }
+        `,
+		(err, res) => {
+			if (err) {
+				console.error(err);
+				return;
+			}
 
-            console.log("CONTENT_CREATOR Table creation successful");
-        });
+			console.log("CONTENT_CREATOR Table creation successful");
+		}
+	);
 };
-        
 
 const createCourseTable = async () => {
 	// Create the courses table if it doesn't exist
@@ -86,7 +88,8 @@ const createCourseTable = async () => {
 			updated_at TIMESTAMP WITHOUT TIME ZONE,
 			category VARCHAR(255)
 		);
-		`, (err, res) => {
+		`,
+		(err, res) => {
 			if (err) {
 				console.error(err);
 				return;
@@ -95,7 +98,7 @@ const createCourseTable = async () => {
 			console.log("COURSES Table creation successful");
 		}
 	);
-}
+};
 
 const createBlocksTable = async () => {
 	// Create the blocks table if it doesn't exist
@@ -112,7 +115,8 @@ const createBlocksTable = async () => {
 			created_at TIMESTAMP WITHOUT TIME ZONE DEFAULT NOW(),
 			updated_at TIMESTAMP WITHOUT TIME ZONE
 		);
-		`, (err, res) => {
+		`,
+		(err, res) => {
 			if (err) {
 				console.error(err);
 				return;
@@ -121,7 +125,7 @@ const createBlocksTable = async () => {
 			console.log("BLOCKS Table creation successful");
 		}
 	);
-}
+};
 
 const createLectureTable = async () => {
 	// Create the lectures table if it doesn't exist
@@ -138,7 +142,8 @@ const createLectureTable = async () => {
 			updated_at TIMESTAMP WITHOUT TIME ZONE,
 			last_access TIMESTAM WITHOUT TIME ZONE
 		);
-		`, (err, res) => {
+		`,
+		(err, res) => {
 			if (err) {
 				console.error(err);
 				return;
@@ -147,7 +152,7 @@ const createLectureTable = async () => {
 			console.log("LECTURES Table creation successful");
 		}
 	);
-}
+};
 
 const createLessonTable = async () => {
 	// Create the lessons table if it doesn't exist
@@ -166,7 +171,8 @@ const createLessonTable = async () => {
 			updated_at TIMESTAMP WITHOUT TIME ZONE
 		);
 		
-		`, (err, res) => {
+		`,
+		(err, res) => {
 			if (err) {
 				console.error(err);
 				return;
@@ -175,7 +181,40 @@ const createLessonTable = async () => {
 			console.log("LESSONS Table creation successful");
 		}
 	);
-}
+};
+
+const createPendingCoursesTable = async () => {
+	// Create the pending_courses table if it doesn't exist
+	// SERIAL - auto-incrementing integer
+	await pool.query(
+		`
+		CREATE TABLE IF NOT EXISTS pending_courses (
+			pending_id SERIAL PRIMARY KEY,
+			creator_id INT,
+			course_id INT,
+			course_title TEXT,
+			course_description TEXT,
+			block_id INT,
+			block_title TEXT,
+			block_description TEXT,
+			lecture_id INT,
+			lecture_title TEXT,
+			lecture_description TEXT,
+			lesson_title TEXT,
+			lesson_description TEXT,
+			file_url TEXT
+		);
+		`,
+		(err, res) => {
+			if (err) {
+				console.error(err);
+				return;
+			}
+
+			console.log("PENDING_COURSES Table creation successful");
+		}
+	);
+};
 
 const createEnrolledCoursesTable = async () => {
 	// Create the enrolled_courses table if it doesn't exist
@@ -193,7 +232,8 @@ const createEnrolledCoursesTable = async () => {
 			PRIMARY KEY (user_id, course_id)
 		);
 		
-		`, (err, res) => {
+		`,
+		(err, res) => {
 			if (err) {
 				console.error(err);
 				return;
@@ -202,7 +242,7 @@ const createEnrolledCoursesTable = async () => {
 			console.log("ENROLLED_COURSES Table creation successful");
 		}
 	);
-}
+};
 
 const createRecommendedCoursesTable = async () => {
 	// Create the recommended_courses table if it doesn't exist
@@ -218,7 +258,8 @@ const createRecommendedCoursesTable = async () => {
 			PRIMARY KEY (user_id, course_id)
 		);
 		
-		`, (err, res) => {
+		`,
+		(err, res) => {
 			if (err) {
 				console.error(err);
 				return;
@@ -227,13 +268,13 @@ const createRecommendedCoursesTable = async () => {
 			console.log("RECOMMENDED_COURSES Table creation successful");
 		}
 	);
-}
+};
 
 const createQuizTable = async () => {
-    // Create the quizzes table if it doesn't exist
-    // SERIAL - auto-incrementing integer
-    await pool.query(
-        `
+	// Create the quizzes table if it doesn't exist
+	// SERIAL - auto-incrementing integer
+	await pool.query(
+		`
         CREATE TABLE IF NOT EXISTS quizzes (
             quiz_id SERIAL PRIMARY KEY,
             lecture_id INT REFERENCES lessons(lesson_id),
@@ -247,18 +288,17 @@ const createQuizTable = async () => {
             updated_at TIMESTAMP WITHOUT TIME ZONE
         );
         
-        `, (err, res) => {
-            if (err) {
-                console.error(err);
-                return;
-            }
+        `,
+		(err, res) => {
+			if (err) {
+				console.error(err);
+				return;
+			}
 
-            console.log("QUIZZES Table creation successful");
-        }
-    );
-
-}
-
+			console.log("QUIZZES Table creation successful");
+		}
+	);
+};
 
 const createCourseProgressTable = async () => {
 	// Create the course_progress table if it doesn't exist
@@ -277,7 +317,8 @@ const createCourseProgressTable = async () => {
 			PRIMARY KEY (user_id, course_id)
 		);
 		
-		`, (err, res) => {
+		`,
+		(err, res) => {
 			if (err) {
 				console.error(err);
 				return;
@@ -286,7 +327,7 @@ const createCourseProgressTable = async () => {
 			console.log("COURSE_PROGRESS Table creation successful");
 		}
 	);
-}
+};
 
 const createCategogoriesTable = async () => {
 	// Create the categories table if it doesn't exist
@@ -300,7 +341,8 @@ const createCategogoriesTable = async () => {
 			courses INT[] -- Array of course_id
 		);
 		
-		`, (err, res) => {
+		`,
+		(err, res) => {
 			if (err) {
 				console.error(err);
 				return;
@@ -309,12 +351,12 @@ const createCategogoriesTable = async () => {
 			console.log("CATEGORIES Table creation successful");
 		}
 	);
-}
+};
 
 const createUserNotificationTable = async () => {
-  // Create the user_notification table if it doesn't exist
-  await pool.query(
-    `
+	// Create the user_notification table if it doesn't exist
+	await pool.query(
+		`
     CREATE TABLE IF NOT EXISTS user_notification (
       notification_id SERIAL PRIMARY KEY,
       user_id INT NOT NULL REFERENCES users(user_id),
@@ -325,21 +367,20 @@ const createUserNotificationTable = async () => {
       status VARCHAR(20) DEFAULT 'Unread'
     );
   `,
-    (err, res) => {
-      if (err) {
-        console.error(err);
-        return;
-      }
-      console.log("USER_NOTIFICATION Table creation successful");
-    }
-  );
+		(err, res) => {
+			if (err) {
+				console.error(err);
+				return;
+			}
+			console.log("USER_NOTIFICATION Table creation successful");
+		}
+	);
 };
 
-
 const createAdminNotificationTable = async () => {
-  // Create the admin_notification table if it doesn't exist
-  await pool.query(
-    `
+	// Create the admin_notification table if it doesn't exist
+	await pool.query(
+		`
     CREATE TABLE IF NOT EXISTS admin_notification (
       notification_id SERIAL PRIMARY KEY,
       admin_id INT NOT NULL REFERENCES content_creator(creator_id),
@@ -350,20 +391,20 @@ const createAdminNotificationTable = async () => {
       status VARCHAR(20) DEFAULT 'Unread'
     );
   `,
-    (err, res) => {
-      if (err) {
-        console.error(err);
-        return;
-      }
-      console.log("ADMIN_NOTIFICATION Table creation successful");
-    }
-  );
+		(err, res) => {
+			if (err) {
+				console.error(err);
+				return;
+			}
+			console.log("ADMIN_NOTIFICATION Table creation successful");
+		}
+	);
 };
 
 const createCourseRequestTable = async () => {
-  // Create the course_request table if it doesn't exist
-  await pool.query(
-    `
+	// Create the course_request table if it doesn't exist
+	await pool.query(
+		`
     CREATE TABLE IF NOT EXISTS course_request (
       request_id SERIAL PRIMARY KEY,
       user_id INT NOT NULL REFERENCES users(user_id), 
@@ -374,50 +415,67 @@ const createCourseRequestTable = async () => {
       status VARCHAR(20) DEFAULT 'Pending' 
     );
     `,
-    (err, res) => {
-      if (err) {
-        console.error(err);
-        return;
-      }
-      console.log("COURSE_REQUEST Table creation successful");
-    }
-  );
+		(err, res) => {
+			if (err) {
+				console.error(err);
+				return;
+			}
+			console.log("COURSE_REQUEST Table creation successful");
+		}
+	);
 };
 
 const dropTable = async (table_name) => {
-    await pool.query(
-        `DROP TABLE IF EXISTS ${table_name};`,
-        (err, res) => {
-            if (err) {
-                console.error(err);
-                return;
-            }
+	await pool.query(`DROP TABLE IF EXISTS ${table_name};`, (err, res) => {
+		if (err) {
+			console.error(err);
+			return;
+		}
 
-            console.log(`${table_name} Table dropped successfully`);
-        }
+		console.log(`${table_name} Table dropped successfully`);
+	});
+};
+
+// Constraints
+const addUniqueConstraint = async () => {
+  try {
+    await pool.query(
+      `CREATE UNIQUE INDEX IF NOT EXISTS unique_pending_courses_index
+       ON pending_courses (lesson_title);`
     );
-}
+    console.log('Unique constraint added successfully');
+  } catch (error) {
+    console.error('Error adding unique constraint:', error);
+    throw error;
+  }
+};
+
 
 const initDB = async (newPool) => {
-  pool = newPool;
+	pool = newPool;
 
-  // await dropTable(tables.courses);
-  // await createUsersTable();
-  // await createContentCreatorTable();
-  // await createCourseTable();
-  // await createBlocksTable();
-  // await createLectureTable();
-  // await createLessonTable();
-  // await createEnrolledCoursesTable();
-  // await createRecommendedCoursesTable();
-  // await createQuizTable();
-  // await createCourseProgressTable();
-  // await createCategogoriesTable();
-   //await createUserNotificationTable();
-  //await createAdminNotificationTable();
-  //  await createCourseRequestTable();
-}
+	// await dropTable(tables.courses);
+	// await createUsersTable();
+	// await createContentCreatorTable();
+	// await createCourseTable();
+	// await createBlocksTable();
+	// await createLectureTable();
+	// await createLessonTable();
+	// await createEnrolledCoursesTable();
+	// await createRecommendedCoursesTable();
+	// await createQuizTable();
+	// await createCourseProgressTable();
+	// await createCategogoriesTable();
+	// await createUserNotificationTable();
+	// await createAdminNotificationTable();
+	// await createCourseRequestTable();
+	// await createPendingCoursesTable();
+
+
+	// Constraints
+	// await addUniqueConstraint();
+};
 
 module.exports = {
-    initDB
+	initDB,
 };

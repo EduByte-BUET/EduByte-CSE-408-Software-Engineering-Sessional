@@ -30,6 +30,7 @@ category_router.route("/").get(async (req, res) => {
 	else res.status(404);
 	res.json(categories);
 });
+
 popular_course_router.route("/").get(async (req, res) => {
 	console.log("/courses/popular GET");
 	// Get all the popular courses
