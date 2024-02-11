@@ -14,12 +14,12 @@ export default function Homepage() {
 	return (
 		<div>
 			<TitlePage />
-			<Skills/> 
+			<Skills />
 			<PopularCourses />
-			{/* <Category/>
-     <TopBlogs/>
-     <ContactInfo/>
-     <Footer/>  */}
+			<Category />
+			<TopBlogs />
+			<ContactInfo />
+			<Footer />
 		</div>
 	);
 }

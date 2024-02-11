@@ -5,50 +5,47 @@ import api from "../../api/GeneralAPI";
 import { useNavigate } from "react-router-dom";
 
 interface PopularCoursesProps {
-  course_id: number;
-  course_title: string;
-  thumbnail_url: string;
-  difficulty_level: string;
-  category: string;
-  total_enrolled: number;
-  total_lessons: number;
+	course_id: number;
+	course_title: string;
+	thumbnail_url: string;
+	difficulty_level: string;
+	category: string;
+	total_enrolled: number;
+	total_lessons: number;
 }
 
 export default function PopularCourses() {
-  let popularCourses: PopularCoursesProps[]; // Default value
+	let popularCourses: PopularCoursesProps[]; // Default value
 	const [itemChunks, setItemChunks] = useState<any>([]);
 	const [activeIndex, setActiveIndex] = useState(0);
 
-  const navigate = useNavigate();
+	const navigate = useNavigate();
 
+	useEffect(() => {
+		const chunkData = (data: any) => {
+			const chunkSize = 3;
+			const chunks = [] as any;
 
-  useEffect(() => {
-    const chunkData = (data: any) => {
-      const chunkSize = 3;
-      const chunks = [];
-  
-      for (let i = 0; i < data.length; i += chunkSize) {
-        chunks.push(data.slice(i, i + chunkSize));
-      }
-  
-      setItemChunks(chunks);
-    };
+			for (let i = 0; i < data.length; i += chunkSize) {
+				chunks.push(data.slice(i, i + chunkSize));
+			}
 
+			setItemChunks(chunks);
+		};
 
-    const fetchPopularCourses = async () => {
-      try {
-        const response = await api.get("/courses/popular");
-        popularCourses = response.data;
-        
-        chunkData(popularCourses);
-      } catch (err) {
-        console.error(err);
-      }
-    };
+		const fetchPopularCourses = async () => {
+			try {
+				const response = await api.get("/courses/popular");
+				popularCourses = response.data;
 
-    fetchPopularCourses();
-  }, []);
+				chunkData(popularCourses);
+			} catch (err) {
+				console.error(err);
+			}
+		};
 
+		fetchPopularCourses();
+	}, []);
 
 	const handleNext = () => {
 		setActiveIndex((prevIndex) => (prevIndex + 1) % itemChunks.length);
@@ -60,10 +57,10 @@ export default function PopularCourses() {
 		);
 	};
 
-  const handleCourseselection = (event: any) => {
-    const course_id = event.target.value;
-    navigate(`/courses?course_id=${course_id}`);
-  }
+	const handleCourseselection = (event: any) => {
+		const course_id = event.target.value;
+		navigate(`/courses?course_id=${course_id}`);
+	};
 
 	return (
 		<>
@@ -82,7 +79,7 @@ export default function PopularCourses() {
 						id="carouselExample"
 						className="carousel slide"
 						data-ride="carousel"
-            style={{ cursor: "pointer" }}
+						style={{ cursor: "pointer" }}
 					>
 						<div className="carousel-inner" style={{ padding: "40px" }}>
 							{itemChunks.map((chunk: PopularCoursesProps[], index: number) => (
@@ -94,7 +91,7 @@ export default function PopularCourses() {
 								>
 									<div className="row justify-content-center">
 										{chunk.map((item) => (
-											<div key={item.course_id} className="col-md-3" >
+											<div key={item.course_id} className="col-md-3">
 												<div className=" card cardi card-hover ">
 													{/* <a href="../course-single.html">*/}
 													<img
@@ -136,12 +133,16 @@ export default function PopularCourses() {
 														</div>
 													</div>
 													{/* <!-- Card Footer --> */}
-													<div className="card-footer card-footer-pop">
+													<div className="card-footer">
 														<div className="row align-items-center g-0">
 															<div className="col-auto">
-                                  <button className="btn blue-button" value={item.course_id} onClick={handleCourseselection}>
-                                    Details
-                                  </button>
+																<button
+																	className="btn blue-button"
+																	value={item.course_id}
+																	onClick={handleCourseselection}
+																>
+																	Details
+																</button>
 															</div>
 														</div>
 													</div>

@@ -112,9 +112,8 @@ register_to_course_router.route("/").post(async (req, res) => {
 
 	// console.log(req.session.username);
 	// const user = await db.getUser(req.session.username);
-	const user_id = 1;
-	console.log("user_id: ", user_id);
-	console.log("course_id: ", course_id);
+	const user = await db.getUser(req.session.username);
+	const user_id = user.user_id
 
 	const registered = await db.registerToCourse(
 		user_id,
@@ -124,9 +123,8 @@ register_to_course_router.route("/").post(async (req, res) => {
 		last_activity
 	);
 
-	// if (registered.length > 0) res.status(200).send();
-	// else res.status(404).send();
-	res.status(200).send();
+	if (registered.length > 0) res.status(200).send();
+	else res.status(404).send();
 });
 
 lesson_marked_router.route("/").get(async (req, res) => {
