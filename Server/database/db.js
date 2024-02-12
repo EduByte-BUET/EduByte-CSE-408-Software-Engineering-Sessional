@@ -736,50 +736,51 @@ const approveLesson = async (pending_id) => {
 };
 
 const DeleteReviewLesson = async (pending_id) => {
-	try {
-		// Remove the entry from the pending_courses table
-		await pool.query("DELETE FROM pending_courses WHERE pending_id = $1", [
-			pending_id,
-		]);
+  try {
+    // Remove the entry from the pending_courses table
+    await pool.query("DELETE FROM pending_courses WHERE pending_id = $1", [
+      pending_id,
+    ]);
 
-		console.log(`Lesson with pending_id ${pending_id} deleted successfully.`);
-	} catch (error) {
-		console.error("Error deleting lesson:", error);
-	}
+    console.log(`Lesson with pending_id ${pending_id} deleted successfully.`);
+  } catch (error) {
+    console.error("Error deleting lesson:", error);
+  }
 };
+
 
 // Quiz section
 const fetchQuizData = async (lecture_id) => {
-	try {
-		await pool.query("BEGIN");
+    try {
+        await pool.query("BEGIN");
 
-		const queryText = "SELECT * FROM quizzes WHERE lecture_id = $1";
+        const queryText = 'SELECT * FROM quizzes WHERE lecture_id = $1';
+       
+        const queryValues = [lecture_id]; // Assuming quiz_id = 1
 
-		const queryValues = [lecture_id]; // Assuming quiz_id = 1
+        const result = await pool.query(queryText, queryValues);
 
-		const result = await pool.query(queryText, queryValues);
+        await pool.query("COMMIT");
+        console.log(result);
+        const quizData = result.rows[0];
 
-		await pool.query("COMMIT");
-		
-		const quizData = result.rows[0];
+        //console.log(quizData);
 
-		//console.log(quizData);
-
-		return {
-			quiz_id: quizData.quiz_id,
-			lecture_id: quizData.lecture_id,
-			quiz_title: quizData.quiz_title,
-			quiz_duration: quizData.quiz_duration,
-			quiz_type: quizData.quiz_type,
-			quiz_description: quizData.quiz_description,
-			quiz_pass_score: quizData.quiz_pass_score,
-			quiz_questions: quizData.quiz_questions,
-		};
-	} catch (error) {
-		await pool.query("ROLLBACK");
-		console.error("Error fetching quiz data:", error);
-		throw error;
-	}
+        return {
+            quiz_id: quizData.quiz_id,
+            lecture_id: quizData.lecture_id,
+            quiz_title: quizData.quiz_title,
+            quiz_duration: quizData.quiz_duration,
+            quiz_type: quizData.quiz_type,
+            quiz_description: quizData.quiz_description,
+            quiz_pass_score: quizData.quiz_pass_score,
+            quiz_questions: quizData.quiz_questions,
+        };
+    } catch (error) {
+        await pool.query("ROLLBACK");
+        console.error('Error fetching quiz data:', error);
+        throw error;
+    }
 };
 //questions info
 
@@ -814,52 +815,62 @@ const fetchQuestionData = async (question_ids) => {
 	}
 };
 const addUserAnswer = async (user_id, lecture_id, question_id, user_answer) => {
-	try {
-		await pool.query("BEGIN");
+  try {
+    await pool.query("BEGIN");
 
-		const queryText =
-			"INSERT INTO result (user_id, lecture_id, question_id, user_answer) VALUES ($1, $2, $3, $4) RETURNING user_id";
-		const queryValues = [user_id, lecture_id, question_id, user_answer];
-		const result = await pool.query(queryText, queryValues);
+    const queryText = 'INSERT INTO result (user_id, lecture_id, question_id, user_answer) VALUES ($1, $2, $3, $4) RETURNING user_id';
+    const queryValues = [user_id, lecture_id, question_id, user_answer];
+    const result = await pool.query(queryText, queryValues);
 
-		user_id = result.rows[0].user_id;
+    user_id = result.rows[0].user_id;
 
-		await pool.query("COMMIT");
-		return user_id;
-	} catch (error) {
-		await pool.query("ROLLBACK");
-		console.error("Error adding user answer:", error);
-		throw error;
-	}
-};
-const addAiInfo = async (question_id, obtained_mark, comment) => {
-	try {
-		await pool.query("BEGIN");
+    await pool.query("COMMIT");
+    return user_id;
+  } catch (error) {
+    await pool.query("ROLLBACK");
+    console.error('Error adding user answer:', error);
+    throw error;
+  }
+}
+const addAiInfo = async (question_id, obtained_mark, comment, newQuestionAnswer) => {
+  try {
+    // Start a database transaction
+    await pool.query("BEGIN");
 
-		const queryText = `UPDATE result 
-    SET obtained_mark = $2, 
-        comment = $3
-    WHERE question_id = $1
-    RETURNING question_id`;
-		const queryValues = [question_id, obtained_mark, comment];
-		const result = await pool.query(queryText, queryValues);
-		console.log(result);
+    // Update question_answer in the Question table
+    const updateQuestionText = `
+      UPDATE Question
+      SET question_answer = $1
+      WHERE question_id = $2`;
+    const updateQuestionValues = [newQuestionAnswer, question_id];
+    await pool.query(updateQuestionText, updateQuestionValues);
+
+    const updateResultText = `
+      UPDATE result 
+      SET obtained_mark = $1, 
+          comment = $2
+      WHERE question_id = $3
+      RETURNING question_id`;
+    const updateResultValues = [obtained_mark, comment, question_id];
+    const result = await pool.query(updateResultText, updateResultValues);
 
 		if (result.rows.length === 0) {
 			throw new Error(`No row with question_id ${question_id} found`);
 		}
 
-		await pool.query("COMMIT");
-		return question_id;
-	} catch (error) {
-		await pool.query("ROLLBACK");
-		console.error("Error adding AI info:", error);
-		throw error;
-	}
-};
-const getResultsSummaryForLecture = async (lecture_id) => {
-	try {
-		const queryText = `
+    await pool.query("COMMIT");
+
+    return question_id;
+  } catch (error) {
+    await pool.query("ROLLBACK");
+    console.error('Error updating AI info:', error);
+    throw error;
+  }
+}
+
+const getResultsSummaryForLecture = async (lecture_id) =>{
+  try {
+    const queryText = `
       SELECT
         r.lecture_id,
         SUM(r.obtained_mark) AS total_obtained_mark,
