@@ -36,8 +36,10 @@ quiz_router.route("/").post(async (req, res) => {
 	});
 answer_router.route("/").post(async (req, res) => {
 	console.log("/exam/answer POST");
-	 // const user = await db.getUser(req.session.username); // const user_id = user.user_id;
-	const user_id = 1;
+
+	 const user = await db.getUser(req.session.username); // const user_id = user.user_id;
+	const user_id = user.user_id;
+	
 	const lecture_id = req.query.lecture_id;
 	const answers = req.body.answers;
 

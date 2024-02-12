@@ -11,13 +11,12 @@ interface QuizQuestion {
 	duration: number;
 }
 
-const ExamQuiz = () => {
+const ExamQuiz = (props: any) => {
 	const navigate = useNavigate();
-	const location = useLocation();
 
 	const [nextQuestionIdx, setNextQuestionIdx] = useState<number>(0);
 	const [submitButton, setSubmitButton] = useState<boolean>(false);
-	const [answers, setAnswers] = useState<any>([]);
+	const [given_answers, set_given_answers] = useState<any>([]);
 	const [currentAnswer, setCurrentAnswer] = useState<string>("");
 
 	// const examInfo = location.state;
@@ -97,9 +96,9 @@ const ExamQuiz = () => {
 		) {
 			setSubmitButton(true);
 		}
-		const newAnswers = [...answers];
+		const newAnswers = [...given_answers];
 		newAnswers[nextQuestionIdx] = currentAnswer;
-		setAnswers(newAnswers);
+		set_given_answers(newAnswers);
 
 		setCurrentAnswer("");
 
@@ -115,15 +114,46 @@ const ExamQuiz = () => {
 		}
 	};
 
-	const handleSubmit = () => {
-		const newAnswers = [...answers];
+	// send data to store in the backend
+	const sendData = async (answers) => {
+		try {
+			const res = await api.post("/exam/answer", {
+				answers
+			});
+
+			if (res) {
+				console.log(res.data.message);
+			}
+		}
+		catch(err) {
+			console.log(err);
+		}
+	}
+
+	const handleSubmit = async () => {
+		const newAnswers = [...given_answers];
 		newAnswers[nextQuestionIdx] = currentAnswer;
-		setAnswers(newAnswers);
 
 		setCurrentAnswer("");
 
-		// Submit the answers
-		navigate("/home"); // Navigate to the result viewing page
+		const answers: any = [];
+		quizQuestionArr.map((question, index) => {
+			const question_id = question.question_id;
+			const user_answer = newAnswers[index];
+			answers[index] = ({ question_id, user_answer });
+		});
+
+		await sendData(answers);
+
+		
+
+		// Submit the given_answers
+		navigate("/quiz/result", {
+			state: {
+				given_answers: newAnswers, // timing issue
+				questions: questions,
+			},
+		}); // Navigate to the result viewing page
 	};
 
 	const handleTextareaChange = (event) => {
@@ -161,10 +191,26 @@ const ExamQuiz = () => {
 					</h2>
 					<br className="mt-2" />
 					<h5 style={{ textAlign: "justify" }}>{currentQuestion?.question}</h5>
+
+					<div className="progress mt-5">
+						<div
+							className="progress-bar"
+							role="progressbar"
+							aria-valuenow={75}
+							aria-valuemin={0}
+							aria-valuemax={100}
+							style={{
+								width: `${((nextQuestionIdx + 1) / numberOfQuestions) * 100}%`,
+							}}
+						></div>
+					</div>
 				</div>
 				<div className="col-md-1"></div>
 				<div className="col-md-4">
-					<div className="timer">
+					<div
+						className="timer"
+						style={{ position: "fixed", top: "80px", right: "40px" }}
+					>
 						<h4>
 							<i className="fa-solid fa-clock fa-xl"></i> &nbsp; Time Remaining:{" "}
 							{timeRemaining} seconds
@@ -194,33 +240,35 @@ const ExamQuiz = () => {
 						></textarea>
 					</div>
 
-					<button
-						type="button"
-						onClick={handlePrevQuestion}
-						className="btn blue-button m-3"
-					>
-						Prev
-					</button>
-
-					{submitButton && (
+					<div className="button-container">
 						<button
 							type="button"
-							onClick={handleSubmit}
-							className="btn red-button m-3"
-						>
-							Submit
-						</button>
-					)}
-
-					{!submitButton && (
-						<button
-							type="button"
-							onClick={handleNextQuestion}
+							onClick={handlePrevQuestion}
 							className="btn blue-button m-3"
 						>
-							Next
+							Prev
 						</button>
-					)}
+
+						{submitButton && (
+							<button
+								type="button"
+								onClick={handleSubmit}
+								className="btn red-button m-3"
+							>
+								Submit
+							</button>
+						)}
+
+						{!submitButton && (
+							<button
+								type="button"
+								onClick={handleNextQuestion}
+								className="btn green-button m-3"
+							>
+								Next
+							</button>
+						)}
+					</div>
 				</div>
 				<div className="col-md-2"></div>
 			</div>
