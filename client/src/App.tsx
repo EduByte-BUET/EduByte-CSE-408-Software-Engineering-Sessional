@@ -25,7 +25,7 @@ import Lesson from "./components/CoursePage/Lesson";
 // ----
 import CourseUpload from "./components/ContentCreatorPage/CourseUpload";
 // ----
-import ExamPageRoot from "./components/ExamPage/quizPageRoot";
+import QuizPageRoot from "./components/ExamPage/quizPageRoot";
 // ----
 import "./css/App.css";
 import "./css/Header.css";
@@ -180,7 +180,7 @@ function App() {
             <Route path="/home" element={<Homepage />} />
             <Route path="/user/dashboard/*" element={<Dashboard />} />
             <Route path="/admin/dashboard/*" element={<Dashboard_admin />} />
-			<Route path="/quiz/*" element={<ExamPageRoot />} />
+			<Route path="/quiz/*" element={<QuizPageRoot />} />
           </Routes>
         </Router>
       </UserContext.Provider>
