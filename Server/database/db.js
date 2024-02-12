@@ -220,24 +220,37 @@ const getRecommendedCourses = async (user_id) => {
 
 // registerToCourse(user_id, course_id, enroll_date, enrollment_status, last_activity)
 const registerToCourse = async (
-	user_id,
-	course_id,
-	enroll_date,
-	enrollment_status,
-	last_activity
+    user_id,
+    course_id,
+    enroll_date,
+    enrollment_status,
+    last_activity
 ) => {
-	try {
-		await pool.query(
-			"INSERT INTO enrolled_courses (user_id, course_id, enroll_date, enrollment_status, last_activity) VALUES ($1, $2, $3, $4, $5)",
-			[user_id, course_id, enroll_date, enrollment_status, last_activity]
-		);
-		console.log("User registered to course successfully");
-		return "success";
-	} catch (err) {
-		console.log(err);
-		return "";
-	}
+    try {
+        // Check if the entry already exists
+        const existingEntry = await pool.query(
+            "SELECT * FROM enrolled_courses WHERE user_id = $1 AND course_id = $2",
+            [user_id, course_id]
+        );
+
+        if (existingEntry.rows.length > 0) {
+            console.log("User already registered to course");
+            return "registered";
+        }
+
+        // If entry doesn't exist, insert the data
+        await pool.query(
+            "INSERT INTO enrolled_courses (user_id, course_id, enroll_date, enrollment_status, last_activity) VALUES ($1, $2, $3, $4, $5)",
+            [user_id, course_id, enroll_date, enrollment_status, last_activity]
+        );
+        console.log("User registered to course successfully");
+        return "success";
+    } catch (err) {
+        console.log(err);
+        return "";
+    }
 };
+
 
 const getBlockList = async (course_id) => {
 	try {
@@ -567,7 +580,6 @@ const addLesson = async (course, block, lecture, lesson) => {
 	try {
 		await pool.query("BEGIN");
 
-
 		let courseId = course.course_id;
 		if (!courseId) {
 			const courseInsertResult = await pool.query(
@@ -723,37 +735,6 @@ const approveLesson = async (pending_id) => {
 	}
 };
 
-// // Quiz section
-// const fetchQuizData = async () => {
-// 	try {
-// 		await pool.query("BEGIN");
-
-// 		const queryText = "SELECT * FROM quizzes WHERE quiz_id = $1";
-// 		const queryValues = [1]; // Assuming quiz_id = 1
-
-// 		const result = await pool.query(queryText, queryValues);
-
-// 		await pool.query("COMMIT");
-
-// 		const quizData = result.rows[0];
-
-// 		return {
-// 			quiz_id: quizData.quiz_id,
-// 			lecture_id: quizData.lecture_id,
-// 			quiz_title: quizData.quiz_title,
-// 			quiz_duration: quizData.quiz_duration,
-// 			quiz_type: quizData.quiz_type,
-// 			quiz_description: JSON.parse(quizData.quiz_description),
-// 			quiz_pass_score: quizData.quiz_pass_score,
-// 			quiz_questions: JSON.parse(quizData.quiz_questions),
-// 		};
-// 	} catch (error) {
-// 		await pool.query("ROLLBACK");
-// 		console.error("Error fetching quiz data:", error);
-// 		throw error;
-// 	}
-// };
-
 const DeleteReviewLesson = async (pending_id) => {
   try {
     // Remove the entry from the pending_courses table
@@ -805,33 +786,33 @@ const fetchQuizData = async (lecture_id) => {
 
 // Quiz section
 const fetchQuestionData = async (question_ids) => {
-  try {
-    await pool.query("BEGIN");
+	try {
+		await pool.query("BEGIN");
 
-    const queryText = 'SELECT * FROM question WHERE question_id = ANY($1)';
-    // Use ANY() to match multiple values in an array
+		const queryText = "SELECT * FROM question WHERE question_id = ANY($1)";
+		// Use ANY() to match multiple values in an array
 
-    const queryValues = [question_ids];
+		const queryValues = [question_ids];
 
-    const result = await pool.query(queryText, queryValues);
+		const result = await pool.query(queryText, queryValues);
 
-    await pool.query("COMMIT");
-    console.log(result);
+		await pool.query("COMMIT");
+		console.log(result);
 
-    const questionDataList = result.rows.map(questionData => ({
-      question_id: questionData.question_id,
-      question_type: questionData.question_type,
-      question: questionData.question,
-      sample_info: questionData.sample_info,
-      question_answer: questionData.question_answer,
-    }));
+		const questionDataList = result.rows.map((questionData) => ({
+			question_id: questionData.question_id,
+			question_type: questionData.question_type,
+			question: questionData.question,
+			sample_info: questionData.sample_info,
+			question_answer: questionData.question_answer,
+		}));
 
-    return questionDataList;
-  } catch (error) {
-    await pool.query("ROLLBACK");
-    console.error('Error fetching question data:', error);
-    throw error;
-  }
+		return questionDataList;
+	} catch (error) {
+		await pool.query("ROLLBACK");
+		console.error("Error fetching question data:", error);
+		throw error;
+	}
 };
 const addUserAnswer = async (user_id, lecture_id, question_id, user_answer) => {
   try {
@@ -873,9 +854,9 @@ const addAiInfo = async (question_id, obtained_mark, comment, newQuestionAnswer)
     const updateResultValues = [obtained_mark, comment, question_id];
     const result = await pool.query(updateResultText, updateResultValues);
 
-    if (result.rows.length === 0) {
-      throw new Error(`No row with question_id ${question_id} found`);
-    }
+		if (result.rows.length === 0) {
+			throw new Error(`No row with question_id ${question_id} found`);
+		}
 
     await pool.query("COMMIT");
 
@@ -905,59 +886,61 @@ const getResultsSummaryForLecture = async (lecture_id) =>{
       WHERE r.lecture_id = $1
       GROUP BY r.lecture_id`;
 
-    const result = await pool.query(queryText, [lecture_id]);
+		const result = await pool.query(queryText, [lecture_id]);
 
-    if (result.rows.length === 0) {
-      console.log(`No results found for lecture_id ${lecture_id}`);
-      return null;
-    }
+		if (result.rows.length === 0) {
+			console.log(`No results found for lecture_id ${lecture_id}`);
+			return null;
+		}
 
-    const summary = {
-      totalObtainedMark: result.rows[0].total_obtained_mark,
-      totalQuestions: result.rows[0].total_questions,
-      questions: result.rows[0].questions,
-    };
+		const summary = {
+			totalObtainedMark: result.rows[0].total_obtained_mark,
+			totalQuestions: result.rows[0].total_questions,
+			questions: result.rows[0].questions,
+		};
 
-    return summary;
-  } catch (error) {
-    console.error('Error fetching results summary with detailed questions:', error);
-    throw error;
-  }
-}
-
+		return summary;
+	} catch (error) {
+		console.error(
+			"Error fetching results summary with detailed questions:",
+			error
+		);
+		throw error;
+	}
+};
 
 const getUploadReviewData = async (user_id) => {
-  try {
-    // Query to fetch the data from the tables
-    const res = await pool.query("SELECT * FROM pending_courses");
+	try {
+		// Query to fetch the data from the tables
+		const res = await pool.query("SELECT * FROM pending_courses");
 
-    // Check if the query returned any rows
-    if (res.rowCount > 0) {
-      const uploadData = res.rows;
+		// Check if the query returned any rows
+		if (res.rowCount > 0) {
+			const uploadData = res.rows;
 
-      // Create the object to return
-      const upload_list = {
-        status: "success",
-        message: "Upload data for the admin retrieved successfully.",
-        uploadData: uploadData,
-      };
+			// Create the object to return
+			const upload_list = {
+				status: "success",
+				message: "Upload data for the admin retrieved successfully.",
+				uploadData: uploadData,
+			};
 
-      return upload_list;
-    } else {
-      // If the query returned no rows, return null
-      return null;
-    }
-  } catch (err) {
-    // If there is an error, log it and return null
-    console.log(err);
-    return null;
-  }
+			return upload_list;
+		} else {
+			// If the query returned no rows, return null
+			return null;
+		}
+	} catch (err) {
+		// If there is an error, log it and return null
+		console.log(err);
+		return null;
+	}
 };
 const getAdminCoursesData = async () => {
-  try {
-    // Query to fetch the desired data from the courses table
-    const res = await pool.query(
-      `SELECT
+	try {
+		// Query to fetch the desired data from the courses table
+		const res = await pool.query(
+			`SELECT
           course_id,
           course_title,
           difficulty_level,
@@ -968,36 +951,36 @@ const getAdminCoursesData = async () => {
           thumbnail_url
         FROM courses
         ORDER BY course_id`
-    );
+		);
 
-    // Check if the query returned any rows
-    if (res.rowCount > 0) {
-      // If yes, return the rows
-      const coursesData = res.rows;
+		// Check if the query returned any rows
+		if (res.rowCount > 0) {
+			// If yes, return the rows
+			const coursesData = res.rows;
 
-      // Create the object to return
-      const coursesList = {
-        status: "success",
-        message: "Courses data retrieved successfully.",
-        coursesData: coursesData,
-      };
+			// Create the object to return
+			const coursesList = {
+				status: "success",
+				message: "Courses data retrieved successfully.",
+				coursesData: coursesData,
+			};
 
-      return coursesList;
-    } else {
-      // If the query returned no rows, return an appropriate message
-      return {
-        status: "error",
-        message: "No courses found.",
-      };
-    }
-  } catch (err) {
-    // If there is an error, log it and return an error message
-    console.error(err);
-    return {
-      status: "error",
-      message: "An error occurred while fetching courses data.",
-    };
-  }
+			return coursesList;
+		} else {
+			// If the query returned no rows, return an appropriate message
+			return {
+				status: "error",
+				message: "No courses found.",
+			};
+		}
+	} catch (err) {
+		// If there is an error, log it and return an error message
+		console.error(err);
+		return {
+			status: "error",
+			message: "An error occurred while fetching courses data.",
+		};
+	}
 };
 // Function to get the notification data for a user
 const getUserNotificationData = async (user_id) => {
@@ -1033,11 +1016,9 @@ const getUserNotificationData = async (user_id) => {
 
 // Function to get the notification data for a user
 const getAdminNotificationData = async (user_id) => {
-  try {
-    // Query to fetch the data from the tables
-    const res = await pool.query(
-      "SELECT * FROM admin_notification",
-    );
+	try {
+		// Query to fetch the data from the tables
+		const res = await pool.query("SELECT * FROM admin_notification");
 
 		// Check if the query returned any rows
 		if (res.rowCount > 0) {
@@ -1085,17 +1066,16 @@ module.exports = {
 	addLesson,
 	addLessonToPendingCourses,
 	getAccessLevel,
-  getAdminCoursesData,
-  getUploadReviewData,
-  DeleteReviewLesson,
-  approveLesson,
+	getAdminCoursesData,
+	getUploadReviewData,
+	DeleteReviewLesson,
+	approveLesson,
 	approveLesson,
 	fetchQuizData,
-  fetchQuestionData,
-  addUserAnswer,
-  addAiInfo,
-  getResultsSummaryForLecture,
+	fetchQuestionData,
+	addUserAnswer,
+	addAiInfo,
+	getResultsSummaryForLecture,
 	getLectureCount,
 	isLectureViewed,
-
 };

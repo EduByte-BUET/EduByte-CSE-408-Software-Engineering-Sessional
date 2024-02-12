@@ -110,8 +110,11 @@ register_to_course_router.route("/").post(async (req, res) => {
     const enrollment_status = "active";
     const last_activity = new Date();
 
-    // console.log(req.session.username);
-    // const user = await db.getUser(req.session.username);
+    if (req.session.username === undefined) {
+		res.status(404).send();
+		return;
+	}
+
     const user = await db.getUser(req.session.username);
     const user_id = user.user_id
 
@@ -123,7 +126,8 @@ register_to_course_router.route("/").post(async (req, res) => {
         last_activity
     );
 
-    if (registered.length > 0) res.status(200).send();
+    if (registered === "success") res.status(200).send();
+	else if (registered === "registered") res.status(409).send();
     else res.status(404).send();
 });
 
