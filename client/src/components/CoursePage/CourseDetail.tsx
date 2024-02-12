@@ -24,20 +24,28 @@ const CourseDetail = () => {
 	}, []);
 
 	const handleStartCourse = async () => {
+		const gotoCourse = () => {
+			navigate(`/courses/blocks`, {
+				state: {
+					course_id: course.course_id,
+					course_title: course.course_title,
+				},
+			});
+		};
+
 		if (course !== null) {
 			try {
 				await api.post("/courses/register", { course_id: course_id });
-				navigate(`/courses/blocks`, {
-					state: {
-						course_id: course.course_id,
-						course_title: course.course_title,
-					},
-				});
-			} catch (err) {
-				console.error(err);
-				alert(
-					"Kindly login to start the course. If you don't have an account, please sign up first."
-				);
+				gotoCourse();
+			} catch (err: any) {
+				if (err.response.status === 404) {
+					alert("Kindly login to start the course.");
+				} else if (err.response.status === 409) {
+					alert("You have already enrolled in this course.");
+					gotoCourse();
+				} else {
+					console.error(err);
+				}
 			}
 		}
 	};
