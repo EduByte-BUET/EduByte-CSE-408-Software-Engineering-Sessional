@@ -1,6 +1,7 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../../api/GeneralAPI";
+import Ex from "./ResultGenerator";
 
 const examDescription = () => {
     const navigate = useNavigate();
@@ -33,6 +34,7 @@ const examDescription = () => {
 				<h1 style={{ color: "dodgerblue", fontWeight: "bold" }}>
 					{quizTitle}
 				</h1>
+				<Ex/>
 			</div>
 			<div className="row mt-5">
 				<div className="col-md-2"></div>

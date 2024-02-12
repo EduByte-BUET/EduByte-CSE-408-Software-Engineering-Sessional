@@ -58,7 +58,8 @@ exam_ai_router.route("/").post(async (req, res) => {
 	const question_id = req.body.question_id;
 	const obtained_mark = req.body.obtained_mark;
 	const comment = req.body.comment;
-	const ai_info = await db.addAiInfo(question_id, obtained_mark, comment);
+	const corrected_answer = req.body.question_answer;
+	const ai_info = await db.addAiInfo(question_id, obtained_mark, comment,corrected_answer);
 	console.log(ai_info);
 	if (ai_info != null) res.status(200);
 	else res.status(404); // Not found
