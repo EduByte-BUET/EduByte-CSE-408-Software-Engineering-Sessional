@@ -755,31 +755,42 @@ const addUserAnswer = async (user_id, lecture_id, question_id, user_answer) => {
     throw error;
   }
 }
-const addAiInfo = async (question_id, obtained_mark, comment) => {
+const addAiInfo = async (question_id, obtained_mark, comment, newQuestionAnswer) => {
   try {
+    // Start a database transaction
     await pool.query("BEGIN");
 
-    const queryText = `UPDATE result 
-    SET obtained_mark = $2, 
-        comment = $3
-    WHERE question_id = $1
-    RETURNING question_id`;
-    const queryValues = [question_id, obtained_mark, comment];
-    const result = await pool.query(queryText, queryValues);
-    console.log(result);
+    // Update question_answer in the Question table
+    const updateQuestionText = `
+      UPDATE Question
+      SET question_answer = $1
+      WHERE question_id = $2`;
+    const updateQuestionValues = [newQuestionAnswer, question_id];
+    await pool.query(updateQuestionText, updateQuestionValues);
+
+    const updateResultText = `
+      UPDATE result 
+      SET obtained_mark = $1, 
+          comment = $2
+      WHERE question_id = $3
+      RETURNING question_id`;
+    const updateResultValues = [obtained_mark, comment, question_id];
+    const result = await pool.query(updateResultText, updateResultValues);
 
     if (result.rows.length === 0) {
       throw new Error(`No row with question_id ${question_id} found`);
     }
 
     await pool.query("COMMIT");
+
     return question_id;
   } catch (error) {
     await pool.query("ROLLBACK");
-    console.error('Error adding AI info:', error);
+    console.error('Error updating AI info:', error);
     throw error;
   }
 }
+
 const getResultsSummaryForLecture = async (lecture_id) =>{
   try {
     const queryText = `
