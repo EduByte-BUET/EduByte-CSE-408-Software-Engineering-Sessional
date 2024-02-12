@@ -6,7 +6,7 @@ import {
 } from '@google/generative-ai';
 
 const MODEL_NAME = 'gemini-pro';
-const API_KEY = 'MY_API_KEY';
+const API_KEY = 'AIzaSyC7U9eH7FCkx-aHYObkzURzrxFPA2Us5nk';
 
 const Ex: React.FC = () => {
   useEffect(() => {
