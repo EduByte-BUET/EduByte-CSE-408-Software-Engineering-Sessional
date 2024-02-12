@@ -15,6 +15,7 @@ const home_page_router = require("./routers/HomePageRouter");
 const exam_page_router = require("./routers/ExamPageRouter");
 const discussion_page_router = require("./routers/DiscussionPageRouter");
 const content_create_router = require("./routers/ContentCreateRouter");
+const result_gen_router = require("./routers/ResultGenerator");
 
 app.use(
 	cors({
@@ -47,6 +48,7 @@ app.use("/home", home_page_router);
 app.use("/exam", exam_page_router);
 app.use("/discussion", discussion_page_router);
 app.use("/content-create", content_create_router);
+app.use("/generate",result_gen_router);
 // -----------------------------------------------
 
 app.listen(3000, () => {
