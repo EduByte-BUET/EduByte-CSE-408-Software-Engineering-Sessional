@@ -1,0 +1,10 @@
+.button-container {
+	position: fixed;
+	bottom: 50px;
+	right: 50px;
+	display: flex;
+}
+
+.button-container button {
+	margin-left: 10px; /* Adjust the space between buttons */
+}
