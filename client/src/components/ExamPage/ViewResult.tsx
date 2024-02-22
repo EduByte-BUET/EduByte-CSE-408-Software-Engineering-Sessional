@@ -4,12 +4,13 @@ import pass from "../../assets/pass.jpg";
 import fail from "../../assets/fail.jpg";
 import api from "../../api/GeneralAPI";
 
-const ViewResult = (props: any) => {
+const ViewResult = () => {
+	const location = useLocation();
 	const navigate = useNavigate();
 
-	const lecture_info = props.lecture_info;
+	const {lecture_id, lecture_title, quizQuestionArr, answers} = location.state;
 
-	const [percentage, setPercentage] = useState(50); // Example percentage, change as needed
+	const [percentage, setPercentage] = useState<number>(50); // Example percentage, change as needed
 	const [verdict, setVerdict] = useState("Fail");
 
 	/*
@@ -37,68 +38,59 @@ const ViewResult = (props: any) => {
 
 	useEffect(() => {
 		const fetchData = async () => {
+		  answers.forEach(async (answer, index) => {
+			const postBody = {
+			  question: quizQuestionArr[index].question, // Assuming each question object has a 'question' property
+			  user_answer: answer
+			};
+			
 			try {
-				const res = await api.get(
-					`/exam/result?lecture_id=${lecture_info.lecture_id}`
-				);
-				console.log(res.data);
-
-				if (res) {
-					const tom = res.data.totalObtainedMark;
-					const tq = res.data.totalQuestions;
-					setPercentage((tom / tq) * 100);
-					setTotalObtainedMark(tom);
-					setTotalQuestions(tq);
-
-					if ((tom / tq) * 100 >= 50) {
-						setVerdict("Pass");
-					} else {
-						setVerdict("Fail");
-					}
-				}
+			  const gen_response = await api.post(`/generate`, postBody);
+			  console.log(gen_response.data);
+			  const postBody2 = {
+				question_id: quizQuestionArr[index].question_id, 
+				obtained_mark: gen_response.data.obtained_mark, 
+				comment: gen_response.data.comment, // Replace with actual comment
+				question_answer: gen_response.data.question_answer, // Assuming the response data is the question answer
+			  };
+		  
+			  const gen_response2 = await api.post(`/exam/ai`, postBody2); // Replace '/another-endpoint' with your actual endpoint
+			  console.log(gen_response2.data);  
 			} catch (err) {
-				console.log("View result page error, AI didnot generate result");
+			  console.error(err);
 			}
+		  });
+	  
+		  try {
+			const result_response = await api.get(`/exam/result?lecture_id=${lecture_id}`);
+			console.log(result_response.data);
+			setTotalObtainedMark(result_response.data.totalObtainedMark);
+			setTotalQuestions(result_response.data.totalQuestions);
+			const pert = parseInt(result_response.data.totalObtainedMark) / parseInt(result_response.data.totalQuestions) * 100;
+			setPercentage(pert);
+			setVerdict(pert >= 50 ? "Pass" : "Fail");
+			setTotalQuestions(result_response.data.totalQuestions);
+		  } catch (err) {
+			console.error(err);
+		  }
 		};
-
+	  
 		fetchData();
-	}, []);
+	  }, []);
 
 	const handleTryAgain = () => {
-		navigate(`/quiz`, {
-			state: {
-				course_id: lecture_info.course_id,
-				course_name: lecture_info.course_name,
-				block_id: lecture_info.block_id,
-				block_name: lecture_info.block_name,
-				block_index: lecture_info.block_index,
-				lecture_index: lecture_info.lecture_index,
-				lecture_id: lecture_info.lecture_id,
-				lecture_title: lecture_info.lecture_title,
-			},
-		});
+		navigate(`/quiz`);
 	};
 
 	const handleContinue = () => {
-		navigate(`/courses/lectures/info`, {
-			state: {
-				course_id: lecture_info.course_id,
-				course_name: lecture_info.course_name,
-				block_id: lecture_info.block_id,
-				block_name: lecture_info.block_name,
-				block_index: lecture_info.block_index,
-				lecture_index: lecture_info.lecture_index,
-				lecture_id: lecture_info.lecture_id,
-				lecture_title: lecture_info.lecture_title,
-			},
-		});
+		navigate(`/courses`);
 	};
 
 	return (
 		<div className="container">
 			<div className="row justify-content-center" style={{ marginTop: "80px" }}>
 				<h1 style={{ color: "red", fontWeight: "bolder" }}>
-					Generated results on lecture | {lecture_info.lecture_title}
+					Generated results on lecture | {lecture_title}
 				</h1>
 				<div className="col-md-6 mt-5">
 					<h1 style={{ color: "dodgerblue", fontWeight: "bolder" }}>Result</h1>

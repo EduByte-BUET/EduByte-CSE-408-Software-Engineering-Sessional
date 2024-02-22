@@ -1,50 +1,20 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-import QuizDescription from "./quizDescription";
-import QuizQuestions from "./quizQuestions";
+import ExamDescription from "./quizDescription";
+import ExamQuiz from "./quizQuestions";
 import { useLocation } from "react-router-dom";
-import "../../css/ExamPage/ButtonContainer.css";
 import ViewResult from "./ViewResult";
 
-/*
-lecture_info = {
-    course_id,
-    course_name,
-    block_id,
-    block_name,
-    block_index,
-    lecture_index,
-    lecture_id,
-    lecture_title,
-}
-*/
-
 const examPageRoot = () => {
-	const location = useLocation();
-	const [lecture_info, setLectureInfo] = useState<any>(null);
-
-	useEffect(() => {
-        if (!lecture_info) {
-            setLectureInfo(location.state);
-        }
-    }, [lecture_info, location.state]);
-
-	return (
-		<>
-			<Routes>
-				<Route path="" element={<QuizDescription />} />
-				{/* PROPS is required to go to the running course */}
-				<Route
-					path="/questions"
-					element={<QuizQuestions />}
-				/>
-				<Route
-					path="/result"
-					element={<ViewResult lecture_info={lecture_info} />}
-				/>
-			</Routes>
-		</>
-	);
+    return (
+        <>
+            <Routes>
+                <Route path="" element={<ExamDescription/>} />
+                <Route path="/questions" element={<ExamQuiz/>} />
+                <Route path="/questions/result" element={<ViewResult/>} />
+            </Routes>
+        </>
+    );
 };
 
 export default examPageRoot;

@@ -2,85 +2,41 @@ import { useEffect, useState } from "react";
 import { useNavigate, useLocation, useParams } from "react-router-dom";
 import { Spinner } from "react-bootstrap";
 import api from "../../api/GeneralAPI";
-import ExamHintAI from "./ExamHintAI";
 
-interface QuizQuestion {
-	question_id: number;
-	description: string;
-	sample_info: string;
-	type: string;
-	duration: number;
-}
-
-const ExamQuiz = (props: any) => {
-	const navigate = useNavigate();
-
-	const lecture_id = 1;
+const ExamQuiz = () => {
 	const [nextQuestionIdx, setNextQuestionIdx] = useState<number>(0);
 	const [submitButton, setSubmitButton] = useState<boolean>(false);
-	const [given_answers, set_given_answers] = useState<any>([]);
+	const [answers, setAnswers] = useState<any>([]);
 	const [currentAnswer, setCurrentAnswer] = useState<string>("");
-	// const [examInfo, setExamInfo] = useState<any>(null);
+	const [quizQuestionArr, setquizQuestionArr] = useState<any>(null);
 
-	// const examInfo = location.state;
-	// useEffect(() => {
-	// 	const fetchData = async () => {
-	// 		try {
-	// 			const res = await api.get(`/exam?lecture_id=${lecture_id}`);
-	// 			setExamInfo(res.data);
-	// 		} catch (err) {
-	// 			console.log("Error fetching exam info");
-	// 		}
-	// 	};
+	const location = useLocation();
+	const {lecture_id, lecture_title, exam_id, exam_title, exam_duration, exam_type, exam_pass_score, exam_questions} = location.state;
 
-	// 	fetchData();
-	// }, [lecture_id]);
+	const navigate = useNavigate();
 
-	const examInfo = {
-		quiz_id: 1,
-		lecture_id: 1,
-		quiz_title: "Quiz 1",
-		quiz_duration: 2,
-		quiz_type: "ungraded",
-		quiz_description:
-			"Description for Quiz 1: This quiz covers various topics related to the lecture. It includes multiple-choice questions, true/false questions, and coding exercises.",
-		quiz_pass_score: "20.00",
-		quiz_questions: [2, 3, 4],
-	};
+	useEffect(() => {
+		const fetchData = async () => {
+			try {
+				const response = await api.post(`/exam/quiz`, {
+					question_ids: exam_questions,
+					});
+				setquizQuestionArr(response.data);
+				//console.log(response.data);
+			} catch (err) {
+				console.error(err);
+			}
+		};
+		fetchData();
+	}, []);
 
-	const numberOfQuestions = examInfo.quiz_questions.length;
-	const questions: number[] = examInfo.quiz_questions;
+	const numberOfQuestions = exam_questions.length;
+	const questions: number[] = exam_questions;
 	const [timeRemaining, setTimeRemaining] = useState<number>(
-		examInfo.quiz_duration * 60 // Convert minutes to seconds
+		exam_duration * 15 // Convert minutes to seconds
 	);
 
-	// const [quizQuestion, setQuizQuestion] = useState<QuizQuestion | null>(null);
-	const quizQuestionArr = [
-		{
-			question_id: 1,
-			question_type: "Coding",
-			question:
-				"Write a function to find the sum of two numbers in JavaScript.",
-			sample_info: "Use any appropriate JavaScript syntax.",
-			question_answer: "function sum(a, b) { return a + b; }",
-		},
-		{
-			question_id: 2,
-			question_type: "Coding",
-			question: "Implement a Python function to reverse a list.",
-			sample_info: "Provide a Python code snippet.",
-			question_answer: "def reverse_list(lst): return lst[::-1]",
-		},
-		{
-			question_id: 3,
-			question_type: "True/False",
-			question: "The Moon orbits the Earth.",
-			sample_info: "Answer with either 'True' or 'False'.",
-			question_answer: "True",
-		},
-	];
-
-	const currentQuestion = quizQuestionArr[nextQuestionIdx]; // apatoto index ei dhore nicchi
+	const currentQuestion = quizQuestionArr ? quizQuestionArr[nextQuestionIdx] : null; // apatoto index ei dhore nicchi
 
 	const handleNextQuestion = () => {
 		if (
@@ -89,9 +45,9 @@ const ExamQuiz = (props: any) => {
 		) {
 			setSubmitButton(true);
 		}
-		const newAnswers = [...given_answers];
+		const newAnswers = [...answers];
 		newAnswers[nextQuestionIdx] = currentAnswer;
-		set_given_answers(newAnswers);
+		setAnswers(newAnswers);
 
 		setCurrentAnswer("");
 
@@ -107,95 +63,38 @@ const ExamQuiz = (props: any) => {
 		}
 	};
 
-	// send data to store in the backend
-	const sendData = async (answers) => {
-		try {
-			const res = await api.post(`/exam/answer?lecture_id=${lecture_id}`, {
-				answers,
-			});
-
-			if (res) {
-				console.log(res.data.message);
-			}
-		} catch (err) {
-			console.log(err);
-		}
-	};
-
-	const examAIeval = async (
-		question_id: number,
-		obtained_mark: number,
-		comment: string,
-		question_answer: string
-	) => {
-		try {
-			const res = await api.post("/exam/ai", {
-				question_id,
-				obtained_mark,
-				comment,
-				question_answer,
-			});
-
-			if (res) {
-				console.log(res.data.message);
-
-				navigate("/quiz/result"); // Navigate to the result viewing page
-			}
-		} catch (err) {
-			console.log(err);
-		}
-	};
-
-	//    {
-	// 	   "message": "AI info received",
-	// 	   "verdict": "success",
-	// 	   "question_answer": "New Delhi",
-	// 	   "obtained_mark": 0,
-	// 	   "comment": "fail"
-	//    }
-	const generateResult = async (question: any, user_answer: string) => {
-		try {
-			const res = await api.post("/generate", {
-				question: question.question,
-				user_answer: user_answer,
-			});
-
-			if (res) {
-				// Format - See in router
-				const question_id = question.question_id;
-				const obtained_mark = res.data.obtained_mark;
-				const comment = res.data.comment;
-				const question_answer = res.data.question_answer;
-
-				await examAIeval(question_id, obtained_mark, comment, question_answer);
-			}
-		} catch (err) {
-			console.log(err);
-		}
-	};
-
 	const handleSubmit = async () => {
-		const newAnswers = [...given_answers];
+		const newAnswers = [...answers];
 		newAnswers[nextQuestionIdx] = currentAnswer;
+		setAnswers(newAnswers);
+		const postBody = {
+			answers: newAnswers.map((answer, index) => ({
+			  question_id: quizQuestionArr[index].question_id,
+			  user_answer: answer
+			}))
+		  };
 
+		try {
+		 const ans_response = await api.post(`/exam/answer?lecture_id=${lecture_id}`, {
+				...postBody,
+			  });
+			console.log(ans_response.data);
+		} catch (err) {	
+			console.error(err);
+		}
 		setCurrentAnswer("");
-
-		const answers: any = [];
-		quizQuestionArr.map((question, index) => {
-			const question_id = question.question_id;
-			const user_answer = newAnswers[index];
-			answers[index] = { question_id, user_answer };
+		navigate(`/quiz/questions/result`, {
+			state: {
+				lecture_id: lecture_id,
+				lecture_title: lecture_title,
+				quizQuestionArr: quizQuestionArr,
+				answers: newAnswers,
+			},
 		});
 
-		await sendData(answers);
+		// Submit the answers
 
-		// {
-		// 	"question": "What is the capital of India?",
-		// 	"user_answer" : "Delhi"
-		//    }
-		answers.map(async (answer: any, index: number) => {
-			await generateResult(quizQuestionArr[index], newAnswers[index]);
-		});
+		//navigate("/home"); // Navigate to the result viewing page
 	};
 
 	const handleTextareaChange = (event) => {
@@ -215,7 +114,8 @@ const ExamQuiz = (props: any) => {
 	useEffect(() => {
 		if (timeRemaining === 0) {
 			alert("Time's up!");
-			handleSubmit();
+			// handleSubmit();
+			navigate("/home");
 		}
 	}, [timeRemaining]);
 
@@ -233,26 +133,10 @@ const ExamQuiz = (props: any) => {
 					</h2>
 					<br className="mt-2" />
 					<h5 style={{ textAlign: "justify" }}>{currentQuestion?.question}</h5>
-
-					<div className="progress mt-5">
-						<div
-							className="progress-bar"
-							role="progressbar"
-							aria-valuenow={75}
-							aria-valuemin={0}
-							aria-valuemax={100}
-							style={{
-								width: `${((nextQuestionIdx + 1) / numberOfQuestions) * 100}%`,
-							}}
-						></div>
-					</div>
 				</div>
 				<div className="col-md-1"></div>
 				<div className="col-md-4">
-					<div
-						className="timer"
-						style={{ position: "fixed", top: "80px", right: "40px" }}
-					>
+					<div className="timer">
 						<h4>
 							<i className="fa-solid fa-clock fa-xl"></i> &nbsp; Time Remaining:{" "}
 							{timeRemaining} seconds
@@ -271,8 +155,6 @@ const ExamQuiz = (props: any) => {
 						</code>
 					</div>
 
-					<ExamHintAI/>
-
 					<div className="m-3">
 						<textarea
 							name="text"
@@ -284,35 +166,33 @@ const ExamQuiz = (props: any) => {
 						></textarea>
 					</div>
 
-					<div className="button-container">
+					<button
+						type="button"
+						onClick={handlePrevQuestion}
+						className="btn blue-button m-3"
+					>
+						Prev
+					</button>
+
+					{submitButton && (
 						<button
 							type="button"
-							onClick={handlePrevQuestion}
+							onClick={handleSubmit}
+							className="btn red-button m-3"
+						>
+							Submit
+						</button>
+					)}
+
+					{!submitButton && (
+						<button
+							type="button"
+							onClick={handleNextQuestion}
 							className="btn blue-button m-3"
 						>
-							Prev
+							Next
 						</button>
-
-						{submitButton && (
-							<button
-								type="button"
-								onClick={handleSubmit}
-								className="btn red-button m-3"
-							>
-								Submit
-							</button>
-						)}
-
-						{!submitButton && (
-							<button
-								type="button"
-								onClick={handleNextQuestion}
-								className="btn green-button m-3"
-							>
-								Next
-							</button>
-						)}
-					</div>
+					)}
 				</div>
 				<div className="col-md-2"></div>
 			</div>
