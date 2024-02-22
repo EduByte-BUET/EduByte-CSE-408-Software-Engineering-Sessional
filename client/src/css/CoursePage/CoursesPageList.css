@@ -1,8 +1,11 @@
 .blue-text {
 	color: blue;
 }
-.cream-background {
-	background-color: #fbeaf3;
+.course-detail-background {
+	background-color: #edf6f6;
+	box-shadow: rgb(145, 169, 168) 0px 0px 4px 0px;
+	border: 1px solid #000;
+	border-radius: 4px;
 }
 .column-border {
 	border-right: 1px solid #000;
@@ -28,6 +31,6 @@
 	font-weight: bold;
 }
 .custom-link {
-	color: inherit; /* Use the color of the parent element */
-	text-decoration: none; /* Remove the underline */
+	color: inherit;
+	text-decoration: none;
 }

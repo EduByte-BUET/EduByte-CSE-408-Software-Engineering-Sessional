@@ -53,8 +53,14 @@ const CoursesPageHome = () => {
 	return (
 		<div className="container">
 			<div className="row d-flex justify-content-between">
-				<div className="col-6 bg-light m-2" style={{ overflowY: "auto" }}>
-					<h4 style={{ marginBottom: "10px" }}>
+				<div className="col-7 bg-light" style={{ overflowY: "auto" }}>
+					<h4
+						style={{
+							borderBottom: "2px solid black",
+							textAlign: "left",
+						}}
+						className="p-2 bg-light mb-4"
+					>
 						<i
 							className="bi bi-journal-text"
 							style={{ marginRight: "1px" }}
@@ -70,7 +76,10 @@ const CoursesPageHome = () => {
 						<Spinner animation="border" />
 					)}
 				</div>
-				<div className="col-5 mt-2 mb-2 mr-3" style={{ overflowY: "auto" }}>
+				<div
+					className="col-5"
+					style={{ maxHeight: "100vh", overflowY: "auto" }}
+				>
 					<CourseViewSections
 						title="Popular Courses"
 						courses={popularCourses ? popularCourses : []}

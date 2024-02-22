@@ -19,7 +19,6 @@ exam_router.route("/").get(async (req, res) => {
 	console.log("/exam GET");
 	const lecture_id = req.query.lecture_id;
 	const examinfo = await db.fetchQuizData(lecture_id);
-	console.log(examinfo);
 	if (Object.keys(examinfo).length > 0) res.status(200); // OK
 	else res.status(404); // Not found
 	res.json(examinfo);
@@ -85,9 +84,11 @@ exam_ai_router.route("/").post(async (req, res) => {
 });
 result_router.route("/").get(async (req, res) => {
 	console.log("/exam/result GET");
+
 	const lecture_id = req.query.lecture_id;
-	console.log(lecture_id);
 	const resultinfo = await db.getResultsSummaryForLecture(lecture_id);
+
+	console.log(resultinfo);
 	if (resultinfo != null) res.status(200);
 	// OK
 	else res.status(404); // Not found
