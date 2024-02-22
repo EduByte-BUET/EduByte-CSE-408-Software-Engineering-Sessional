@@ -34,11 +34,10 @@ function Login(props: any) {
 			if (response && response.data) {
 
 				// Current user is in the system now
-				const {access_level } =response.data;
+				const { access_level } = response.data;
 				currentUser.setCurrentUser(user.username);
+				// currentUser.setAccessLevel(access_level);
 
-				console.log(currentUser.currentUser);
-		
 				navigate("/home", { state: user });
 				resetFields();
 			}

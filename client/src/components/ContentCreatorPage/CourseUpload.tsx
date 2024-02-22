@@ -107,14 +107,14 @@ export default function CourseUpload() {
 	const handleSubmit = async (event: any) => {
 		event.preventDefault();
 		// upload the file to firebase
-		// const file_url = await uploadFile(
-		// 	courseTitle,
-		// 	blockTitle,
-		// 	lectureTitle,
-		// 	lessonTitle,
-		// 	file
-		// );
-		// if (file_url === null) return;
+		const file_url = await uploadFile(
+			courseTitle,
+			blockTitle,
+			lectureTitle,
+			lessonTitle,
+			file
+		);
+		if (file_url === null) return;
 
 		// send the file_url to the server
 		// ------------------------------------------- creator id change korte hobe --------------------------
@@ -131,7 +131,7 @@ export default function CourseUpload() {
       lecture_description: lectureDescription,
       lesson_title: lessonTitle,
       lesson_description: lessonDescription,
-      file_url: file,
+      file_url: file_url,
     };
 		console.log(data);
 

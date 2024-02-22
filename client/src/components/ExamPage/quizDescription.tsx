@@ -34,7 +34,6 @@ const examDescription = () => {
 				<h1 style={{ color: "dodgerblue", fontWeight: "bold" }}>
 					{quizTitle}
 				</h1>
-				<Ex/>
 			</div>
 			<div className="row mt-5">
 				<div className="col-md-2"></div>

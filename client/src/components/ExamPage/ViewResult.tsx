@@ -5,48 +5,64 @@ import fail from "../../assets/fail.jpg";
 import api from "../../api/GeneralAPI";
 
 const ViewResult = (props: any) => {
-	const location = useLocation();
 	const navigate = useNavigate();
 
-	const [answers, questions] = [
-		location.state.answers,
-		location.state.questions,
-	];
-	// console.log(answers);
-	// console.log(questions);
 	const lecture_info = props.lecture_info;
 
 	const [percentage, setPercentage] = useState(50); // Example percentage, change as needed
-	const [verdict, setVerdict] = useState(percentage >= 50 ? "Pass" : "Fail");
+	const [verdict, setVerdict] = useState("Fail");
 
-	// useEffect(() => {
-	//     /*
-	//     {
-	//         "message": "AI info received",
-	//         "verdict": "success",
-	//         "question_answer": "New Delhi",
-	//         "obtained_mark": 0,
-	//         "comment": "fail"
-	//     }
-	//     */
-	//     try {
-	//         const fetchData = async () => {
-	//             questions.map(async (question: any, index: number) => {
-	//                 const reqObj = {
-	//                     "question": question.question,
-	//                     "user_answer": answers[index],
-	//                 }
-	//             });
+	/*
+	        {
+    "totalObtainedMark": "1.00",
+    "totalQuestions": "3",
+    "questions": [
+        {
+            "question_text": "Write a function to find the sum of two numbers in JavaScript.",
+            "question_answer": "function sum(a, b) { return a + b; }"
+        },
+        {
+            "question_text": "Implement a Python function to reverse a list.",
+            "question_answer": "def reverse_list(lst): return lst[::-1]"
+        },
+        {
+            "question_text": "The Moon orbits the Earth.",
+            "question_answer": "True"
+        }
+    ]
+}
+	    */
+	const [totalObtainedMark, setTotalObtainedMark] = useState<any>();
+	const [totalQuestions, setTotalQuestions] = useState<any>();
 
-	//             const result = await api.post("/generate", {
-	//                 answers: answers,
-	//                 questions: questions,
-	//             });
-	//             setPercentage(result.data.percentage);
-	//             setVerdict(result.data.verdict);
-	//         }
-	//     }
-	// }, []);
+	useEffect(() => {
+		const fetchData = async () => {
+			try {
+				const res = await api.get(
+					`/exam/result?lecture_id=${lecture_info.lecture_id}`
+				);
+				console.log(res.data);
+
+				if (res) {
+					const tom = res.data.totalObtainedMark;
+					const tq = res.data.totalQuestions;
+					setPercentage((tom / tq) * 100);
+					setTotalObtainedMark(tom);
+					setTotalQuestions(tq);
+
+					if ((tom / tq) * 100 >= 50) {
+						setVerdict("Pass");
+					} else {
+						setVerdict("Fail");
+					}
+				}
+			} catch (err) {
+				console.log("View result page error, AI didnot generate result");
+			}
+		};
+
+		fetchData();
+	}, []);
 
 	const handleTryAgain = () => {
 		navigate(`/quiz`, {
@@ -94,7 +110,9 @@ const ViewResult = (props: any) => {
 							<h2>Verdict</h2>
 						</div>
 						<div className="col-md-6" style={{ textAlign: "left" }}>
-							<h2>: 3 out of 5</h2>
+							<h2>
+								: {parseInt(totalObtainedMark)} out of {totalQuestions}
+							</h2>
 							<h2>: {percentage}%</h2>
 							<h2>: {verdict}</h2>
 						</div>

@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate, useLocation, useParams } from "react-router-dom";
 import { Spinner } from "react-bootstrap";
 import api from "../../api/GeneralAPI";
+import ExamHintAI from "./ExamHintAI";
 
 interface QuizQuestion {
 	question_id: number;
@@ -14,12 +15,27 @@ interface QuizQuestion {
 const ExamQuiz = (props: any) => {
 	const navigate = useNavigate();
 
+	const lecture_id = 1;
 	const [nextQuestionIdx, setNextQuestionIdx] = useState<number>(0);
 	const [submitButton, setSubmitButton] = useState<boolean>(false);
 	const [given_answers, set_given_answers] = useState<any>([]);
 	const [currentAnswer, setCurrentAnswer] = useState<string>("");
+	// const [examInfo, setExamInfo] = useState<any>(null);
 
 	// const examInfo = location.state;
+	// useEffect(() => {
+	// 	const fetchData = async () => {
+	// 		try {
+	// 			const res = await api.get(`/exam?lecture_id=${lecture_id}`);
+	// 			setExamInfo(res.data);
+	// 		} catch (err) {
+	// 			console.log("Error fetching exam info");
+	// 		}
+	// 	};
+
+	// 	fetchData();
+	// }, [lecture_id]);
+
 	const examInfo = {
 		quiz_id: 1,
 		lecture_id: 1,
@@ -64,29 +80,6 @@ const ExamQuiz = (props: any) => {
 		},
 	];
 
-	// const [quizQuestions, setQuizQuestions] = useState<QuizQuestion[] | []>();
-
-	// useEffect(() => {
-	//     const fetchData = async () => {
-	//         try {
-	// Fetch all the informations of the questions at once
-	//             const res = await api.post(`/exam/questions`, {
-	//                 question_ids: examInfo.quiz_questions
-	//             });
-
-	//             if (res.status === 200) {
-	//                 setQuizQuestions(res.data);
-	//             }
-	//         }
-	//         catch (error) {
-	//             console.error(error);
-	//             alert("Failed to fetch the question. Please try again.")
-	//         }
-	//     }
-
-	//     fetchData();
-	// }, []);
-
 	const currentQuestion = quizQuestionArr[nextQuestionIdx]; // apatoto index ei dhore nicchi
 
 	const handleNextQuestion = () => {
@@ -117,18 +110,69 @@ const ExamQuiz = (props: any) => {
 	// send data to store in the backend
 	const sendData = async (answers) => {
 		try {
-			const res = await api.post("/exam/answer", {
-				answers
+			const res = await api.post(`/exam/answer?lecture_id=${lecture_id}`, {
+				answers,
 			});
 
 			if (res) {
 				console.log(res.data.message);
 			}
-		}
-		catch(err) {
+		} catch (err) {
 			console.log(err);
 		}
-	}
+	};
+
+	const examAIeval = async (
+		question_id: number,
+		obtained_mark: number,
+		comment: string,
+		question_answer: string
+	) => {
+		try {
+			const res = await api.post("/exam/ai", {
+				question_id,
+				obtained_mark,
+				comment,
+				question_answer,
+			});
+
+			if (res) {
+				console.log(res.data.message);
+
+				navigate("/quiz/result"); // Navigate to the result viewing page
+			}
+		} catch (err) {
+			console.log(err);
+		}
+	};
+
+	//    {
+	// 	   "message": "AI info received",
+	// 	   "verdict": "success",
+	// 	   "question_answer": "New Delhi",
+	// 	   "obtained_mark": 0,
+	// 	   "comment": "fail"
+	//    }
+	const generateResult = async (question: any, user_answer: string) => {
+		try {
+			const res = await api.post("/generate", {
+				question: question.question,
+				user_answer: user_answer,
+			});
+
+			if (res) {
+				// Format - See in router
+				const question_id = question.question_id;
+				const obtained_mark = res.data.obtained_mark;
+				const comment = res.data.comment;
+				const question_answer = res.data.question_answer;
+
+				await examAIeval(question_id, obtained_mark, comment, question_answer);
+			}
+		} catch (err) {
+			console.log(err);
+		}
+	};
 
 	const handleSubmit = async () => {
 		const newAnswers = [...given_answers];
@@ -140,20 +184,18 @@ const ExamQuiz = (props: any) => {
 		quizQuestionArr.map((question, index) => {
 			const question_id = question.question_id;
 			const user_answer = newAnswers[index];
-			answers[index] = ({ question_id, user_answer });
+			answers[index] = { question_id, user_answer };
 		});
 
 		await sendData(answers);
 
-		
-
-		// Submit the given_answers
-		navigate("/quiz/result", {
-			state: {
-				given_answers: newAnswers, // timing issue
-				questions: questions,
-			},
-		}); // Navigate to the result viewing page
+		// {
+		// 	"question": "What is the capital of India?",
+		// 	"user_answer" : "Delhi"
+		//    }
+		answers.map(async (answer: any, index: number) => {
+			await generateResult(quizQuestionArr[index], newAnswers[index]);
+		});
 	};
 
 	const handleTextareaChange = (event) => {
@@ -228,6 +270,8 @@ const ExamQuiz = (props: any) => {
 							{currentQuestion?.sample_info}
 						</code>
 					</div>
+
+					<ExamHintAI/>
 
 					<div className="m-3">
 						<textarea

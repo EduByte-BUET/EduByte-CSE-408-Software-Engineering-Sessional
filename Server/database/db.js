@@ -191,7 +191,7 @@ const getCategories = async () => {
 			let courses = [];
 			for (let j = 0; j < categories[i].courses.length; j++) {
 				const courseResult = await pool.query(
-					"SELECT course_id, course_title FROM courses WHERE course_id = $1",
+					"SELECT * FROM courses WHERE course_id = $1",
 					[categories[i].courses[j]]
 				);
 				courses.push(courseResult.rows[0]);

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import QuizDescription from "./quizDescription";
 import QuizQuestions from "./quizQuestions";
@@ -23,16 +23,21 @@ const examPageRoot = () => {
 	const location = useLocation();
 	const [lecture_info, setLectureInfo] = useState<any>(null);
 
-	if (!lecture_info) {
-		setLectureInfo(location.state);
-	}
+	useEffect(() => {
+        if (!lecture_info) {
+            setLectureInfo(location.state);
+        }
+    }, [lecture_info, location.state]);
 
 	return (
 		<>
 			<Routes>
 				<Route path="" element={<QuizDescription />} />
 				{/* PROPS is required to go to the running course */}
-				<Route path="/questions" element={<QuizQuestions />} />
+				<Route
+					path="/questions"
+					element={<QuizQuestions />}
+				/>
 				<Route
 					path="/result"
 					element={<ViewResult lecture_info={lecture_info} />}
