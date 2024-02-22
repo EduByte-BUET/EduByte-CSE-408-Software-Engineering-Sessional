@@ -1,4 +1,4 @@
-import React from "react";
+import { useContext } from "react";
 import Nav from "react-bootstrap/Nav";
 import { Link, useNavigate } from "react-router-dom";
 import { UserContext } from "../UserContext/UserContext";
@@ -7,13 +7,18 @@ import api from "../../api/GeneralAPI";
 
 function Login(props: any) {
 	const { background } = props;
-	const currentUser = React.useContext(UserContext);
+	const { currentUser, setCurrentUser } = useContext(UserContext);
 
 	const [user, setUser] = useState({ username: "", password: "" });
 
 	const resetFields = () => {
 		setUser({ username: "", password: "" });
 	};
+
+	// Save the user info in the local storage after successful login
+	const saveToLS = (value: string) => {
+		localStorage.setItem("currentUser", value);
+	}
 
 	const navigate = useNavigate();
 	const handleSubmit = async (event: React.FormEvent<any>) => {
@@ -34,9 +39,9 @@ function Login(props: any) {
 			if (response && response.data) {
 
 				// Current user is in the system now
-				const { access_level } = response.data;
-				currentUser.setCurrentUser(user.username);
-				// currentUser.setAccessLevel(access_level);
+				setCurrentUser(user.username);
+				// Save the user to local storage
+				saveToLS(user.username);
 
 				navigate("/home", { state: user });
 				resetFields();

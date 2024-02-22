@@ -1,24 +1,67 @@
-import {
-	BrowserRouter as Router,
-	Route,
-	Routes,
-	useNavigate,
-} from "react-router-dom";
-import { NavLink, Link } from "react-router-dom";
-import "../../css/dashboard.css";
-import { Container, Row, Col, Card, Button } from "react-bootstrap";
+import { BrowserRouter as Router, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
+import { Container } from "react-bootstrap";
+import { useEffect, useState } from "react";
+import ConfirmDeletionModal from "./ConfirmDeletionModal";
+import Popup from "../Popup";
+import api from "../../api/GeneralAPI";
 
-const AllCourses = (props: any) => {
-	const { coursesData } = props;
+const AllCourses = () => {
+	const [authFailed, setAuthFailed] = useState<boolean>(false);
 	const navigate = useNavigate();
 
-	const handleClick = (course: any) => {
+	const [coursesData, setCoursesData] = useState<any>([]);
+	const [showModal, setShowModal] = useState<boolean>(false);
+	const [courseRemoved, setCourseRemoved] = useState<boolean>(false);
+	const [courseToRemove, setCourseToRemove] = useState<any>(null);
+
+	useEffect(() => {
+		const handleCourses = async () => {
+			try {
+				const res = await api.get("/dashboard/admin/courses");
+
+				setCoursesData(res.data.coursesData);
+			} catch (err: any) {
+				if (err.response.status === 401) {
+					setAuthFailed(true);
+				}
+				console.log(err);
+			}
+		};
+
+		handleCourses();
+	}, []);
+
+	const handleCourseDetails = (course: any) => {
 		navigate("/courses/detail", {
 			state: {
 				course_id: course.course_id,
 				course_title: course.course_title,
 			},
 		});
+	};
+
+	const handleRemoveCourse = async (course) => {
+		setCourseToRemove(course);
+		setShowModal(true);
+	};
+
+	const confirmRemoveCourse = async () => {
+		console.log("Confirm remove course");
+		try {
+			let res = await api.delete(
+				`/dashboard/admin/remove_course?course_id=${courseToRemove.course_id}`
+			);
+			setCourseRemoved(true);
+			// Refresh course list after removal
+			res = await api.get("/dashboard/admin/courses");
+			setCoursesData(res.data.coursesData);
+		} catch (err: any) {
+			if (err.response.status === 401) {
+				setAuthFailed(true);
+			}
+			console.log(err);
+		}
 	};
 
 	return (
@@ -44,15 +87,13 @@ const AllCourses = (props: any) => {
 												className="card-title admin-allcourses-title"
 												style={{ height: "48px" }}
 											>
-												{/* Fixed height for title */}
 												{course.course_title}
 											</h5>
 											<p className="card-text admin-allcourses-text">
-												{/* Fixed height and scroll for description */}
 												{course.description}
 											</p>
-											<ul className="list-group list-group-flush ">
-												{/* Pushed to bottom with mt-auto */}
+											<ul className="list-group list-group-flush text-start">
+												<li className="list-group-item">{course.category}</li>
 												<li className="list-group-item">
 													Difficulty: {course.difficulty_level}
 												</li>
@@ -64,20 +105,19 @@ const AllCourses = (props: any) => {
 												</li>
 											</ul>
 										</div>
-										<div className="">
+										<div className="d-flex justify-content-between p-2">
 											<button
 												className="btn blue-button mb-3"
-												onClick={() => handleClick(course)}
+												onClick={() => handleCourseDetails(course)}
 											>
-												<Link
-													to="#"
-													style={{
-														color: "inherit",
-														textDecoration: "inherit",
-													}}
-												>
-													Detail <i className=""></i>
-												</Link>
+												Details
+											</button>
+
+											<button
+												className="btn red-button mb-3"
+												onClick={() => handleRemoveCourse(course)}
+											>
+												Remove
 											</button>
 										</div>
 									</div>
@@ -86,6 +126,26 @@ const AllCourses = (props: any) => {
 						</div>
 					</div>
 				</div>
+
+				<ConfirmDeletionModal
+					showModal={showModal}
+					setShowModal={setShowModal}
+					confirmRemoveCourse={confirmRemoveCourse}
+				/>
+
+				{courseRemoved && (
+					<Popup
+						description="Course removed successfully!"
+						toggle={setCourseRemoved}
+					/>
+				)}
+
+				{authFailed && (
+					<Popup
+						description="Authentication failed. Please login."
+						toggle={setAuthFailed}
+					/>
+				)}
 
 				<div className="mt-auto bottom-links ">
 					<button className="btn blue-button">

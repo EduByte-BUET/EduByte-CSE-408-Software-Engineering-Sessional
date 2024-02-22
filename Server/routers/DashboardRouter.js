@@ -9,7 +9,7 @@ const db = require("../database/db");
 
 // --------------------------------------------- User ---------------------------------------------
 
-courses_router.use(requireAuth)
+courses_router.use(requireAuth);
 router.use("/user/courses", courses_router);
 recommendations_router.use(requireAuth);
 router.use("/user/recommendations", recommendations_router);
@@ -216,6 +216,7 @@ const admin_site_stats = express.Router();
 const admin_notifications_router = express.Router();
 const admin_review_upload_router = express.Router();
 const admin_reviewupload_action_router = express.Router();
+const remove_course_router = express.Router();
 
 router.use("/admin/courses", admin_courses_router);
 router.use("/admin/content_creators", admin_content_creators_router);
@@ -223,39 +224,11 @@ router.use("/admin/site_stats", admin_site_stats);
 router.use("/admin/notifications", admin_notifications_router);
 router.use("/admin/review_upload", admin_review_upload_router);
 router.use("/admin/review_upload/action", admin_reviewupload_action_router);
+remove_course_router.use(requireAuth);
+router.use("/admin/remove_course", remove_course_router);
+
 admin_courses_router.route("/").get(async (req, res) => {
 	console.log("/admin/courses GET");
-
-	// admin would want to get the courses from the database (all courses present in the database)
-	// A sample json response is given below
-	//   courses = {
-	//     courses: [
-	//       {
-	//         course_id: 1,
-	//         course_name: "Data Science Fundamentals",
-	//         course_description:
-	//           "An introduction to the basic concepts of data science.",
-	//         instructor_name: "Prof. John Smith",
-	//         total_lectures: 12,
-	//         total_enrolled_students: 150,
-	//         start_date: "2023-06-01",
-	//         end_date: "2023-07-15",
-	//         tags: ["data science", "statistics"],
-	//       },
-	//       {
-	//         course_id: 2,
-	//         course_name: "Web Development Basics",
-	//         course_description:
-	//           "Learn the fundamentals of web development with HTML, CSS, and JavaScript.",
-	//         instructor_name: "Prof. John Smith",
-	//         total_lectures: 20,
-	//         total_enrolled_students: 120,
-	//         start_date: "2023-06-15",
-	//         end_date: "2023-08-01",
-	//         tags: ["web development", "HTML", "CSS", "JavaScript"],
-	//       },
-	//     ],
-	//   };
 
 	let courses = await db.getAdminCoursesData();
 	if (courses == null) {
@@ -396,6 +369,24 @@ admin_reviewupload_action_router.route("/").post(async (req, res) => {
 		} else {
 			res.status(400).send({ error: "Invalid action specified." });
 		}
+	} catch (err) {
+		console.error(err);
+
+		res
+			.status(500)
+			.send({ error: "An error occurred while processing your request." });
+	}
+});
+
+remove_course_router.route("/").delete(async (req, res) => {
+	console.log("/admin/remove_course POST");
+
+	const course_id = req.body.course_id;
+	console.log("course id  " + course_id);
+
+	try {
+		// db.removeCourse(course_id);
+		res.status(200).send({ message: "Course removed successfully." });
 	} catch (err) {
 		console.error(err);
 
