@@ -25,28 +25,34 @@ exam_router.route("/").get(async (req, res) => {
 });
 
 quiz_router.route("/").post(async (req, res) => {
-		console.log("/exam/quiz GET");
-		const question_ids = req.body.question_ids;
-		console.log(question_ids);
-		const quizinfo = await db.fetchQuestionData(question_ids);
+	console.log("/exam/quiz GET");
+	const question_ids = req.body.question_ids;
+	console.log(question_ids);
+	const quizinfo = await db.fetchQuestionData(question_ids);
 
-		if (Object.keys(quizinfo).length > 0) res.status(200); // OK
-		else res.status(404); // Not found
-		res.json(quizinfo);
-	});
+	if (Object.keys(quizinfo).length > 0) res.status(200); // OK
+	else res.status(404); // Not found
+	res.json(quizinfo);
+});
+
 answer_router.route("/").post(async (req, res) => {
 	console.log("/exam/answer POST");
 
-	 const user = await db.getUser(req.session.username); // const user_id = user.user_id;
+	const user = await db.getUser(req.session.username); // const user_id = user.user_id;
 	const user_id = user.user_id;
-	
+
 	const lecture_id = req.query.lecture_id;
 	const answers = req.body.answers;
 
 	for (let answer of answers) {
 		const question_id = answer.question_id;
 		const user_answer = answer.user_answer;
-		const userinfo = await db.addUserAnswer(user_id, lecture_id, question_id, user_answer);
+		const userinfo = await db.addUserAnswer(
+			user_id,
+			lecture_id,
+			question_id,
+			user_answer
+		);
 		console.log(userinfo);
 	}
 
@@ -55,14 +61,19 @@ answer_router.route("/").post(async (req, res) => {
 		verdict: "success",
 	});
 });
+
 exam_ai_router.route("/").post(async (req, res) => {
 	console.log("/exam/ai POST");
 	const question_id = req.body.question_id;
 	const obtained_mark = req.body.obtained_mark;
 	const comment = req.body.comment;
 	const corrected_answer = req.body.question_answer;
-	
-	const ai_info = await db.addAiInfo(question_id, obtained_mark, comment,corrected_answer);
+	const ai_info = await db.addAiInfo(
+		question_id,
+		obtained_mark,
+		comment,
+		corrected_answer
+	);
 	console.log(ai_info);
 	if (ai_info != null) res.status(200);
 	else res.status(404); // Not found
@@ -87,6 +98,6 @@ result_router.route("/").get(async (req, res) => {
 // 	console.log("exam/dummy GET");
 // 	const result =  await db.fetchQuestionData([1,2,3]);
 // 	res.status(200).json(result);
-// });	
+// });
 
 module.exports = router;

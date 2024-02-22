@@ -27,6 +27,9 @@ import "./css/Button.css";
 import "./css/SigninSingupInput.css";
 import "./css/CoursePage/CoursesPageList.css";
 import "./css/SignupPrefs.css";
+import PostCard from "./components/DiscussionForum/PostCard";
+import ForumPage from "./components/DiscussionForum/ForumPage";
+import CreatePost from "./components/DiscussionForum/CreatePost";
 
 function App() {
 	// -----User Context
@@ -145,7 +148,8 @@ function App() {
             <Route path="/home" element={<Homepage />} />
             <Route path="/user/dashboard/*" element={<Dashboard />} />
             <Route path="/admin/dashboard/*" element={<Dashboard_admin />} />
-			<Route path="/quiz/*" element={<QuizPageRoot />} />
+            <Route path="/quiz/*" element={<QuizPageRoot />} />
+            <Route path="/discussion/*" element={<ForumPage />} />
           </Routes>
         </Router>
       </UserContext.Provider>

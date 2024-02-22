@@ -1,0 +1,298 @@
+.discussion_card {
+  background-color: #fcfafa;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(16, 3, 3, 0.15);
+  padding: 20px;
+  margin-bottom: 20px;
+  transition: box-shadow 0.3s ease-in-out;
+  margin-top: 20px;
+}
+
+.discussion_card:hover {
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.discussion_card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.discussion_card-author {
+  font-weight: bold;
+  color: #333;
+}
+
+.discussion_card-timestamp {
+  font-size: 0.85rem;
+  color: #666;
+}
+
+.discussion_card-tags {
+  display: flex;
+}
+
+.discussion_card-tag {
+  background-color: #eee;
+  border-radius: 15px;
+  padding: 5px 10px;
+  margin-right: 10px;
+  font-size: 0.85rem;
+}
+
+.discussion_card-title {
+  margin: 0;
+  color: #007bff;
+  font-size: 1.25rem;
+}
+
+.discussion_card-summary {
+  color: #555;
+  margin-top: 10px;
+  margin-bottom: 20px;
+  line-height: 1.5;
+}
+
+.discussion_card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-around; /* Add space between items */
+  padding: 10px 0; /* Add some padding for spacing */
+}
+
+.discussion_card-upvote {
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  margin-right: 20px;
+}
+
+.discussion_card-upvote-count {
+  margin-right: 5px;
+}
+
+.icon-thumb_up:before {
+  content: "👍";
+  margin-right: 5px;
+}
+
+.discussion_card-downvote-count {
+  margin-right: 5px;
+}
+
+.icon-thumb_down:before {
+  content: "👎";
+  margin-right: 5px;
+}
+
+.discussion_card-replies,
+.discussion_card-share,
+.discussion_card-save,
+.discussion_card-ownreply,
+.discussion_card-report {
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  margin-right: 10px;
+  color: #007bff;
+}
+
+/* Add responsiveness and other styles as needed */
+
+/* posrcard reply box */
+/* Reply Button */
+.discussion-reply-button {
+  background-color: #007bff; /* Bootstrap primary color for consistency */
+  color: #ffffff;
+  border: none;
+  border-radius: 5px;
+  padding: 8px 12px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.discussion-reply-button:hover {
+  background-color: #0056b3; /* Darker shade for hover effect */
+}
+
+/* Reply Box Container */
+.discussion-reply-box {
+  margin-top: 5px;
+  padding: 10px;
+  background-color: #f8f9fa; /* Light background for the reply box */
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin-left: 70px;
+}
+
+/* Reply Textarea */
+.discussion-reply-textarea {
+  width: 100%;
+  height: 100px; /* Fixed height for the textarea */
+  border: 1px solid #ced4da;
+  border-radius: 5px;
+  padding: 8px;
+  font-size: 0.9rem;
+  color: #495057;
+  background-color: #ffffff;
+  resize: none; /* Disable resizing */
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.075);
+  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+.discussion-reply-textarea:focus {
+  border-color: #80bdff;
+  outline: 1;
+  box-shadow: inset 0 0 0 2px rgba(0, 123, 255, 0.25);
+}
+
+/* Submit Button */
+.discussion-reply-submit {
+  display: inline-block;
+  margin-top: 10px;
+  background-color: #28a745; /* Bootstrap success color */
+  color: #ffffff;
+  border: none;
+  border-radius: 5px;
+  padding: 8px 15px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.discussion-reply-submit:hover {
+  background-color: #218838; /* Darker shade for hover effect */
+}
+
+/*discussion forum create post*/
+
+.discussion-create-post-container {
+  max-width: 600px;
+  margin: 40px auto;
+  padding: 20px;
+  background: #f9f9f9;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.discussion-create-post-container h2 {
+  text-align: center;
+  color: #333;
+  margin-bottom: 20px;
+}
+
+.form-row {
+  display: flex;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.form-row label {
+  width: 100px;
+  font-weight: bold;
+  color: #555;
+}
+
+.form-row input[type="text"],
+.form-row select,
+.form-row textarea {
+  flex: 1;
+  padding: 10px;
+  border-radius: 4px;
+  border: 1px solid #ddd;
+  font-size: 0.9rem;
+}
+
+.form-row textarea {
+  height: 100px;
+  resize: vertical;
+}
+
+.post-button {
+  display: block;
+  width: 100%;
+  padding: 10px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.post-button:hover {
+  background-color: #0056b3;
+}
+
+/*replies*/
+.discussion-comments-container {
+  margin-left: 70px; /* Indent comments for visual hierarchy */
+  overflow: hidden;
+  transition: max-height 0.3s ease-out;
+  max-height: 0;
+}
+
+.discussion-comments-container.expanded {
+  max-height: 1000px; /* Adjust based on your needs */
+}
+
+/* Style for active replies toggle button */
+.discussion_card-replies.active {
+  color: #007bff; /* Or any color that suits your design */
+  font-weight: bold;
+}
+
+.discussion_card-save.active {
+  /* background-color: #f44336; 
+  color: #ffffff; */
+
+  color: #007bff; /* Or any color that suits your design */
+  font-weight: bold;
+}
+
+.discussion_card-ownreply.active {
+  /* background-color: #42e3ff; 
+  color: #ffffff; */
+
+  color: #007bff; /* Or any color that suits your design */
+  font-weight: bold;
+}
+.discussion-comment {
+  /* margin-top: 10px;
+  padding: 10px;
+  background: #db8080;
+  border-radius: 5px; */
+  margin-top: 10px;
+  background-color: #ffe6e6;
+  border-radius: 10px;
+  padding: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+  transition: box-shadow 0.3s ease-in-out;
+}
+.discussion-comment:hover {
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+.discussion-comment-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 5px;
+}
+
+.discussion-comment-author {
+  font-weight: bold;
+}
+
+.discussion-comment-timestamp {
+  font-size: 0.8rem;
+  color: #666;
+}
+
+.discussion-comment-text {
+  margin-top: 5px;
+}
