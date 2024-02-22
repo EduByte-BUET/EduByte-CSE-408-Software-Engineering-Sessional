@@ -27,13 +27,11 @@ import "./css/Button.css";
 import "./css/SigninSingupInput.css";
 import "./css/CoursePage/CoursesPageList.css";
 import "./css/SignupPrefs.css";
-import PostCard from "./components/DiscussionForum/PostCard";
 import ForumPage from "./components/DiscussionForum/ForumPage";
-import CreatePost from "./components/DiscussionForum/CreatePost";
 
 function App() {
 	// -----User Context
-	const [currentUser, setCurrentUser] = useState<any>(null);
+	const [currentUser, setCurrentUser] = useState<string>("");
 
 	const intitutionOptions = [
 		"School",
@@ -86,13 +84,7 @@ function App() {
 		});
 	}, []);
 
-	// save user information in local storage
-	useEffect(() => {
-		if (currentUser) {
-			localStorage.setItem("currentUser", currentUser);
-		}
-	}, [currentUser]);
-	// get user information from local storage
+	// Get the user from the local storage
 	useEffect(() => {
 		const user = localStorage.getItem("currentUser");
 		if (user) {

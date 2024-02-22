@@ -25,11 +25,16 @@ const CourseCard = (props: any) => {
 				</h5>
 			</div>
 			<div className="row">
-				<div className="col-md-10">
-					<p>{course.category}</p>
+				<div className="col-md-9">
+					<p>
+						<i className="fa-solid fa-table-list"></i> &nbsp; {course.category}
+					</p>
 				</div>
-				<div className="col-md-2">
-					<p>{course.difficulty_level}</p>
+				<div className="col-md-3">
+					<p>
+						<i className="fa-solid fa-gears"></i> &nbsp;{" "}
+						{course.difficulty_level}
+					</p>
 				</div>
 			</div>
 		</div>

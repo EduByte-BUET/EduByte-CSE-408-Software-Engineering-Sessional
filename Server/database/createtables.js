@@ -79,7 +79,7 @@ const createCourseTable = async () => {
 			total_lectures INT DEFAULT 0,
 			total_lessons INT DEFAULT 0,
 			total_quizzes INT DEFAULT 0,
-            total_enrolled INT DEFAULT 0,
+      total_enrolled INT DEFAULT 0,
 			description TEXT,
 			is_live BOOLEAN DEFAULT FALSE,
 			difficulty_level VARCHAR(100),                 -- 'beginner', 'intermediate', 'advanced'
@@ -193,7 +193,7 @@ const createPendingCoursesTable = async () => {
 		CREATE TABLE IF NOT EXISTS pending_courses (
 			pending_id SERIAL PRIMARY KEY,
 			creator_id INT,
-			course_id INT,
+			course_id INT REFERENCES courses(course_id) ON DELETE CASCADE,
 			course_title TEXT,
 			course_description TEXT,
 			block_id INT,
@@ -225,7 +225,7 @@ const createEnrolledCoursesTable = async () => {
     `
 		CREATE TABLE IF NOT EXISTS enrolled_courses (
 			user_id INT,
-			course_id INT,
+			course_id INT REFERENCES courses(course_id) ON DELETE CASCADE,
 			enroll_date TIMESTAMP WITHOUT TIME ZONE DEFAULT NOW(),
 			feedback TEXT,
 			rating DECIMAL(2, 1),
@@ -253,7 +253,7 @@ const createRecommendedCoursesTable = async () => {
     `
 		CREATE TABLE IF NOT EXISTS recommended_courses (
 			user_id INT REFERENCES users(user_id),
-			course_id INT REFERENCES courses(course_id),
+			course_id INT REFERENCES courses(course_id) ON DELETE CASCADE,
 			interest_tags TEXT,                                                         -- Tags related to the user's interests
 			recommendation_strength VARCHAR(100),                          -- 'high', 'medium', 'low'
 			user_engagement_level VARCHAR(100),                         -- Could be based on user's activity,      
@@ -357,7 +357,7 @@ const createCourseProgressTable = async () => {
     `
 		CREATE TABLE IF NOT EXISTS course_progress (
 			user_id INT REFERENCES users(user_id),
-			course_id INT REFERENCES courses(course_id),
+			course_id INT REFERENCES courses(course_id) ON DELETE CASCADE,
 			block_id INT REFERENCES blocks(block_id),
 			lecture_id INT[],
 			lesson_id INT[],
