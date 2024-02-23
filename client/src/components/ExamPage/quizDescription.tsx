@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import api from "../../api/GeneralAPI";
-import Ex from "./ResultGenerator";
+
 
 const examDescription = () => {
 	const location = useLocation();
