@@ -476,6 +476,65 @@ const createCourseRequestTable = async () => {
   );
 };
 
+const createPostsTable = async () => {
+  // Create the posts table if it doesn't exist
+  await pool.query(
+    `
+      CREATE TABLE IF NOT EXISTS posts (
+        post_id SERIAL PRIMARY KEY,
+        author_id SERIAL,  -- References the user or content creator who created the post
+        author_type VARCHAR(50) CHECK (author_type IN ('user', 'content_creator')), -- Indicates whether the author is a user or content creator
+        author_name VARCHAR(255), -- Name of the author (user or content creator)
+        course VARCHAR(255),
+        tags VARCHAR(255)[] NOT NULL,
+        timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        title VARCHAR(255) NOT NULL,
+        summary TEXT,
+        post_type VARCHAR(50) NOT NULL,
+        upvotes INT DEFAULT 0,
+        downvotes INT DEFAULT 0
+      )
+    `,
+    (err, res) => {
+      if (err) {
+        console.error(err);
+        return;
+      }
+
+      console.log("POSTS Table creation successful");
+    }
+  );
+};
+
+
+const createRepliesTable = async () => {
+  // Create the replies table if it doesn't exist
+  await pool.query(
+    `
+      CREATE TABLE IF NOT EXISTS replies (
+        reply_id SERIAL PRIMARY KEY,
+        post_id SERIAL REFERENCES posts(post_id) ON DELETE CASCADE, -- Cascading delete for post
+        timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        summary TEXT,
+        author_id SERIAL,  -- References the user or content creator who created the reply
+        author_type VARCHAR(50) CHECK (author_type IN ('user', 'content_creator')), -- Indicates whether the author is a user or content creator
+        author_name VARCHAR(255), -- Name of the author (user or content creator)
+        upvotes INT DEFAULT 0,
+        downvotes INT DEFAULT 0,
+        parent_reply_id SERIAL REFERENCES replies(reply_id) ON DELETE CASCADE -- Cascading delete for parent reply
+      )
+    `,
+    (err, res) => {
+      if (err) {
+        console.error(err);
+        return;
+      }
+
+      console.log("REPLIES Table creation successful");
+    }
+  );
+};
+
 const dropTable = async (table_name) => {
   await pool.query(`DROP TABLE IF EXISTS ${table_name};`, (err, res) => {
     if (err) {
@@ -525,6 +584,8 @@ const initDB = async (newPool) => {
 	// await createPendingCoursesTable();
 	//  await createQuestionTable();
 	// await createResultTable();
+  // await createPostsTable();
+  // await createRepliesTable();
 
 
 	// Constraints

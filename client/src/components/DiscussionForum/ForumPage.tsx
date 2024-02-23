@@ -11,7 +11,7 @@ import "../../css/discussion.css";
 
 import dashboardapi from "../../api/GeneralAPI";
 import PostCard from "./PostCard";
-import FilterPage from "./FilterPage";
+import Filters from "./FilterPage";
 import CreatePost from "./CreatePost";
 const ForumPage = () => {
   const { currentUser } = React.useContext(UserContext);
@@ -21,11 +21,11 @@ const ForumPage = () => {
   return (
     <div className="container">
       <div className="row">
-        <FilterPage />
+        <Filters/>
 
         <Routes>
           <Route path="/" element={<PostCard />} />
-          <Route path="/create_post" element={<CreatePost />} />
+          <Route path="/create_post" element={<CreatePost/>} />
         </Routes>
       </div>
     </div>

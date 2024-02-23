@@ -12,6 +12,8 @@ const tables = {
 	recommended_courses: "recommended_courses",
 	course_progress: "course_progress",
 	quizzes: "quizzes",
+	posts: "posts",
+	replies: "replies",
 };
 
 const pool = new Pool({
