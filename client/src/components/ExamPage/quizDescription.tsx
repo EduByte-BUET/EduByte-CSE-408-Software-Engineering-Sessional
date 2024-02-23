@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import api from "../../api/GeneralAPI";
 
+
 const examDescription = () => {
 	const location = useLocation();
     const { lecture_id, lecture_title } = location.state;

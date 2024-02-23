@@ -114,8 +114,8 @@ const ExamQuiz = () => {
 	useEffect(() => {
 		if (timeRemaining === 0) {
 			alert("Time's up!");
-			// handleSubmit();
-			navigate("/home");
+			handleSubmit();
+			//navigate("/home");
 		}
 	}, [timeRemaining]);
 
