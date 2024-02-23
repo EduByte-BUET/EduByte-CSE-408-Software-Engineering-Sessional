@@ -2,15 +2,17 @@ import React, { useState } from "react";
 import "../../css/discussion.css"; // Make sure this path is correct
 
 function CreatePost() {
+  const [authorType, setAuthorType] = useState("user");
+  const [course, setCourse] = useState("");
+  const [tags, setTags] = useState("");
   const [postType, setPostType] = useState("discussion");
-  const [topic, setTopic] = useState("");
   const [title, setTitle] = useState("");
-  const [question, setQuestion] = useState("");
+  const [summary, setSummary] = useState(""); // Updated state for summary
 
   const handleSubmit = (event) => {
     event.preventDefault(); // Prevent the form from refreshing the page
-    console.log({ postType, topic, title, question });
-    // Additional submit logic
+    console.log({ authorType, course, tags, postType, title, summary });
+    // Additional submit logic, e.g., send data to your backend for database insertion
   };
 
   return (
@@ -27,6 +29,38 @@ function CreatePost() {
           <h2>Create Post</h2>
           <form onSubmit={handleSubmit}>
             <div className="form-row">
+              <label htmlFor="authorType">Author Type:</label>
+              <select
+                id="authorType"
+                value={authorType}
+                onChange={(e) => setAuthorType(e.target.value)}
+              >
+                <option value="user">User</option>
+                <option value="content_creator">Content Creator</option>
+              </select>
+            </div>
+
+            <div className="form-row">
+              <label htmlFor="course">Course:</label>
+              <input
+                type="text"
+                id="course"
+                value={course}
+                onChange={(e) => setCourse(e.target.value)}
+              />
+            </div>
+
+            <div className="form-row">
+              <label htmlFor="tags">Tags(',' sep):</label>
+              <input
+                type="text"
+                id="tags"
+                value={tags}
+                onChange={(e) => setTags(e.target.value)}
+              />
+            </div>
+
+            <div className="form-row">
               <label htmlFor="postType">Type:</label>
               <select
                 id="postType"
@@ -40,16 +74,6 @@ function CreatePost() {
             </div>
 
             <div className="form-row">
-              <label htmlFor="topic">Topic:</label>
-              <input
-                type="text"
-                id="topic"
-                value={topic}
-                onChange={(e) => setTopic(e.target.value)}
-              />
-            </div>
-
-            <div className="form-row">
               <label htmlFor="title">Title:</label>
               <input
                 type="text"
@@ -60,11 +84,11 @@ function CreatePost() {
             </div>
 
             <div className="form-row">
-              <label htmlFor="question">Question:</label>
+              <label htmlFor="summary">Summary:</label>
               <textarea
-                id="question"
-                value={question}
-                onChange={(e) => setQuestion(e.target.value)}
+                id="summary"
+                value={summary}
+                onChange={(e) => setSummary(e.target.value)}
               ></textarea>
             </div>
 
