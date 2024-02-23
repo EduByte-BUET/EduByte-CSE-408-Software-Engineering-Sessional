@@ -1,4 +1,5 @@
 const express = require("express");
+const requireAuth = require("./RequireAuth");
 const router = express.Router();
 const courses_router = express.Router();
 const block_router = express.Router();
@@ -18,12 +19,19 @@ router.use("/categories", category_router);
 router.use("/popular", popular_course_router);
 router.use("/recommended", recommended_course_router);
 router.use("/", courses_router); // "/courses?course_id=1"
+block_router.use(requireAuth);
 router.use("/blocks", block_router);
+lecture_router.use(requireAuth);
 router.use("/blocks/lectures", lecture_router);
+lesson_router.use(requireAuth);
 router.use("/blocks/lectures/lessons", lesson_router);
+lesson_marked_router.use(requireAuth);
 router.use("/marked", lesson_marked_router);
+register_to_course_router.use(requireAuth);
 router.use("/register", register_to_course_router);
+lecture_count.use(requireAuth);
 router.use("/blocks/lecture_count", lecture_count);
+isLectureViewed.use(requireAuth);
 router.use("/blocks/lectures/isLectureViewed", isLectureViewed);
 
 category_router.route("/").get(async (req, res) => {
@@ -103,32 +111,26 @@ lesson_router.route("/").get(async (req, res) => {
 });
 
 register_to_course_router.route("/").post(async (req, res) => {
-    console.log("/courses/register POST");
-    // Register a user to a course
-    const course_id = req.body.course_id; // Get course_id from frontend
-    const enroll_date = new Date();
-    const enrollment_status = "active";
-    const last_activity = new Date();
+	console.log("/courses/register POST");
+	// Register a user to a course
+	const course_id = req.body.course_id; // Get course_id from frontend
+	const enroll_date = new Date();
+	const enrollment_status = "active";
+	const last_activity = new Date();
 
-    if (req.session.username === undefined) {
-		res.status(404).send();
-		return;
-	}
+	const user = await db.getUser(req.session.username);
+	const user_id = user.user_id;
 
-    const user = await db.getUser(req.session.username);
-    const user_id = user.user_id
+	const registered = await db.registerToCourse(
+		user_id,
+		course_id,
+		enroll_date,
+		enrollment_status,
+		last_activity
+	);
 
-    const registered = await db.registerToCourse(
-        user_id,
-        course_id,
-        enroll_date,
-        enrollment_status,
-        last_activity
-    );
-
-    if (registered === "success") res.status(200).send();
+	if (registered === "success") res.status(200).send();
 	else if (registered === "registered") res.status(409).send();
-    else res.status(404).send();
 });
 
 lesson_marked_router.route("/").get(async (req, res) => {
@@ -138,7 +140,7 @@ lesson_marked_router.route("/").get(async (req, res) => {
 	const block_id = req.query.block_id; // Get block_id from frontend
 	const lecture_id = req.query.lecture_id; // Get lecture_id from frontend
 	const username = req.session.username; // Get user_id from frontend
-	
+
 	const user = await db.getUser(username);
 	const user_id = user.user_id;
 
@@ -170,7 +172,12 @@ isLectureViewed.get("/", async (req, res) => {
 	const user = await db.getUser(req.session.username);
 	const user_id = user.user_id;
 
-	const isLectureViewed = await db.isLectureViewed(user_id, course_id, block_id, lecture_id);
+	const isLectureViewed = await db.isLectureViewed(
+		user_id,
+		course_id,
+		block_id,
+		lecture_id
+	);
 	if (isLectureViewed === true) res.status(200).send(true); // OK
 	else res.status(404).send(false); // Not found
 });

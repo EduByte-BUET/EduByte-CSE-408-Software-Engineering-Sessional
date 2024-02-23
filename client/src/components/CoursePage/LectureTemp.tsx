@@ -14,7 +14,6 @@ const LectureTemp = (props: any) => {
 					`courses/blocks/lectures/isLectureViewed?course_id=${course_id}&block_id=${block_id}&lecture_id=${lecture?.lecture_id}`
 				);
 				if (res.data) {
-					console.log("In here");
 					setViewTik(true);
 				} else {
 					setViewTik(false);

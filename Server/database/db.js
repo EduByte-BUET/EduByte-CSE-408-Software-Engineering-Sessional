@@ -191,7 +191,7 @@ const getCategories = async () => {
 			let courses = [];
 			for (let j = 0; j < categories[i].courses.length; j++) {
 				const courseResult = await pool.query(
-					"SELECT course_id, course_title FROM courses WHERE course_id = $1",
+					"SELECT * FROM courses WHERE course_id = $1",
 					[categories[i].courses[j]]
 				);
 				courses.push(courseResult.rows[0]);
@@ -1043,6 +1043,22 @@ const getAdminNotificationData = async (user_id) => {
 	}
 };
 
+const removeCourse = (course_id) => {
+	// Eta complete korte hobe ********************************************************************************
+
+	// Query to remove the course from the courses table
+	const queryText = "DELETE FROM courses WHERE course_id = $1";
+	const queryValues = [course_id];
+
+	// Execute the query
+	pool.query(queryText, queryValues, (err, res) => {
+		if (err) {
+			return err;
+		}
+	});
+
+}
+
 module.exports = {
 	createTables,
 	connectToDB,
@@ -1078,4 +1094,5 @@ module.exports = {
 	getResultsSummaryForLecture,
 	getLectureCount,
 	isLectureViewed,
+	removeCourse,
 };

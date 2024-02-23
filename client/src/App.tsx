@@ -17,12 +17,6 @@ import Homepage from "./components/Home/Homepage";
 import Dashboard from "./components/UserDashboard/Dashboard";
 import Dashboard_admin from "./components/AdminDashboard/Dashboard_admin";
 // ----
-import CoursesPage from "./components/CoursePage/CoursesPageHome";
-import CourseDetail from "./components/CoursePage/CourseDetail";
-import CourseBlocks from "./components/CoursePage/CourseBlocks";
-import LectureInfo from "./components/CoursePage/LectureInfo";
-import Lesson from "./components/CoursePage/Lesson";
-// ----
 import CourseUpload from "./components/ContentCreatorPage/CourseUpload";
 // ----
 import QuizPageRoot from "./components/ExamPage/quizPageRoot";
@@ -33,43 +27,12 @@ import "./css/Button.css";
 import "./css/SigninSingupInput.css";
 import "./css/CoursePage/CoursesPageList.css";
 import "./css/SignupPrefs.css";
-import PostCard from "./components/DiscussionForum/PostCard";
 import ForumPage from "./components/DiscussionForum/ForumPage";
-import CreatePost from "./components/DiscussionForum/CreatePost";
 
 function App() {
 	// -----User Context
-	const [currentUser, setCurrentUser] = useState<any>(null);
-	// -----
-	const [courseData, setCourseData] = useState<{
-		course_id: number;
-		courseName: string;
-	} | null>(null);
+	const [currentUser, setCurrentUser] = useState<string>("");
 
-	const handleCourseData = (data: {
-		course_id: number;
-		courseName: string;
-	}) => {
-		setCourseData(data);
-	};
-	const [blockData, setBlockData] = useState<{
-		block_id: number;
-		blockName: string;
-	} | null>(null);
-	const handleBlockData = (data: { block_id: number; blockName: string }) => {
-		setBlockData(data);
-	};
-	const [lectureData, setLectureData] = useState<{
-		lecture_id: number;
-		lecture_title: string;
-	} | null>(null);
-	const handleLectureData = (data: {
-		lecture_id: number;
-		lecture_title: string;
-	}) => {
-		setLectureData(data);
-	};
-	// -----
 	const intitutionOptions = [
 		"School",
 		"College",
@@ -121,13 +84,7 @@ function App() {
 		});
 	}, []);
 
-	// save user information in local storage
-	useEffect(() => {
-		if (currentUser) {
-			localStorage.setItem("currentUser", currentUser);
-		}
-	}, [currentUser]);
-	// get user information from local storage
+	// Get the user from the local storage
 	useEffect(() => {
 		const user = localStorage.getItem("currentUser");
 		if (user) {

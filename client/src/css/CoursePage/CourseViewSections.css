@@ -1,23 +1,21 @@
 /* CoursesSection.css */
 
 .course-card {
-    background-color: #b8e5ff;
-    transition: background-color 0.3s ease;
+	text-align: left;
+	background-color: rgb(184, 229, 255);
+	transition: transform 0.3s ease, border 0.3s ease;
+	border: 2px solid #000000;
 }
 
 .course-card:hover {
-    background-color: #cadee6;
+	cursor: pointer;
+	background-color: lightskyblue;
+	transform: translateY(-5px);
 }
 
 .course-card h6 {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 3px;
-}
-
-.course-section {
-    margin-bottom: 3px;
-    background-color: #f5f5f5;
-    background-image: linear-gradient(to right, #f5f5f5, #f5f5f5);
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding: 3px;
 }

@@ -1,6 +1,3 @@
-import React, { Dispatch, SetStateAction } from 'react';
+import React from 'react';
 
-export const UserContext = React.createContext({
-  currentUser: null,
-  setCurrentUser: (() => {}) as Dispatch<SetStateAction<any>>,
-});
+export const UserContext = React.createContext<any>(null);
