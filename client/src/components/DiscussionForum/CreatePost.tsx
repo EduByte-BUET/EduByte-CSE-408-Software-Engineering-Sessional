@@ -1,25 +1,86 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "../../css/discussion.css"; // Make sure this path is correct
+import api from "../../api/GeneralAPI";
+import Select from "react-select";
 
 function CreatePost() {
   const [authorType, setAuthorType] = useState("user");
-  const [course, setCourse] = useState("");
-  const [tags, setTags] = useState("");
   const [postType, setPostType] = useState("discussion");
   const [title, setTitle] = useState("");
   const [summary, setSummary] = useState(""); // Updated state for summary
+  const [showCourse, setShowCourse] = useState([]);
+  const [showTags, setShowTags] = useState([]);
+  const [selectedCourse, setSelectedCourse] = useState("");
+  const [selectedTags, setSelectedTags] = useState<
+    { value: string; label: string }[]
+  >([]);
 
-  const handleSubmit = (event) => {
-    event.preventDefault(); // Prevent the form from refreshing the page
-    console.log({ authorType, course, tags, postType, title, summary });
-    // Additional submit logic, e.g., send data to your backend for database insertion
+  // useeffect to fetch courses and tags
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await api.get(`/discussion/post/show`);
+        if (response.status === 200) {
+          const responseData = response.data;
+          setShowCourse(responseData.courses);
+          setShowTags(responseData.tags);
+          console.log("Courses fetched successfully!", responseData);
+        } else {
+          console.error("Failed to fetch courses:", response.statusText);
+        }
+      } catch (error) {
+        console.error("Error fetching courses:", error);
+      }
+    };
+    fetchData();
+  }, []);
+
+  const handleCourseChange = (event) => {
+    setSelectedCourse(event.target.value);
   };
+  const handleTagsChange = (selectedOptions) => {
+    setSelectedTags(selectedOptions);
+  };
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    //author_id, author_type, course, tags, title, summary, post_type
+    const postData = {
+      author_type: authorType,
+      course: selectedCourse,
+      tags: selectedTagsString.split(","), // Assuming tags are entered as a comma-separated string
+      title: title,
+      summary: summary, // Use the updated state for summary
+      post_type: postType,
+    };
+    console.log(postData);
+
+    try {
+      const response = await api.post(`/discussion/post/create`, postData);
+
+      if (response.status === 200) {
+        const responseData = response.data; // Assuming api.post returns data in a property
+        console.log("Post created successfully!", responseData);
+      } else {
+        console.error("Failed to create post:", response.statusText);
+      }
+    } catch (error) {
+      console.error("Error creating post:", error);
+    }
+  };
+
+  const options = showTags
+    ? showTags.map((tag) => ({ value: tag, label: tag }))
+    : [];
+
+  const selectedTagsString = selectedTags
+    ? selectedTags.map((option) => option.value).join(", ")
+    : "";
 
   return (
     <div className="col-md-8 col-lg-9">
       <div className=" justify-content-between align-items-center py-3">
         {/* Add SortBy and SearchBar components */}
-        
       </div>
       <div
         className="courses-container"
@@ -42,22 +103,34 @@ function CreatePost() {
 
             <div className="form-row">
               <label htmlFor="course">Course:</label>
-              <input
-                type="text"
+              <select
                 id="course"
-                value={course}
-                onChange={(e) => setCourse(e.target.value)}
-              />
+                value={selectedCourse}
+                onChange={handleCourseChange}
+              >
+                <option value="">Select...</option>
+                {showCourse &&
+                  showCourse.map((display_course:any, index: any) => (
+                    <option key={index} value={display_course.course_title}>
+                      {display_course.course_title}
+                    </option>
+                  ))}
+              </select>
             </div>
 
             <div className="form-row">
-              <label htmlFor="tags">Tags(',' sep):</label>
-              <input
-                type="text"
-                id="tags"
-                value={tags}
-                onChange={(e) => setTags(e.target.value)}
+              <label htmlFor="tags">Tags:</label>
+              <Select
+                isMulti
+                name="tags"
+                options={options}
+                className="basic-multi-select"
+                classNamePrefix="select"
+                onChange={handleTagsChange}
+                value={selectedTags}
               />
+              {/* <div>Selected tags: {selectedTagsString}</div>
+              ... rest of your JSX */}
             </div>
 
             <div className="form-row">

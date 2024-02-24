@@ -486,7 +486,7 @@ const createPostsTable = async () => {
         author_type VARCHAR(50) CHECK (author_type IN ('user', 'content_creator')), -- Indicates whether the author is a user or content creator
         author_name VARCHAR(255), -- Name of the author (user or content creator)
         course VARCHAR(255),
-        tags VARCHAR(255)[] NOT NULL,
+        tags TEXT NOT NULL,
         timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         title VARCHAR(255) NOT NULL,
         summary TEXT,
