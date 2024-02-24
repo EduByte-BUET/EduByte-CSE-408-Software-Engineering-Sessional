@@ -183,6 +183,16 @@ const getAllCourses = async () => {
 		return null;
 	}
 };
+const getAllTags = async () => {
+	try {
+	  const res = await pool.query("SELECT DISTINCT unnest(string_to_array(tags, ',')) AS tag FROM courses");
+	  return res.rows.map(row => row.tag); // An array of unique tags
+	} catch (err) {
+	  console.log(err);
+	  return null;
+	}
+  };
+  
 
 const getCategories = async () => {
 	try {
@@ -1061,6 +1071,42 @@ const removeCourse = (course_id) => {
 
 }
 
+const addUserPost = async (author_id, author_type, author_name, course, tags, title, summary, post_type) => {
+	try {
+	  await pool.query("BEGIN");
+  
+	  const queryText = 'INSERT INTO posts (author_id, author_type, author_name, course, tags, title, summary, post_type) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING post_id';
+	  const queryValues = [author_id, author_type, author_name, course, tags, title, summary, post_type];
+	  const result = await pool.query(queryText, queryValues);
+  
+	  const post_id = result.rows[0].post_id;
+  
+	  await pool.query("COMMIT");
+	  return post_id;
+	} catch (error) {
+	  await pool.query("ROLLBACK");
+	  console.error('Error adding user post:', error);
+	  throw error;
+	}
+  };
+
+  const getContentCreator = async (username) => {
+	try {
+	  const res = await pool.query("SELECT * FROM content_creator WHERE username = $1", [
+		username,
+	  ]);
+	  if (res.rows[0]) {
+		return res.rows[0];
+	  }
+	  return null;
+	} catch (err) {
+	  console.log(err);
+	  // Handle the error appropriately, e.g., throw an error or return a default value
+	  throw err;
+	}
+  };
+  
+
 module.exports = {
 	createTables,
 	connectToDB,
@@ -1079,6 +1125,7 @@ module.exports = {
 	getCategories,
 	getRecommendedCourses,
 	getAllCourses,
+	getAllTags,
 	getUserNotificationData,
 	getAdminNotificationData,
 	addLesson,
@@ -1097,4 +1144,6 @@ module.exports = {
 	getLectureCount,
 	isLectureViewed,
 	removeCourse,
+	addUserPost,
+	getContentCreator,
 };

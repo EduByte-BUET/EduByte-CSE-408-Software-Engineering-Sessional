@@ -5,13 +5,15 @@ const post_selected_router = express.Router();
 const myposts_router = express.Router();
 const post_update_router = express.Router();
 const post_create_router = express.Router();
+const show_posts_router = express.Router();
 const post_filter = express.Router();
-
+const db = require("../database/db");
 router.use("/", posts_router);
 router.use("/post", post_selected_router);
 router.use("/myposts", myposts_router);
 router.use("/post/update", post_update_router);
 router.use("/post/create", post_create_router);
+router.use("/post/show", show_posts_router);
 router.use("/filter", post_filter);
 
 posts_router
@@ -251,15 +253,27 @@ post_create_router
     .post(async (req, res) => {
         console.log("/discussion/post/create POST");
 
-        post_title = req.body.post_title;
-        post_content = req.body.post_content;
-        user_id = req.body.user_id;
-        post_tag = req.body.post_tag;
-
-        console.log('Post title: ' + post_title);
-        console.log('Post content: ' + post_content);
-        console.log('User id: ' + user_id);
-        console.log('Post tag: ' + post_tag);
+        // author_id, author_type, course, tags, title, summary, post_type
+        // const postData = {
+        //   authorType,
+        //   course,
+        //   tags: tags.split(','), // Assuming tags are entered as a comma-separated string
+        //   postType,
+        //   title,
+        //   summary,
+        // };
+        const {author_type, course, tags, title, summary, post_type} = req.body;
+        let author_id = 1;
+        // if(author_type === "user"){
+        //   const user = await db.getUser(req.session.username);
+	      //   author_id = user.user_id;
+        // }
+        // else{
+        //   const creator = await db.getContentCreator(req.session.username);
+        //   author_id = creator.creator_id;
+        // }
+        const author_name = req.session.username;
+        const post_id = await db.addUserPost(author_id, author_type, author_name, course, tags, title, summary, post_type);
 
         // A sample json response is given below, fetch data from database
         // Create post in database using post_title, post_content, user_id, user_name, post_tag
@@ -267,10 +281,17 @@ post_create_router
         if (res_db === 'success') res.status(200);
         else res.status(404);
 
-        res.send('post created');
+        res.send(post_id.toString());
     });
 
-
+show_posts_router.get("/", async (req, res) => {
+    console.log("/discussion/post/show GET");
+    const courses = await db.getAllCourses();
+    const tags = await db.getAllTags();
+    if (courses != null && tags != null) res.status(200);
+    else res.status(404);
+    res.status(200).json({courses, tags});
+});
 
 post_filter
     .route("/")
