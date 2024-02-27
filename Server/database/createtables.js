@@ -521,7 +521,8 @@ const createRepliesTable = async () => {
         author_name VARCHAR(255), -- Name of the author (user or content creator)
         upvotes INT DEFAULT 0,
         downvotes INT DEFAULT 0,
-        parent_reply_id SERIAL REFERENCES replies(reply_id) ON DELETE CASCADE -- Cascading delete for parent reply
+        parent_reply_id INT REFERENCES replies(reply_id) ON DELETE CASCADE, -- Cascading delete for parent reply
+        CONSTRAINT check_parent_reply_id CHECK (parent_reply_id IS NULL OR parent_reply_id > 0) -- Check constraint to ensure parent_reply_id is NULL for the first reply
       )
     `,
     (err, res) => {
@@ -534,6 +535,7 @@ const createRepliesTable = async () => {
     }
   );
 };
+
 
 const dropTable = async (table_name) => {
   await pool.query(`DROP TABLE IF EXISTS ${table_name};`, (err, res) => {
