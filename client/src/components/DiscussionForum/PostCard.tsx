@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import "../../css/discussion.css"; // Custom CSS for the post card
+import api from "../../api/GeneralAPI";
 
 const postData = [
   {
@@ -102,10 +103,30 @@ const postData = [
 
 function PostCard() {
   const navigate = useNavigate();
+  const [postData, setPostData] = useState<any>();
   const [replyBoxVisible, setReplyBoxVisible] = useState<null | boolean>(false);
   const [replyText, setReplyText] = useState("");
   const [activePost, setActivePost] = useState<null | number>(null);
   const [commentsVisible, setCommentsVisible] = useState({});
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await api.get(`/discussion`);
+        if (response.status === 200) {
+          const responseData = response.data;
+          setPostData(responseData);
+          console.log("Posts fetched successfully!", responseData);
+        } else {
+          console.error("Failed to fetch posts:", response.statusText);
+        }
+      } catch (error) {
+        console.error("Error fetching courses:", error);
+      }
+    };
+    fetchData();
+  }
+  , []);
 
   // const toggleComments = (postId) => {
   //   setCommentsVisible((prev) => ({ ...prev, [postId]: !prev[postId] }));
@@ -115,9 +136,31 @@ function PostCard() {
     setReplyText(event.target.value);
   };
 
-  const handleSubmitReply = () => {
+  const handleSubmitReply = async (post:any) => { // add async keyword here
     console.log(replyText);
     console.log(activePost);
+  
+    const replyData = {
+      post_id: post.post_id,
+      summary: replyText,
+      author_id: post.author_id,
+      author_type: post.author_type,
+      author_name: post.author_name,
+      parent_reply_id: activePost === post.post_id ? null : activePost
+    };
+  
+    try {
+      const response = await api.post(`/discussion/reply`, replyData); // now await can be used here
+      if (response.status === 200) {
+        const responseData = response.data;
+        console.log("Reply created successfully!", responseData);
+      } else {
+        console.error("Failed to create reply:", response.statusText);
+      }
+    } catch (error) {
+      console.error("Error creating reply:", error);
+    }
+  
     setReplyBoxVisible(null);
     setReplyText("");
   };
@@ -194,13 +237,13 @@ function PostCard() {
           Create Post
         </button>
       </div>
-      {postData.map((post) => (
+      {postData && postData.map((post) => (
         <div className="discussion_card" key={post.post_id}>
           <div className="discussion_card-header">
             <span className="discussion_card-author">@{post.author_name}</span>
             <span className="discussion_card-timestamp">{post.timestamp}</span>
             <div className="discussion_card-tags">
-              {post.tags.map((tag, index) => (
+              {post.tags && post.tags.map((tag, index) => (
                 <span key={index} className="discussion_card-tag">
                   {tag}
                 </span>
@@ -247,7 +290,7 @@ function PostCard() {
               />
               <button
                 className="btn blue-button"
-                onClick={handleSubmitReply}
+                onClick={() => handleSubmitReply(post)}
               >
                 Submit
               </button>
