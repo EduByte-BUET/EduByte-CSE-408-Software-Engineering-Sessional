@@ -14,10 +14,12 @@ const ViewResult = () => {
 	const [percentage, setPercentage] = useState<number>(50); // Example percentage, change as needed
 	const [verdict, setVerdict] = useState("Fail");
 
-	const [totalObtainedMark, setTotalObtainedMark] = useState<string>("0");
+	const [totalObtainedMark, setTotalObtainedMark] = useState<number>(0);
 	const [totalQuestions, setTotalQuestions] = useState<any>();
 
 	useEffect(() => {
+		setTotalQuestions(quizQuestionArr.length);
+
 		const fetchData = async () => {
 			answers.forEach(async (answer, index) => {
 				const postBody = {
@@ -48,14 +50,13 @@ const ViewResult = () => {
 				);
 				// console.log(result_response.data);
 				setTotalObtainedMark(result_response.data.totalObtainedMark);
-				setTotalQuestions(result_response.data.totalQuestions);
 				const pert =
 					(parseInt(result_response.data.totalObtainedMark) /
 						parseInt(result_response.data.totalQuestions)) *
 					100;
 				setPercentage(pert);
 				setVerdict(pert >= 50 ? "Pass" : "Fail");
-				setTotalQuestions(result_response.data.totalQuestions);
+				// setTotalQuestions(result_response.data.totalQuestions);
 			} catch (err) {
 				console.error(err);
 			}
@@ -99,7 +100,7 @@ const ViewResult = () => {
 						</div>
 						<div className="col-md-6" style={{ textAlign: "left" }}>
 							<h2>
-								: {parseInt(totalObtainedMark)} out of {totalQuestions}
+								: {totalObtainedMark} out of {totalQuestions}
 							</h2>
 							<h2>: {percentage.toFixed(3)}%</h2>
 							<h2>: {verdict}</h2>
