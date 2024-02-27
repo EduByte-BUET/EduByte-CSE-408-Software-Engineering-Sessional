@@ -15,11 +15,9 @@ const ViewResult = () => {
 	const [verdict, setVerdict] = useState("Fail");
 
 	const [totalObtainedMark, setTotalObtainedMark] = useState<number>(0);
-	const [totalQuestions, setTotalQuestions] = useState<any>();
+	const [totalQuestions, setTotalQuestions] = useState<number>(0);
 
 	useEffect(() => {
-		setTotalQuestions(quizQuestionArr.length);
-
 		const fetchData = async () => {
 			answers.forEach(async (answer, index) => {
 				const postBody = {
@@ -28,17 +26,21 @@ const ViewResult = () => {
 				};
 
 				try {
-					const gen_response = await api.post(`/generate`, postBody);
-					// console.log(gen_response.data);
-					const postBody2 = {
-						question_id: quizQuestionArr[index].question_id,
-						obtained_mark: gen_response.data.obtained_mark,
-						comment: gen_response.data.comment, // Replace with actual comment
-						question_answer: gen_response.data.question_answer, // Assuming the response data is the question answer
-					};
+					if (totalQuestions === 0) {
+						const gen_response = await api.post(`/generate`, postBody);
+						
+						setTotalQuestions(quizQuestionArr.length);
+						// console.log(gen_response.data);
+						const postBody2 = {
+							question_id: quizQuestionArr[index].question_id,
+							obtained_mark: gen_response.data.obtained_mark,
+							comment: gen_response.data.comment, // Replace with actual comment
+							question_answer: gen_response.data.question_answer, // Assuming the response data is the question answer
+						};
 
-					await api.post(`/exam/ai`, postBody2); // Replace '/another-endpoint' with your actual endpoint
-					// console.log(gen_response2.data);
+						await api.post(`/exam/ai`, postBody2); // Replace '/another-endpoint' with your actual endpoint
+						// console.log(gen_response2.data);
+					}
 				} catch (err) {
 					console.error(err);
 				}
