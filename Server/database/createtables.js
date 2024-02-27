@@ -565,6 +565,10 @@ const addUniqueConstraint = async () => {
 
 };
 
+/*
+ALTER TABLE result ADD CONSTRAINT unique_user_question UNIQUE (user_id, question_id);
+*/
+
 const initDB = async (newPool) => {
   pool = newPool;
 

@@ -64,6 +64,7 @@ answer_router.route("/").post(async (req, res) => {
 
 exam_ai_router.route("/").post(async (req, res) => {
 	console.log("/exam/ai POST");
+
 	const question_id = req.body.question_id;
 	const obtained_mark = req.body.obtained_mark;
 	const comment = req.body.comment;
@@ -74,13 +75,9 @@ exam_ai_router.route("/").post(async (req, res) => {
 		comment,
 		corrected_answer
 	);
-	console.log(ai_info);
-	if (ai_info != null) res.status(200);
-	else res.status(404); // Not found
-	res.json({
-		message: "AI info received",
-		verdict: "success",
-	});
+
+	if (ai_info != null) res.status(200).send();
+	else res.status(404).send(); // Not found
 });
 result_router.route("/").get(async (req, res) => {
 	console.log("/exam/result GET");
