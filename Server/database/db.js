@@ -620,8 +620,8 @@ const addLesson = async (course, block, lecture, lesson) => {
 		}
 
 		const lessonInsertResult = await pool.query(
-			"INSERT INTO lessons (lecture_id, creator_id, title, description, created_at, updated_at) VALUES ($1, $2, $3, $4, NOW(), NOW()) RETURNING lesson_id",
-			[lectureId, lesson.creator_id, lesson.title, lesson.description]
+			"INSERT INTO lessons (lecture_id, creator_id, title, description, created_at, updated_at, file_url) VALUES ($1, $2, $3, $4, NOW(), NOW(), $5) RETURNING lesson_id",
+			[lectureId, lesson.creator_id, lesson.title, lesson.description, lesson.file_url]
 		);
 
 		await pool.query("COMMIT");
