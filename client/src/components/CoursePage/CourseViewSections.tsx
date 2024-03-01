@@ -37,10 +37,6 @@ const CourseCard = (props: any) => {
 					{course.course_title}
 				</h5>
 				</div>
-				<div className="col">
-				<button onClick={handleFavourites}>favourites</button>	
-				</div>
-				
 			</div>
 			<div className="row">
 				<div className="col-md-9">
