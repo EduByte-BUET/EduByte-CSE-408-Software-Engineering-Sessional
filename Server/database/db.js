@@ -621,7 +621,13 @@ const addLesson = async (course, block, lecture, lesson) => {
 
 		const lessonInsertResult = await pool.query(
 			"INSERT INTO lessons (lecture_id, creator_id, title, description, created_at, updated_at, file_url) VALUES ($1, $2, $3, $4, NOW(), NOW(), $5) RETURNING lesson_id",
-			[lectureId, lesson.creator_id, lesson.title, lesson.description, lesson.file_url]
+			[
+				lectureId,
+				lesson.creator_id,
+				lesson.title,
+				lesson.description,
+				lesson.file_url,
+			]
 		);
 
 		await pool.query("COMMIT");
@@ -1137,92 +1143,167 @@ const getContentCreator = async (username) => {
 		// Handle the error appropriately, e.g., throw an error or return a default value
 		throw err;
 	}
-  };
+};
 
-  const fetchPostsData = async () => {
+const fetchPostsData = async () => {
 	try {
-	  // Fetch posts data
-	  const postsQueryResult = await pool.query('SELECT * FROM posts');
-	  const postsData = postsQueryResult.rows.map((post) => ({
-		post_id: post.post_id,
-		author_id: post.author_id,
-		author_type: post.author_type,
-		author_name: post.author_name,
-		course: post.course,
-		tags: post.tags ? post.tags.replace(/[{}"]/g, '').split(',').map(tag => tag.trim()) : [],
-		timestamp: post.timestamp.toISOString(),
-		title: post.title,
-		summary: post.summary,
-		post_type: post.post_type,
-		upvotes: post.upvotes,
-		downvotes: post.downvotes,
-		replies: [],
-	  }));
-  
-	  // Fetch replies data
-	  const repliesQueryResult = await pool.query('SELECT * FROM replies');
-	  const repliesData = repliesQueryResult.rows.map((reply) => ({
-		reply_id: reply.reply_id,
-		post_id: reply.post_id,
-		timestamp: reply.timestamp.toISOString(),
-		summary: reply.summary,
-		author_id: reply.author_id,
-		author_type: reply.author_type,
-		author_name: reply.author_name,
-		upvotes: reply.upvotes,
-		downvotes: reply.downvotes,
-		parent_reply_id: reply.parent_reply_id,
-		replies: [],
-	  }));
-  
-	  // Organize replies into a hierarchical structure
-	  repliesData.forEach((reply) => {
-		const postIndex = postsData.findIndex((post) => post.post_id === reply.post_id);
-		if (postIndex !== -1) {
-		  if (reply.parent_reply_id === null) {
-			postsData[postIndex].replies.push(reply);
-		  } else {
-			const parentReplyIndex = postsData[postIndex].replies.findIndex(
-			  (parentReply) => parentReply.reply_id === reply.parent_reply_id
+		// Fetch posts data
+		const postsQueryResult = await pool.query("SELECT * FROM posts");
+		const postsData = postsQueryResult.rows.map((post) => ({
+			post_id: post.post_id,
+			author_id: post.author_id,
+			author_type: post.author_type,
+			author_name: post.author_name,
+			course: post.course,
+			tags: post.tags
+				? post.tags
+						.replace(/[{}"]/g, "")
+						.split(",")
+						.map((tag) => tag.trim())
+				: [],
+			timestamp: post.timestamp.toISOString(),
+			title: post.title,
+			summary: post.summary,
+			post_type: post.post_type,
+			upvotes: post.upvotes,
+			downvotes: post.downvotes,
+			replies: [],
+		}));
+
+		// Fetch replies data
+		const repliesQueryResult = await pool.query("SELECT * FROM replies");
+		const repliesData = repliesQueryResult.rows.map((reply) => ({
+			reply_id: reply.reply_id,
+			post_id: reply.post_id,
+			timestamp: reply.timestamp.toISOString(),
+			summary: reply.summary,
+			author_id: reply.author_id,
+			author_type: reply.author_type,
+			author_name: reply.author_name,
+			upvotes: reply.upvotes,
+			downvotes: reply.downvotes,
+			parent_reply_id: reply.parent_reply_id,
+			replies: [],
+		}));
+
+		// Organize replies into a hierarchical structure
+		repliesData.forEach((reply) => {
+			const postIndex = postsData.findIndex(
+				(post) => post.post_id === reply.post_id
 			);
-			if (parentReplyIndex !== -1) {
-			  postsData[postIndex].replies[parentReplyIndex].replies.push(reply);
+			if (postIndex !== -1) {
+				if (reply.parent_reply_id === null) {
+					postsData[postIndex].replies.push(reply);
+				} else {
+					const parentReplyIndex = postsData[postIndex].replies.findIndex(
+						(parentReply) => parentReply.reply_id === reply.parent_reply_id
+					);
+					if (parentReplyIndex !== -1) {
+						postsData[postIndex].replies[parentReplyIndex].replies.push(reply);
+					}
+				}
 			}
-		  }
-		}
-	  });
-  
-	  return postsData;
+		});
+
+		return postsData;
 	} catch (error) {
-	  console.error('Error fetching posts data:', error.message);
-	  throw error;
+		console.error("Error fetching posts data:", error.message);
+		throw error;
 	}
-  };  
-  
-  const addReply = async (post_id, summary, author_id, author_type, author_name, parent_reply_id) => {
+};
+
+const addReply = async (
+	post_id,
+	summary,
+	author_id,
+	author_type,
+	author_name,
+	parent_reply_id
+) => {
 	try {
-	  await pool.query("BEGIN");
-  
-	  const queryText = `
+		await pool.query("BEGIN");
+
+		const queryText = `
 		INSERT INTO replies (post_id, summary, author_id, author_type, author_name, parent_reply_id) 
 		VALUES ($1, $2, $3, $4, $5, $6) 
 		RETURNING reply_id`;
-	  
-	  const queryValues = [post_id, summary, author_id, author_type, author_name, parent_reply_id];
-	  const result = await pool.query(queryText, queryValues);
-  
-	  const reply_id = result.rows[0].reply_id;
-  
-	  await pool.query("COMMIT");
-	  return reply_id;
+
+		const queryValues = [
+			post_id,
+			summary,
+			author_id,
+			author_type,
+			author_name,
+			parent_reply_id,
+		];
+		const result = await pool.query(queryText, queryValues);
+
+		const reply_id = result.rows[0].reply_id;
+
+		await pool.query("COMMIT");
+		return reply_id;
 	} catch (error) {
-	  await pool.query("ROLLBACK");
-	  console.error('Error adding reply:', error);
-	  throw error;
+		await pool.query("ROLLBACK");
+		console.error("Error adding reply:", error);
+		throw error;
 	}
-  };
-  
-  
+};
+
+const addToFav = async (user_id, course_id) => {
+	try {
+		// Check if the user exists and has the course in favorites
+		const userRes = await pool.query(
+			"SELECT favorites FROM users WHERE user_id = $1",
+			[user_id]
+		);
+
+		if (userRes.rows.length > 0) {
+			let favorites = userRes.rows[0].favorites;
+			if (favorites == null) favorites = []; // Initialize as an empty array if null
+
+			// Check if the course_id is already in favorites
+			if (favorites.indexOf(course_id) !== -1) {
+				return "added";
+			} else {
+				// Add the course_id to the favorites array
+				favorites.push(course_id);
+				await pool.query("UPDATE users SET favorites = $1 WHERE user_id = $2", [
+					favorites,
+					user_id,
+				]);
+				return "success";
+			}
+		} else {
+			// User not found
+			return "User not found";
+		}
+	} catch (err) {
+		console.log(err);
+		return "";
+	}
+};
+
+const getFavorites = async (user_id) => {
+	try {
+		const res = await pool.query(
+			"SELECT favorites FROM users WHERE user_id = $1",
+			[user_id]
+		);
+		if (res.rows[0]) {
+			const favorites = res.rows[0].favorites;
+			const coursesRes = await pool.query(
+				"SELECT * FROM courses WHERE course_id = ANY($1)",
+				[favorites]
+			);
+			return coursesRes.rows;
+		}
+		return null;
+	} catch (err) {
+		console.log(err);
+		return null;
+	}
+};
+
 module.exports = {
 	createTables,
 	connectToDB,
@@ -1264,4 +1345,6 @@ module.exports = {
 	getContentCreator,
 	fetchPostsData,
 	addReply,
+	addToFav,
+	getFavorites,
 };

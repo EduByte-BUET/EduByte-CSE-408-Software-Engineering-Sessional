@@ -14,6 +14,7 @@ import MyCourses from "./MyCourses";
 import RecommendedCourses from "./RecommendedCourses";
 import UserNotification from "./UserNotification";
 import RequestCourse from "./RequestCourse";
+import Favorites from "./UserFavorites";
 import { Spinner } from "react-bootstrap";
 
 
@@ -56,6 +57,7 @@ const Dashboard = () => {
 				<Routes>
 					<Route path="/mycourses" element={<MyCourses />} />
 					<Route path="/recommendations" element={<RecommendedCourses />} />
+					<Route path="/favorites" element={<Favorites/>} />
 					<Route
 						path="/notifications"
 						element={<UserNotification notificationData={notificationData} />}

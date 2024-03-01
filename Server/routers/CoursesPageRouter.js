@@ -12,6 +12,8 @@ const popular_course_router = express.Router();
 const recommended_course_router = express.Router();
 const lecture_count = express.Router();
 const isLectureViewed = express.Router();
+const addToFavRouter = express.Router();
+const getFavoritesRouter = express.Router();
 
 const db = require("../database/db");
 
@@ -33,6 +35,10 @@ lecture_count.use(requireAuth);
 router.use("/blocks/lecture_count", lecture_count);
 isLectureViewed.use(requireAuth);
 router.use("/blocks/lectures/isLectureViewed", isLectureViewed);
+addToFavRouter.use(requireAuth);
+router.use("/addtofav", addToFavRouter);
+getFavoritesRouter.use(requireAuth);
+router.use("/favorites", getFavoritesRouter);
 
 category_router.route("/").get(async (req, res) => {
 	console.log("/courses/categories GET");
@@ -180,6 +186,33 @@ isLectureViewed.get("/", async (req, res) => {
 	);
 	if (isLectureViewed === true) res.status(200).send(true); // OK
 	else res.status(404).send(false); // Not found
+});
+
+addToFavRouter.route("/").get(async (req, res) => {
+	console.log("/courses/addtofav POST");
+
+	const course_id = req.query.course_id;
+
+	const user = await db.getUser(req.session.username);
+	console.log(req.session.username);
+	
+	const user_id = user.user_id;
+
+	const added = await db.addToFav(user_id, course_id);
+	if (added === "success") res.status(200).send();
+	else if (added === "added") res.status(409).send();
+	else res.status(404).send();
+});
+
+getFavoritesRouter.route("/").get(async (req, res) => {
+	console.log("/courses/favorites GET");
+
+	const user = await db.getUser(req.session.username);
+	const user_id = user.user_id;
+
+	const favorites = await db.getFavorites(user_id);
+	if (favorites != null) res.status(200).json(favorites);
+	else res.status(404).send();
 });
 
 module.exports = router;
