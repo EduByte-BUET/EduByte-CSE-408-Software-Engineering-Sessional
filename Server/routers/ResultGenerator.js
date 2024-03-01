@@ -12,6 +12,7 @@ const MODEL_NAME = "gemini-pro";
 const API_KEY = "AIzaSyC7U9eH7FCkx-aHYObkzURzrxFPA2Us5nk";
 
 result_gen_router.route("/").post(async (req, res) => {
+    console.log("/generate");
     const userInput = req.body;
     const question = userInput.question;
     const user_answer = userInput.user_answer;

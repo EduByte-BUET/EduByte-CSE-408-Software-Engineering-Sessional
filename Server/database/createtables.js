@@ -492,7 +492,9 @@ const createPostsTable = async () => {
         summary TEXT,
         post_type VARCHAR(50) NOT NULL,
         upvotes INT DEFAULT 0,
-        downvotes INT DEFAULT 0
+        downvotes INT DEFAULT 0,
+        CONSTRAINT non_blank_summary CHECK (summary <> ''), -- Ensure that the summary is not blank
+        CONSTRAINT unique_post UNIQUE (author_id, title) -- Ensure that posts with the same author and title are not allowed
       )
     `,
     (err, res) => {
@@ -505,6 +507,7 @@ const createPostsTable = async () => {
     }
   );
 };
+
 
 
 const createRepliesTable = async () => {
@@ -565,6 +568,28 @@ const addUniqueConstraint = async () => {
 
 };
 
+const createFavoritesTable = async () => {
+  // Create the favorites table if it doesn't exist
+  await pool.query(
+    `
+      CREATE TABLE IF NOT EXISTS favorites (
+        id SERIAL PRIMARY KEY,
+        user_id SERIAL REFERENCES users(user_id),
+        course_id SERIAL REFERENCES courses(course_id),
+        CONSTRAINT unique_user_course_pair UNIQUE (user_id, course_id)
+      )
+    `,
+    (err, res) => {
+      if (err) {
+        console.error(err);
+        return;
+      }
+
+      console.log("FAVORITES Table creation successful");
+    }
+  );
+};
+
 /*
 ALTER TABLE result ADD CONSTRAINT unique_user_question UNIQUE (user_id, question_id);
 */
@@ -596,6 +621,7 @@ const initDB = async (newPool) => {
 
 	// Constraints
 	// await addUniqueConstraint();
+  //createFavoritesTable();
 
 };
 
