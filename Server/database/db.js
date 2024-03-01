@@ -1221,6 +1221,50 @@ const getContentCreator = async (username) => {
 	  throw error;
 	}
   };
+
+  const insertFavorite = async (user_id, course_id) => {
+	try {
+	  await pool.query("BEGIN");
+  
+	  const queryText = `
+		INSERT INTO favorites (user_id, course_id) 
+		VALUES ($1, $2) 
+		RETURNING id`;
+  
+	  const queryValues = [user_id, course_id];
+	  const result = await pool.query(queryText, queryValues);
+  
+	  const favorite_id = result.rows[0].id;
+  
+	  await pool.query("COMMIT");
+	  return favorite_id;
+	} catch (error) {
+	  await pool.query("ROLLBACK");
+	  console.error('Error adding favorite:', error);
+	  throw error;
+	}
+  };
+  const getFavouriteCourses = async (user_id) => {
+	try {
+	  const res = await pool.query(
+		`
+		SELECT c.course_id, c.course_title, c.description
+		FROM courses c
+		JOIN favorites f ON c.course_id = f.course_id AND f.user_id = $1
+		WHERE f.user_id IS NOT NULL
+		LIMIT 5
+		`,
+		[user_id]
+	  );
+  
+	  return res.rows;
+	} catch (err) {
+	  console.error(err);
+	  // Handle the error appropriately, e.g., throw an error or return a default value
+	  throw err;
+	}
+  };
+  
   
   
 module.exports = {
@@ -1264,4 +1308,6 @@ module.exports = {
 	getContentCreator,
 	fetchPostsData,
 	addReply,
+	insertFavorite,
+	getFavouriteCourses,
 };

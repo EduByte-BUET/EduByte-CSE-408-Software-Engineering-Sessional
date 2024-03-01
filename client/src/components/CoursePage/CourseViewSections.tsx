@@ -1,6 +1,7 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import "../../css/CoursePage/CourseViewSections.css";
+import api from "../../api/GeneralAPI";
 
 const CourseCard = (props: any) => {
 	const { course } = props;
@@ -11,6 +12,17 @@ const CourseCard = (props: any) => {
 			state: { course_id: course.course_id, course_title: course.course_title },
 		});
 	};
+	const handleFavourites = (event: React.MouseEvent) => {
+		const postFavourites = async () => {
+		  try {
+			const res = await api.post(`/courses/favorite?course_id=${course.course_id}`);
+			console.log(res);
+		  } catch (err) {
+			console.log(err);
+		  }
+		};
+		postFavourites();
+	  };
 
 	return (
 		<div
@@ -19,10 +31,16 @@ const CourseCard = (props: any) => {
 			onClick={handleClick}
 		>
 			<div className="row">
+				<div className="col">
 				<h5>
 					<i className="fa-regular fa-bookmark"></i> &nbsp;{" "}
 					{course.course_title}
 				</h5>
+				</div>
+				<div className="col">
+				<button onClick={handleFavourites}>favourites</button>	
+				</div>
+				
 			</div>
 			<div className="row">
 				<div className="col-md-9">

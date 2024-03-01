@@ -46,6 +46,9 @@ const UserProfile = () => {
 	const handleSavedPosts = () => {
 		handleSetActiveLink("/savedposts");
 	};
+	const handleFavourites = () => {
+		handleSetActiveLink("/favourites");
+	}
 
 	return (
 		<div className="col-md-4 col-lg-3 bg-light d-flex flex-column sidebars">
@@ -74,6 +77,15 @@ const UserProfile = () => {
 					onClick={handleRecommendations}
 				>
 					Recommendations
+				</Link>
+				<Link
+					to="/user/dashboard/favourites"
+					className={`nav-link dash-navlink ${
+						activeLink === "/favourites" ? "active" : ""
+					}`}
+					onClick={handleFavourites}
+				>
+					Favourites
 				</Link>
 				<Link
 					to="/user/dashboard/notifications"
