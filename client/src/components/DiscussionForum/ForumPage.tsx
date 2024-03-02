@@ -9,14 +9,10 @@ import {
 } from "react-router-dom";
 import "../../css/discussion.css";
 
-import dashboardapi from "../../api/GeneralAPI";
 import PostCard from "./PostCard";
 import Filters from "./FilterPage";
 import CreatePost from "./CreatePost";
 const ForumPage = () => {
-  const { currentUser } = React.useContext(UserContext);
-  const navigate = useNavigate();
-  const location = useLocation();
 
   return (
     <div className="container">
