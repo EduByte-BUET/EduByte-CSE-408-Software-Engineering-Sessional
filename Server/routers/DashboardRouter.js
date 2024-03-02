@@ -5,6 +5,7 @@ const courses_router = express.Router();
 const recommendations_router = express.Router();
 const notifications_router = express.Router();
 const saved_posts_router = express.Router();
+const unregister_course_router = express.Router();
 const db = require("../database/db");
 
 // --------------------------------------------- User ---------------------------------------------
@@ -17,28 +18,39 @@ notifications_router.use(requireAuth);
 router.use("/user/notifications", notifications_router);
 saved_posts_router.use(requireAuth);
 router.use("/user/saved_posts", saved_posts_router);
+unregister_course_router.use(requireAuth);
+router.use("/user/courses", unregister_course_router);
 // dashboard Credentials
 // Name, Email, Username, Password
 
 courses_router.route("/").get(async (req, res) => {
 	console.log("/user/courses GET");
 
-	const user = await db.getUser(req.session.username); // req.session.userid;
-	const user_id = user.user_id;
+	const user_id = req.session.user_id;
 
 	let courses = await db.getCoursesEnrolled(user_id);
-	console.log(courses);
-	if (courses.length === 0) {
-		res.status(400);
-		courses = {
-			status: "success",
-			message: "Courses data for the user retrieved successfully.",
-			coursesData: [],
-		};
-	}
 
-	res.status(200);
-	res.json(courses);
+	if (courses === null) {
+		res.status(400).send();
+	}
+	else {
+		res.status(200).send(courses);
+	}
+});
+
+unregister_course_router.route("/").delete(async (req, res) => {
+	console.log("/user/courses DELETE");
+
+	const user_id = req.session.user_id;
+	const course_id = req.query.course_id;
+
+	let result = await db.unregisterCourse(user_id, course_id);
+	if (result === null) {
+		res.status(400).send();
+	}
+	else {
+		res.status(200).send(result);
+	}
 });
 
 recommendations_router.route("/").get(async (req, res) => {
