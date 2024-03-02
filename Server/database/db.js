@@ -1188,69 +1188,72 @@ const getContentCreator = async (username) => {
 
 const fetchPostsData = async () => {
 	try {
-		// Fetch posts data
-		const postsQueryResult = await pool.query("SELECT * FROM posts");
-		const postsData = postsQueryResult.rows.map((post) => ({
-			post_id: post.post_id,
-			author_id: post.author_id,
-			author_type: post.author_type,
-			author_name: post.author_name,
-			course: post.course,
-			tags: post.tags
-				? post.tags
-						.replace(/[{}"]/g, "")
-						.split(",")
-						.map((tag) => tag.trim())
-				: [],
-			timestamp: post.timestamp.toISOString(),
-			title: post.title,
-			summary: post.summary,
-			post_type: post.post_type,
-			upvotes: post.upvotes,
-			downvotes: post.downvotes,
-			replies: [],
-		}));
-
-		// Fetch replies data
-		const repliesQueryResult = await pool.query("SELECT * FROM replies");
-		const repliesData = repliesQueryResult.rows.map((reply) => ({
-			reply_id: reply.reply_id,
-			post_id: reply.post_id,
-			timestamp: reply.timestamp.toISOString(),
-			summary: reply.summary,
-			author_id: reply.author_id,
-			author_type: reply.author_type,
-			author_name: reply.author_name,
-			upvotes: reply.upvotes,
-			downvotes: reply.downvotes,
-			parent_reply_id: reply.parent_reply_id,
-			replies: [],
-		}));
-
-		// Organize replies into a hierarchical structure
-		repliesData.forEach((reply) => {
-			const postIndex = postsData.findIndex(
-				(post) => post.post_id === reply.post_id
-			);
-			if (postIndex !== -1) {
-				if (reply.parent_reply_id === null) {
-					postsData[postIndex].replies.push(reply);
-				} else {
-					const parentReplyIndex = postsData[postIndex].replies.findIndex(
-						(parentReply) => parentReply.reply_id === reply.parent_reply_id
-					);
-					if (parentReplyIndex !== -1) {
-						postsData[postIndex].replies[parentReplyIndex].replies.push(reply);
-					}
-				}
-			}
-		});
-
-		return postsData;
+	  const postsQueryResult = await pool.query('SELECT * FROM posts');
+	  const postsData = postsQueryResult.rows.map((post) => ({
+		post_id: post.post_id,
+		author_id: post.author_id,
+		author_type: post.author_type,
+		author_name: post.author_name,
+		course: post.course,
+		tags: post.tags ? post.tags.replace(/[{}"]/g, '').split(',').map(tag => tag.trim()) : [],
+		timestamp: post.timestamp.toISOString(),
+		title: post.title,
+		summary: post.summary,
+		post_type: post.post_type,
+		upvotes: post.upvotes,
+		downvotes: post.downvotes,
+		replies: [],
+	  }));
+  
+	  const repliesQueryResult = await pool.query('SELECT * FROM replies');
+	  const repliesData = repliesQueryResult.rows.map((reply) => ({
+		reply_id: reply.reply_id,
+		post_id: reply.post_id,
+		timestamp: reply.timestamp.toISOString(),
+		summary: reply.summary,
+		author_id: reply.author_id,
+		author_type: reply.author_type,
+		author_name: reply.author_name,
+		upvotes: reply.upvotes,
+		downvotes: reply.downvotes,
+		parent_reply_id: reply.parent_reply_id,
+		replies: [],
+	  }));
+  
+	  const findReply = (replies, replyId) => {
+		for (let reply of replies) {
+		  if (reply.reply_id === replyId) {
+			return reply;
+		  }
+		  const foundReply = findReply(reply.replies, replyId);
+		  if (foundReply) {
+			return foundReply;
+		  }
+		}
+	  };
+  
+	  repliesData.forEach((reply) => {
+		if (reply.parent_reply_id === null) {
+		  const post = postsData.find((post) => post.post_id === reply.post_id);
+		  if (post) {
+			post.replies.push(reply);
+		  }
+		} else {
+		  const allReplies = postsData.reduce((acc, post) => acc.concat(post.replies), []);
+		  const parentReply = findReply(allReplies, reply.parent_reply_id);
+		  if (parentReply) {
+			parentReply.replies.push(reply);
+		  }
+		}
+	  });
+  
+	  return postsData;
+    
 	} catch (error) {
 		console.error("Error fetching posts data:", error.message);
 		throw error;
 	}
+
 };
 
 const addReply = async (

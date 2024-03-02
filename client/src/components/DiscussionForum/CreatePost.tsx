@@ -63,7 +63,7 @@ function CreatePost() {
 			if (response.status === 200) {
 				const responseData = response.data; // Assuming api.post returns data in a property
 				console.log("Post created successfully!", responseData);
-        navigate("/discussion"); // Replace '/discussion' with your actual endpoint
+                navigate("/discussion"); // Replace '/discussion' with your actual endpoint
 			} else {
 				console.error("Failed to create post:", response.statusText);
 			}
