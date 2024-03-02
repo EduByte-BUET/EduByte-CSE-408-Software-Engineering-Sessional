@@ -22,14 +22,12 @@ posts_router
     .route("/")
     .get(async (req, res) => {
         console.log("/discussion GET");
-        
-        // A sample json response is given below, fetch data from database
-          // Example usage:
-      const postsData = await db.fetchPostsData();
-       // console.log(postsData);
-        if (postsData != null) res.status(200);
-        else res.status(404);
-        res.json(postsData);
+        const postsData = await db.fetchPostsData();
+        if (postsData.length > 0) {
+            res.status(200).json(postsData);
+        } else {
+            res.status(404).send('No posts found');
+        }
     });
     
 reply_router.route("/").post(async (req, res) => {
