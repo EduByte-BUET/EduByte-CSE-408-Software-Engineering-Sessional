@@ -29,4 +29,8 @@
 
 .custom-nav-link:active {
 	transform: scale(0.95);
-  }
+}
+
+.header {
+	border-bottom: 1px solid #ddd; /* Add smooth bottom border */
+}

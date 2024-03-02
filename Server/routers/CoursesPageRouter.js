@@ -38,7 +38,6 @@ router.use("/blocks/lectures/isLectureViewed", isLectureViewed);
 router.use("/favorite", favorite_router);
 router.use("/user/fav", fetch_fav);
 
-
 category_router.route("/").get(async (req, res) => {
 	console.log("/courses/categories GET");
 	// Get all the categories
@@ -168,7 +167,6 @@ lecture_count.get("/", async (req, res) => {
 	else res.status(404).send(); // Not found
 });
 
-
 isLectureViewed.get("/", async (req, res) => {
 	console.log("/courses/blocks/lectures/isLectureViewed GET");
 	const lecture_id = req.query.lecture_id;
@@ -191,40 +189,40 @@ isLectureViewed.get("/", async (req, res) => {
 favorite_router.route("/").post(async (req, res) => {
 	console.log("/courses/favorite POST");
 	const course_id = req.query.course_id;
-  
+
 	try {
-	  const user = await db.getUser(req.session.username);
-	  const user_id = user.user_id;
-  
-	  const favorite_id = await db.insertFavorite(user_id, course_id);
-  
-	  res.status(200).send({ favorite_id });
+		const user = await db.getUser(req.session.username);
+		const user_id = user.user_id;
+
+		const favorite_id = await db.insertFavorite(user_id, course_id);
+
+		res.status(200).send({ favorite_id });
 	} catch (error) {
-	  if (error.code === "23505") {
-		// Unique violation error, indicating the course is already favorited by the user
-		res.status(409).send({ error: "Course already favorited" });
-	  } else {
-		console.error('Error adding favorite:', error);
-		res.status(500).send({ error: "Internal Server Error" });
-	  }
+		if (error.code === "23505") {
+			// Unique violation error, indicating the course is already favorited by the user
+			res.status(409).send({ error: "Course already favorited" });
+		} else {
+			console.error("Error adding favorite:", error);
+			res.status(500).send({ error: "Internal Server Error" });
+		}
 	}
-  });
-  fetch_fav.route("/").get(async (req, res) => {
+});
+fetch_fav.route("/").get(async (req, res) => {
 	console.log("/courses/user/fav GET");
-  
+
 	try {
-	  let user_id = 1;
-	  const user = await db.getUser(req.session.username);
-	   user_id = user.user_id;
-  
-	  const favorites = await db.getFavouriteCourses(user_id);
-	  console.log(favorites);
-  
-	  res.status(200).send(favorites);
+		let user_id = 1;
+		const user = await db.getUser(req.session.username);
+		user_id = user.user_id;
+
+		const favorites = await db.getFavouriteCourses(user_id);
+		console.log(favorites);
+
+		res.status(200).send(favorites);
 	} catch (error) {
-	  console.error('Error fetching favorite courses:', error);
-	  res.status(500).send({ error: "Internal Server Error" });
+		console.error("Error fetching favorite courses:", error);
+		res.status(500).send({ error: "Internal Server Error" });
 	}
-  });
+});
 
 module.exports = router;

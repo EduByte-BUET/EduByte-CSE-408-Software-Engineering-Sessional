@@ -64,14 +64,19 @@ export default function PopularCourses() {
 
 	return (
 		<>
-			<section id="courses" className="course-area pt-140 pb-170 ">
+			<section id="courses" className="course-area pt-100">
 				<div className="container">
 					<div className="row">
 						<div className="col-xl-6 col-lg-7 col-md-10 mx-auto">
-							<div className="section-title text-center mb-50">
+							<div className="section-title text-center">
 								<h2 className="mb-15 wow fadeInUp" data-wow-delay=".2s">
 									Popular Courses
 								</h2>
+								{/* Say something about edubytes popular courses */}
+								<p className="wow fadeInUp" data-wow-delay=".4s">
+									Get along with the latest and trending topics in the field of
+									Computer Science.
+								</p>
 							</div>
 						</div>
 					</div>
@@ -97,7 +102,7 @@ export default function PopularCourses() {
 													<img
 														src={item.thumbnail_url}
 														alt=""
-														className=" card-img-top card-img-topi"
+														className="card-img-top card-img-topi"
 													/>
 													<div className=" card-body card-bodyi ">
 														<div className="d-flex justify-content-between align-items-center mb-3">

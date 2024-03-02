@@ -6,13 +6,7 @@ import api from "../../api/GeneralAPI";
 import { UserContext } from "../UserContext/UserContext";
 
 const UserProfile = () => {
-	const [activeLink, setActiveLink] = useState(""); // Default active link
 	const currentUser = React.useContext(UserContext);
-
-	// Function to set the active link and apply the 'active' class
-	const handleSetActiveLink = (link: any) => {
-		setActiveLink(link);
-	};
 
 	// Getting the current user from the context
 	const { setCurrentUser } = React.useContext(UserContext);
@@ -32,23 +26,20 @@ const UserProfile = () => {
 	};
 
 	const handleMyCourses = () => {
-		handleSetActiveLink("/courses");
+		navigate("/user/dashboard/mycourses");
 	};
 
 	const handleRecommendations = () => {
-		handleSetActiveLink("/recommendations");
+		navigate("/user/dashboard/recommendations");
 	};
 
 	const handleNotifications = () => {
-		handleSetActiveLink("/notifications");
+		navigate("/user/dashboard/notifications");
 	};
 
 	const handleSavedPosts = () => {
-		handleSetActiveLink("/savedposts");
+		navigate("/user/dashboard/savedposts");
 	};
-	const handleFavourites = () => {
-		handleSetActiveLink("/favourites");
-	}
 
 	return (
 		<div className="col-md-4 col-lg-3 bg-light d-flex flex-column sidebars">
@@ -62,45 +53,28 @@ const UserProfile = () => {
 			>
 				<Link
 					to="/user/dashboard/mycourses"
-					className={`nav-link dash-navlink ${
-						activeLink === "/courses" ? "active" : ""
-					}`}
+					className="nav-link dash-navlink"
 					onClick={handleMyCourses}
 				>
 					Courses
 				</Link>
 				<Link
 					to="/user/dashboard/recommendations"
-					className={`nav-link dash-navlink ${
-						activeLink === "/recommendations" ? "active" : ""
-					}`}
+					className="nav-link dash-navlink"
 					onClick={handleRecommendations}
 				>
 					Recommendations
 				</Link>
 				<Link
-					to="/user/dashboard/favourites"
-					className={`nav-link dash-navlink ${
-						activeLink === "/favourites" ? "active" : ""
-					}`}
-					onClick={handleFavourites}
-				>
-					Favourites
-				</Link>
-				<Link
 					to="/user/dashboard/notifications"
-					className={`nav-link dash-navlink ${
-						activeLink === "/notifications" ? "active" : ""
-					}`}
+					className="nav-link dash-navlink"
 					onClick={handleNotifications}
 				>
 					Notifications
 				</Link>
 				<Link
 					to="/user/dashboard/savedposts"
-					className={`nav-link dash-navlink ${
-						activeLink === "/savedposts" ? "active" : ""
-					}`}
+					className="nav-link dash-navlink"
 					onClick={handleSavedPosts}
 				>
 					Saved Posts

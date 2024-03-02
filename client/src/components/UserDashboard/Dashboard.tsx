@@ -1,57 +1,39 @@
-import React, { useEffect } from "react";
-import { UserContext } from "../UserContext/UserContext";
 import {
 	BrowserRouter as Router,
 	Route,
 	Routes,
-	useNavigate,
 } from "react-router-dom";
 import "../../css/dashboard.css";
 import UserProfile from "./UserProfile";
-import dashboardapi from "../../api/GeneralAPI";
 
 import MyCourses from "./MyCourses";
 import RecommendedCourses from "./RecommendedCourses";
 import UserNotification from "./UserNotification";
 import RequestCourse from "./RequestCourse";
-import { Spinner } from "react-bootstrap";
-import UserFavourites from "./UserFavourites";
+import Popup from "../Popup";
+import UserAuth from "../UserAuth";
+import SavedPosts from "./SavedPosts";
+import { useEffect, useState } from "react";
 
 
 const Dashboard = () => {
-	const navigate = useNavigate();
-	const { currentUser } = React.useContext(UserContext);
-
-	const [coursesData, setCoursesData] = React.useState<[any]>();
-	const [recommendedCoursesData, setRecommendedCoursesData] = React.useState<any>(null);
-	const [notificationData, setNotificationData] = React.useState<any>(null);
+	const [authFailed, setAuthFailed] = useState<boolean>(false);
 
 	useEffect(() => {
-		const handleMyNotification = async () => {
-			try {
-				console.log(" 1 ");
-				const res = await dashboardapi.get("/dashboard/user/notifications");
-				console.log(res);
-				setNotificationData(res.data.notificationData);
-			} catch (err) {
-				console.log(err);
+		const auth = async () => {
+			const loggedIn = await UserAuth();
+			if (!loggedIn) {
+				setAuthFailed(true);
 			}
-		};
-
-		if (currentUser === null) {
-			navigate("/home");
-			return;
 		}
-		else handleMyNotification();
-		
-	}, []);
 
-	if (currentUser === null) {
-		return <Spinner animation="border" />;
-	}
+		auth();
+	});
 
 	return (
 		<div className="container">
+			{authFailed && <Popup description="Unauthorized" toggle={setAuthFailed} />}
+
 			<div className="row">
 				<UserProfile />
 				<Routes>
@@ -59,10 +41,9 @@ const Dashboard = () => {
 					<Route path="/recommendations" element={<RecommendedCourses />} />
 					<Route
 						path="/notifications"
-						element={<UserNotification notificationData={notificationData} />}
+						element={<UserNotification />}
 					/>
-					<Route path="/savedposts" element={<MyCourses />} />
-					<Route path="/favourites" element={<UserFavourites/>} />
+					<Route path="/savedposts" element={<SavedPosts />} />
 					<Route path="/request_course" element={<RequestCourse />} />
 				</Routes>
 			</div>

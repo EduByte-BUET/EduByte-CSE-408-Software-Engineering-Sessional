@@ -12,9 +12,10 @@ export default function TitlePage() {
 			<section id="home" className="hero-area bg_cover">
 				<div className="container">
 					<div className="row align-items-center">
-						<div className="col-xl-5 offset-xl-7 col-lg-8 offset-lg-2 col-md-10 offset-md-1">
+						<div className="col-md-6"></div>
+						<div className="col-md-6">
 							<div className="hero-content">
-								<h2 className="mb-30 wow fadeInUp" data-wow-delay=".2s">
+								<h2 className="mb-2 wow fadeInUp" data-wow-delay=".2s">
 									EduByte
 								</h2>
 								<p className="wow fadeInUp" data-wow-delay=".4s">
@@ -24,7 +25,7 @@ export default function TitlePage() {
 								</p>
 								<button
 									type="button"
-									className="btn blue-button"
+									className="main-btn wow fadeInUp"
 									onClick={handleClick}
 								>
 									View Courses

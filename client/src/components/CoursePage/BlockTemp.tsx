@@ -41,7 +41,7 @@ const BlockTemp = (props: any) => {
 			} catch (err) {
 				// The error would print due to some middleware of the fetch from axios, don't sweat it
 				// console.log("Yet to complete");
-			} 
+			}
 		};
 
 		fetchData();
@@ -53,7 +53,9 @@ const BlockTemp = (props: any) => {
 			onClick={handleBlockClick}
 			style={{ cursor: "pointer" }}
 		>
-			<h5>Block {index}</h5>
+			<h5>
+				<i className="fa-brands fa-codepen"></i> &nbsp; <b>Block {index}</b>
+			</h5>
 			<h5>
 				{block_name}
 				{viewTik && (
