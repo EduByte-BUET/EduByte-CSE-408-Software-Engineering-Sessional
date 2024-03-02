@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import "../../css/discussion.css"; // Custom CSS for the post card
 import api from "../../api/GeneralAPI";
 
 function PostCard() {
   const navigate = useNavigate();
+  const location = useLocation();
+  const { selectedCourse, trimmedTags, selectedPostTypes } = location.state || {};
   const [postData, setPostData] = useState<any>();
   const [replyBoxVisible, setReplyBoxVisible] = useState<null | boolean>(false);
   const [replyText, setReplyText] = useState("");
@@ -14,7 +16,30 @@ function PostCard() {
 
   const fetchData = async () => {
     try {
-      const response = await api.get(`/discussion`);
+      let url = "/discussion";
+      let response;
+  
+      // Check if any filters are selected
+      if ((selectedPostTypes && selectedPostTypes.length > 0) || selectedCourse || (trimmedTags && trimmedTags.length > 0)) {
+        // Include selected filters in the API request
+        if (selectedPostTypes && selectedPostTypes.length > 0) {
+          url = `/discussion/postTypes?types=${selectedPostTypes.map((type) => type.value).join(",")}`;
+          response = await api.get(url);
+        }
+  
+        if (selectedCourse) {
+          url = `/discussion/courses?course=${selectedCourse.label}`;
+          response = await api.get(url);
+        }
+  
+        if (trimmedTags && trimmedTags.length > 0) {
+          url = `/discussion/tags?tags=${trimmedTags.map((tag) => tag.value).join(",")}`;
+          response = await api.get(url);
+        }
+      } else {
+        response = await api.get(url);
+      }
+  
       if (response.status === 200) {
         const responseData = response.data;
         setPostData(responseData);
@@ -23,13 +48,36 @@ function PostCard() {
         console.error("Failed to fetch posts:", response.statusText);
       }
     } catch (error) {
-      console.error("Error fetching courses:", error);
+      console.error("Error fetching posts:", error);
+      //alert("No posts found for this filter. Fetching all posts.");
+      fetchAllData();
     }
   };
 
+  const fetchAllData = async () => {
+    try {
+      const response = await api.get("/discussion");
+      if (response.status === 200) {
+        const responseData = response.data;
+        setPostData(responseData);
+        console.log("All posts fetched successfully!", responseData);
+      } else {
+        console.error("Failed to fetch all posts:", response.statusText);
+      }
+    } catch (error) {
+      console.error("Error fetching all posts:", error);
+    }
+  };
+  
   useEffect(() => {
-    fetchData();
-  }, [postData]);
+    fetchData().then(() => {
+      console.log(postData);
+      if (!postData || postData.length === 0) {
+        alert("No posts found for this filter. Fetching all posts.");
+        fetchAllData();
+      }
+    });
+  }, [selectedCourse, trimmedTags, selectedPostTypes]);
 
   // const toggleComments = (postId) => {
   //   setCommentsVisible((prev) => ({ ...prev, [postId]: !prev[postId] }));
@@ -58,6 +106,8 @@ function PostCard() {
       if (response.status === 200) {
         const responseData = response.data;
         console.log("Reply created successfully!", responseData);
+        fetchData();
+        navigate("/discussion", { state: { selectedCourse, trimmedTags, selectedPostTypes } });
       } else {
         console.error("Failed to create reply:", response.statusText);
       }
@@ -67,8 +117,6 @@ function PostCard() {
 
     setReplyBoxVisible(null);
     setReplyText("");
-    fetchData();
-    navigate("/discussion");
   };
 
   const handleReplyClick = (replyId, postId) => {

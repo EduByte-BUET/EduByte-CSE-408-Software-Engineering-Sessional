@@ -1335,6 +1335,207 @@ const getFavouriteCourses = async (user_id) => {
 		throw err;
 	}
 };
+const fetchPostsDataByTypes = async (types) => {
+	try {
+	  const postsQueryResult = await pool.query('SELECT * FROM posts WHERE post_type = ANY($1::text[])', [types]);
+	  const postsData = postsQueryResult.rows.map((post) => ({
+		post_id: post.post_id,
+		author_id: post.author_id,
+		author_type: post.author_type,
+		author_name: post.author_name,
+		course: post.course,
+		tags: post.tags ? post.tags.replace(/[{}"]/g, '').split(',').map(tag => tag.trim()) : [],
+		timestamp: post.timestamp.toISOString(),
+		title: post.title,
+		summary: post.summary,
+		post_type: post.post_type,
+		upvotes: post.upvotes,
+		downvotes: post.downvotes,
+		replies: [],
+	  }));
+  
+	  const repliesQueryResult = await pool.query('SELECT * FROM replies');
+	  const repliesData = repliesQueryResult.rows.map((reply) => ({
+		reply_id: reply.reply_id,
+		post_id: reply.post_id,
+		timestamp: reply.timestamp.toISOString(),
+		summary: reply.summary,
+		author_id: reply.author_id,
+		author_type: reply.author_type,
+		author_name: reply.author_name,
+		upvotes: reply.upvotes,
+		downvotes: reply.downvotes,
+		parent_reply_id: reply.parent_reply_id,
+		replies: [],
+	  }));
+  
+	  const findReply = (replies, replyId) => {
+		for (let reply of replies) {
+		  if (reply.reply_id === replyId) {
+			return reply;
+		  }
+		  const foundReply = findReply(reply.replies, replyId);
+		  if (foundReply) {
+			return foundReply;
+		  }
+		}
+	  };
+  
+	  repliesData.forEach((reply) => {
+		if (reply.parent_reply_id === null) {
+		  const post = postsData.find((post) => post.post_id === reply.post_id);
+		  if (post) {
+			post.replies.push(reply);
+		  }
+		} else {
+		  const allReplies = postsData.reduce((acc, post) => acc.concat(post.replies), []);
+		  const parentReply = findReply(allReplies, reply.parent_reply_id);
+		  if (parentReply) {
+			parentReply.replies.push(reply);
+		  }
+		}
+	  });
+  
+	  return postsData;
+	} catch (error) {
+	  console.error("Error fetching posts data by types:", error.message);
+	  throw error;
+	}
+  };
+  const fetchPostsDataByCourse = async (course) => {
+	try {
+	  const postsQueryResult = await pool.query('SELECT * FROM posts WHERE course = $1', [course]);
+	  const postsData = postsQueryResult.rows.map((post) => ({
+		post_id: post.post_id,
+		author_id: post.author_id,
+		author_type: post.author_type,
+		author_name: post.author_name,
+		course: post.course,
+		tags: post.tags ? post.tags.replace(/[{}"]/g, '').split(',').map(tag => tag.trim()) : [],
+		timestamp: post.timestamp.toISOString(),
+		title: post.title,
+		summary: post.summary,
+		post_type: post.post_type,
+		upvotes: post.upvotes,
+		downvotes: post.downvotes,
+		replies: [],
+	  }));
+  
+	  const repliesQueryResult = await pool.query('SELECT * FROM replies');
+	  const repliesData = repliesQueryResult.rows.map((reply) => ({
+		reply_id: reply.reply_id,
+		post_id: reply.post_id,
+		timestamp: reply.timestamp.toISOString(),
+		summary: reply.summary,
+		author_id: reply.author_id,
+		author_type: reply.author_type,
+		author_name: reply.author_name,
+		upvotes: reply.upvotes,
+		downvotes: reply.downvotes,
+		parent_reply_id: reply.parent_reply_id,
+		replies: [],
+	  }));
+  
+	  const findReply = (replies, replyId) => {
+		for (let reply of replies) {
+		  if (reply.reply_id === replyId) {
+			return reply;
+		  }
+		  const foundReply = findReply(reply.replies, replyId);
+		  if (foundReply) {
+			return foundReply;
+		  }
+		}
+	  };
+  
+	  repliesData.forEach((reply) => {
+		if (reply.parent_reply_id === null) {
+		  const post = postsData.find((post) => post.post_id === reply.post_id);
+		  if (post) {
+			post.replies.push(reply);
+		  }
+		} else {
+		  const allReplies = postsData.reduce((acc, post) => acc.concat(post.replies), []);
+		  const parentReply = findReply(allReplies, reply.parent_reply_id);
+		  if (parentReply) {
+			parentReply.replies.push(reply);
+		  }
+		}
+	  });
+  
+	  return postsData;
+	} catch (error) {
+	  console.error("Error fetching posts data by course:", error.message);
+	  throw error;
+	}
+  };
+  const fetchPostsDataByTags = async (tags) => {
+	try {
+	  const postsQueryResult = await pool.query('SELECT * FROM posts WHERE tags::text[] && $1::text[]', [tags]);
+	  const postsData = postsQueryResult.rows.map((post) => ({
+		post_id: post.post_id,
+		author_id: post.author_id,
+		author_type: post.author_type,
+		author_name: post.author_name,
+		course: post.course,
+		tags: post.tags ? post.tags.replace(/[{}"]/g, '').split(',').map(tag => tag.trim()) : [],
+		timestamp: post.timestamp.toISOString(),
+		title: post.title,
+		summary: post.summary,
+		post_type: post.post_type,
+		upvotes: post.upvotes,
+		downvotes: post.downvotes,
+		replies: [],
+	  }));
+  
+	  const repliesQueryResult = await pool.query('SELECT * FROM replies');
+	  const repliesData = repliesQueryResult.rows.map((reply) => ({
+		reply_id: reply.reply_id,
+		post_id: reply.post_id,
+		timestamp: reply.timestamp.toISOString(),
+		summary: reply.summary,
+		author_id: reply.author_id,
+		author_type: reply.author_type,
+		author_name: reply.author_name,
+		upvotes: reply.upvotes,
+		downvotes: reply.downvotes,
+		parent_reply_id: reply.parent_reply_id,
+		replies: [],
+	  }));
+  
+	  const findReply = (replies, replyId) => {
+		for (let reply of replies) {
+		  if (reply.reply_id === replyId) {
+			return reply;
+		  }
+		  const foundReply = findReply(reply.replies, replyId);
+		  if (foundReply) {
+			return foundReply;
+		  }
+		}
+	  };
+  
+	  repliesData.forEach((reply) => {
+		if (reply.parent_reply_id === null) {
+		  const post = postsData.find((post) => post.post_id === reply.post_id);
+		  if (post) {
+			post.replies.push(reply);
+		  }
+		} else {
+		  const allReplies = postsData.reduce((acc, post) => acc.concat(post.replies), []);
+		  const parentReply = findReply(allReplies, reply.parent_reply_id);
+		  if (parentReply) {
+			parentReply.replies.push(reply);
+		  }
+		}
+	  });
+  
+	  return postsData;
+	} catch (error) {
+	  console.error("Error fetching posts data by tags:", error.message);
+	  throw error;
+	}
+  };  
 
 module.exports = {
 	createTables,
@@ -1376,6 +1577,9 @@ module.exports = {
 	addUserPost,
 	getContentCreator,
 	fetchPostsData,
+	fetchPostsDataByTypes,
+	fetchPostsDataByCourse,
+	fetchPostsDataByTags,
 	addReply,
 	insertFavorite,
 	getFavouriteCourses,
