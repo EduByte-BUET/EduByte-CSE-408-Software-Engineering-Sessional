@@ -38,11 +38,6 @@ signin_router.route("/").post(async (req, res) => {
       req.session.access_level = access_level;
       req.session.user_id = user.user_id;
 
-      console.log("after login ");
-      console.log(" username " + req.session.username);
-      console.log(" access_level " + req.session.access_level);
-       console.log("user_id " + req.session.user_id);
-
       req.session.save((err) => {
         if (err) {
           console.log(err);

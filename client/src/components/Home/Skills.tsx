@@ -1,6 +1,37 @@
 import React from "react";
 
 export default function Skills() {
+	const personalizedLearning = {
+		content: [
+			"AI chatbot assistant",
+			"Enhance Learning",
+			"Course Recommendation",
+			"Experiences improves the overall learning journey with community and relevant content",
+		],
+	};
+
+	const structuredEducation = {
+		content: [
+			"Hierarchical Education",
+			"Diverse Courses",
+			"Mandatory Exam/Quizzes",
+			"Progress Tracker",
+			"Learner-Instructor Interaction",
+			"AI Chatbot Practice",
+		],
+	};
+
+	const discussionForum = {
+		content: [
+			"Interactive Platform",
+			"User Questions",
+			"Upvoting System",
+			"Commenting",
+			"Post Saving",
+			"Peer Learning",
+		],
+	};
+
 	return (
 		<>
 			<section id="skill" className="skill-area pt-170">
@@ -26,12 +57,12 @@ export default function Skills() {
 									<i className="fa-solid fa-kitchen-set"></i>
 								</div>
 								<div className="skill-content">
-									<h4>Personalized Learning</h4>
-									<div> -AI chatbot assistant</div>
-									<div> -Enhance Learning</div>
-									<div> -Course Recommendation</div>
-									Experiences improves the overall learning journey with
-									community and relevant content
+									<h4> Personalized Learning</h4>
+									{personalizedLearning.content.map((content, index) => (
+										<div key={index}>
+											<i className="fa-solid fa-check"></i> &nbsp; {content}
+										</div>
+									))}
 								</div>
 							</div>
 						</div>
@@ -42,12 +73,11 @@ export default function Skills() {
 								</div>
 								<div className="skill-content">
 									<h4>Structured Education</h4>
-									<div>Hierarchical Education</div>
-									<div>Diverse Courses</div>
-									<div>Mandatory Exam/Quizzes</div>
-									<div>Progress Tracker</div>
-									<div>Learner-Instructor Interaction</div>
-									<div>AI Chatbot Practice</div>
+									{structuredEducation.content.map((content, index) => (
+										<div key={index}>
+											<i className="fa-solid fa-check"></i> &nbsp; {content}
+										</div>
+									))}
 								</div>
 							</div>
 						</div>
@@ -58,12 +88,11 @@ export default function Skills() {
 								</div>
 								<div className="skill-content">
 									<h4>Discussion Forum</h4>
-									<div>Interactive Platform</div>
-									<div>User Questions</div>
-									<div>Upvoting System</div>
-									<div>Commenting</div>
-									<div>Post Saving</div>
-									<div>Peer Learning</div>
+									{discussionForum.content.map((content, index) => (
+										<div key={index}>
+											<i className="fa-solid fa-check"></i> &nbsp; {content}
+										</div>
+									))}
 								</div>
 							</div>
 						</div>

@@ -47,7 +47,7 @@ function Header() {
 	// Accesslevel ta error return korbe and data jodio save thake LS e but header e show korbe na
 
 	return (
-		<Navbar bg="light" expand="lg" className="p-0">
+		<Navbar bg="light" expand="lg" className="p-0 header">
 			<Container fluid className="justify-content-between">
 				<Navbar.Brand />
 				{/* Nav.Link ba Link tag use korle full navbar ta link hoye jay, tai onClick{} use korte hoyeche */}

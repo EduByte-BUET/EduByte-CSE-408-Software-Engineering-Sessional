@@ -2,8 +2,8 @@
 	color: blue;
 }
 .course-detail-background {
-	background-color: #edf6f6;
-	box-shadow: rgb(145, 169, 168) 0px 0px 4px 0px;
+	background-color: #ffffff;
+	box-shadow: rgb(255, 255, 255) 0px 0px 4px 0px;
 	border: 1px solid #000;
 	border-radius: 4px;
 }
@@ -14,10 +14,12 @@
 	border: 3px solid #000000;
 }
 .hover-effect {
-	background-color: #e7e2e2;
+	background-color: rgb(182, 224, 251);
+	transition: transform 0.3s ease, border 0.3s ease;
 }
 .hover-effect:hover {
-	background-color: #b8c3fb;
+	background-color: rgb(140, 207, 250);
+	transform: translateY(-5px);
 }
 .block-effect {
 	border: 3px solid #000000;
