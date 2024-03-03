@@ -892,9 +892,9 @@ const addUserAnswer = async (user_id, lecture_id, question_id, user_answer) => {
 		user_id = result.rows[0].user_id;
 
 		await pool.query("COMMIT");
-		return user_id;
 	} catch (error) {
 		await pool.query("ROLLBACK");
+		
 		console.error("Error adding user answer:", error);
 		throw error;
 	}
