@@ -14,15 +14,39 @@ const ExamQuiz = () => {
 	const {
 		lecture_id,
 		lecture_title,
-		exam_id,
-		exam_title,
 		exam_duration,
-		exam_type,
-		exam_pass_score,
 		exam_questions,
 	} = location.state;
 
 	const navigate = useNavigate();
+
+	const evalAnswersByAI = async (answers) => {
+		const evaluationPromises = answers.map(async (answer, index) => {
+			const postBody = {
+				question: quizQuestionArr[index].question, // Assuming each question object has a 'question' property
+				user_answer: answer,
+			};
+
+			try {
+				const gen_response = await api.post(`/generate`, postBody);
+
+				// setTotalQuestions(quizQuestionArr.length);
+				// console.log(gen_response.data);
+				const postBody2 = {
+					question_id: quizQuestionArr[index].question_id,
+					obtained_mark: gen_response.data.obtained_mark,
+					comment: gen_response.data.comment, // Replace with actual comment
+					question_answer: gen_response.data.question_answer, // Assuming the response data is the question answer
+				};
+
+				await api.post(`/exam/save_ai_verdict`, postBody2); // Replace '/another-endpoint' with your actual endpoint
+			} catch (err) {
+				console.error(err);
+			}
+		});
+
+		await Promise.all(evaluationPromises);
+	}
 
 	useEffect(() => {
 		const fetchData = async () => {
@@ -86,23 +110,30 @@ const ExamQuiz = () => {
 		};
 
 		try {
-			const ans_response = await api.post(
+			// Save user answers in the database
+			const res = await api.post(
 				`/exam/answer?lecture_id=${lecture_id}`,
 				{
 					...postBody,
 				}
 			);
-			console.log(ans_response.data);
+
+			console.log(res.data);
 		} catch (err) {
 			console.error(err);
 		}
+
+		// Evaluate the answers by AI
+		await evalAnswersByAI(newAnswers);
+		// Results would be saved in the database
+
 		setCurrentAnswer("");
 		navigate(`/quiz/questions/result`, {
 			state: {
 				lecture_id: lecture_id,
 				lecture_title: lecture_title,
 				quizQuestionArr: quizQuestionArr,
-				answers: newAnswers,
+				examDuration: exam_duration,
 			},
 		});
 

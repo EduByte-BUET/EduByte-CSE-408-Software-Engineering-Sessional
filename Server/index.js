@@ -29,7 +29,7 @@ app.use(
 	session({
 		secret: "this a secret mate",
 		cookie: {
-			maxAge: 15 * 60 * 1000, // expires in 15 mins
+			maxAge: 30 * 60 * 1000, // expires in 15 mins
 			httpOnly: true,
 			secure: false,
 		},

@@ -11,8 +11,8 @@ const examDescription = () => {
 		const fetchData = async () => {
 			try {
 				const response = await api.get(`/exam?lecture_id=${lecture_id}`);
+
 				setExamInfo(response.data);
-				console.log(response.data);
 			} catch (err) {
 				console.error(err);
 			}
@@ -36,28 +36,67 @@ const examDescription = () => {
 	};
 
 	return (
-		<div className="container" style={{ marginTop: "100px" }}>
-			<div className="row">
-				{examInfo && (
-					<>
-						<h1 style={{ color: "dodgerblue", fontWeight: "bold" }}>
-							{examInfo.quiz_title}
-						</h1>
-					</>
-				)}
+		<div className="container" style={{ marginTop: "50px" }}>
+			<div className="row" style={{ borderBottom: "2px solid black" }}>
+				<div className="col-md-1"></div>
+				<div className="col-md-3">
+					{examInfo && (
+						<>
+							<h1 style={{ color: "dodgerblue", fontWeight: "bold" }}>
+								{examInfo.quiz_title}
+							</h1>
+						</>
+					)}
+				</div>
 			</div>
 			<div className="row mt-5">
 				<div className="col-md-2"></div>
 				<div className="col-md-8">
 					{examInfo && (
-						<h2 style={{ textAlign: "left" }}>{examInfo.quiz_description}</h2>
+						<>
+							<h2 style={{ textAlign: "justify" }}>
+								{examInfo.quiz_description}
+							</h2>
+							<>
+								<table>
+									<tbody>
+										<tr>
+											<td
+												style={{
+													textAlign: "left",
+													color: "red",
+													paddingRight: "20px",
+												}}
+											>
+												<h3>Exam Duration</h3>
+											</td>
+											<td style={{ textAlign: "left" }}>
+												<h3>{examInfo?.quiz_duration}</h3>
+											</td>
+										</tr>
+										<tr>
+											<td style={{ textAlign: "left", color: "red" }}>
+												<h3>Total Questions</h3>
+											</td>
+											<td style={{ textAlign: "left" }}>
+												<h3>{examInfo?.quiz_questions.length}</h3>
+											</td>
+										</tr>
+									</tbody>
+								</table>
+							</>
+						</>
 					)}
+					<p>
+						<i className="fa-solid fa-circle-exclamation"></i> Kindly try to
+						solve each of the questions without any help from the internet
+					</p>
 				</div>
 				<div className="col-md-2"></div>
 			</div>
 			<div className="row mt-5">
 				<div className="col-md-8"></div>
-				<div className="col-md-2">
+				<div className="col-md-2 m-5">
 					{examInfo && (
 						<button onClick={handleStartExam} className="btn red-button w-100">
 							Start Exam

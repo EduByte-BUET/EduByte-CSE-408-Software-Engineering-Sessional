@@ -937,18 +937,18 @@ const addUserAnswer = async (user_id, lecture_id, question_id, user_answer) => {
 		ON CONFLICT (user_id, question_id) DO UPDATE
 		SET user_answer = EXCLUDED.user_answer
 		RETURNING user_id`;
-    const saveResultValues = [user_id, lecture_id, question_id, user_answer];
-    const result = await pool.query(saveResultQuery, saveResultValues);
+		const saveResultValues = [user_id, lecture_id, question_id, user_answer];
+		const result = await pool.query(saveResultQuery, saveResultValues);
 
-    user_id = result.rows[0].user_id;
+		user_id = result.rows[0].user_id;
 
-    await pool.query("COMMIT");
-    return user_id;
-  } catch (error) {
-    await pool.query("ROLLBACK");
-    console.error("Error adding user answer:", error);
-    throw error;
-  }
+		await pool.query("COMMIT");
+	} catch (error) {
+		await pool.query("ROLLBACK");
+		
+		console.error("Error adding user answer:", error);
+		throw error;
+	}
 };
 
 const addAiInfo = async (

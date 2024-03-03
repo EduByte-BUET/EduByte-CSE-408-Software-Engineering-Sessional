@@ -12,7 +12,7 @@ router.use("/", exam_router);
 router.use("/quiz", quiz_router);
 router.use("/result", result_router);
 router.use("/answer", answer_router);
-router.use("/ai", exam_ai_router);
+router.use("/save_ai_verdict", exam_ai_router);
 //router.use("/dummy", dummy);
 
 exam_router.route("/").get(async (req, res) => {
@@ -38,8 +38,7 @@ quiz_router.route("/").post(async (req, res) => {
 answer_router.route("/").post(async (req, res) => {
 	console.log("/exam/answer POST");
 
-	const user = await db.getUser(req.session.username); // const user_id = user.user_id;
-	const user_id = user.user_id;
+	const user_id = req.session.user_id;
 
 	const lecture_id = req.query.lecture_id;
 	const answers = req.body.answers;
@@ -47,13 +46,12 @@ answer_router.route("/").post(async (req, res) => {
 	for (let answer of answers) {
 		const question_id = answer.question_id;
 		const user_answer = answer.user_answer;
-		const userinfo = await db.addUserAnswer(
+		await db.addUserAnswer(
 			user_id,
 			lecture_id,
 			question_id,
 			user_answer
 		);
-		console.log(userinfo);
 	}
 
 	res.status(200).json({
@@ -63,7 +61,7 @@ answer_router.route("/").post(async (req, res) => {
 });
 
 exam_ai_router.route("/").post(async (req, res) => {
-	console.log("/exam/ai POST");
+	console.log("/exam/save_ai_verdict POST");
 
 	const question_id = req.body.question_id;
 	const obtained_mark = req.body.obtained_mark;
