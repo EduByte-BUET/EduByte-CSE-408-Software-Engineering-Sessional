@@ -10,6 +10,18 @@
 	background-color: limegreen;
 }
 
+.btn.bordered-button {
+	/* transform smooth */
+	transition: 0.2s ease-in-out;
+	background-color: #f7f7f7;
+	color: black;
+	border: 1px solid #e0e0e0;
+}
+
+.btn.bordered-button:hover {
+	transform: translateX(-4px);
+}
+
 .btn.blue-button,
 .btn.red-button,
 .btn.green-button {

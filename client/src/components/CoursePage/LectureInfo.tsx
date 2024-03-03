@@ -81,7 +81,10 @@ const LectureInfo = () => {
 							}}
 							className="mb-3 mt-3"
 						>
-							<i className="fa-solid fa-link"></i> Back to Block List
+							<button className="btn bordered-button">
+								<i className="fa-solid fa-circle-chevron-left"></i> &nbsp; Back
+								to Block List
+							</button>
 						</div>
 					</div>
 					<div style={{ overflowY: "auto" }}>
@@ -115,7 +118,7 @@ const LectureInfo = () => {
 						{lectureInfo.lectures.map((lecture: any, index: any) => (
 							<div
 								key={lecture.lecture_id}
-								className="row-border mt-2 rounded p-3 text-start bold-text block-effect"
+								className="row-border mt-2 rounded p-3 text-start block-effect"
 								onClick={handleLectureClick.bind(
 									this,
 									index + 1,
@@ -124,18 +127,18 @@ const LectureInfo = () => {
 								)}
 								style={{ cursor: "pointer" }}
 							>
-								<p>
+								<b>
 									Lecture {index + 1} &nbsp; | &nbsp; {lecture.title}
-								</p>
+								</b>
 								<p>{lecture.description}</p>
 								{lecture.lessons.map((lesson: any) =>
 									lesson.lesson_type === "pdf" ? (
-										<p key={lesson.lesson_id}>
-											<i className="fas fa-file-alt"></i> {lesson.title}
+										<p key={lesson.lesson_id} className="hover-translate">
+											<i className="fas fa-file-alt"></i> &nbsp; {lesson.title}
 										</p>
 									) : (
-										<p key={lesson.lesson_id}>
-											<i className="fas fa-video"></i> {lesson.title}
+										<p key={lesson.lesson_id} className="hover-translate">
+											<i className="fas fa-video"></i> &nbsp; {lesson.title}
 										</p>
 									)
 								)}

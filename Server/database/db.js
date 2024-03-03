@@ -508,11 +508,13 @@ const getCoursesEnrolled = async (user_id) => {
 	try {
 		let queryText = `
             SELECT DISTINCT
-                course_id
+                course_id, enroll_date
             FROM
                 enrolled_courses
             WHERE
-                user_id = $1;
+                user_id = $1
+			ORDER BY
+				enroll_date DESC;
         `;
 		let queryValues = [user_id];
 		const enrolled_courses = await pool.query(queryText, queryValues);
@@ -1537,6 +1539,43 @@ const fetchPostsDataByTypes = async (types) => {
 	}
   };  
 
+const getTopCategories = async () => {
+	try {
+		const res = await pool.query(
+			`
+		SELECT category, COUNT(category) AS count
+		FROM courses
+		GROUP BY category
+		ORDER BY count DESC
+		LIMIT 8
+		`
+		);
+		// get the description for each category from the category table
+		const categories = res.rows;
+		const categoriesWithDescription = [];
+		for (const category of categories) {
+			const categoryDescription = await pool.query(
+				"SELECT description FROM categories WHERE name = $1",
+				[category.category]
+			);
+			categoriesWithDescription.push({
+				category: category.category,
+				count: category.count,
+				description: categoryDescription.rows[0].description,
+			});
+		}
+
+		// The array is sorted by the count in descending order
+		return categoriesWithDescription;
+	}
+	catch (err) {
+		console.error(err);
+		// Handle the error appropriately, e.g., throw an error or return a default value
+		return null;
+	}
+
+};
+
 module.exports = {
 	createTables,
 	connectToDB,
@@ -1584,4 +1623,5 @@ module.exports = {
 	insertFavorite,
 	getFavouriteCourses,
 	unregisterCourse,
+	getTopCategories,
 };

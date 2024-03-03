@@ -11,7 +11,16 @@ const ExamQuiz = () => {
 	const [quizQuestionArr, setquizQuestionArr] = useState<any>(null);
 
 	const location = useLocation();
-	const {lecture_id, lecture_title, exam_id, exam_title, exam_duration, exam_type, exam_pass_score, exam_questions} = location.state;
+	const {
+		lecture_id,
+		lecture_title,
+		exam_id,
+		exam_title,
+		exam_duration,
+		exam_type,
+		exam_pass_score,
+		exam_questions,
+	} = location.state;
 
 	const navigate = useNavigate();
 
@@ -20,7 +29,7 @@ const ExamQuiz = () => {
 			try {
 				const response = await api.post(`/exam/quiz`, {
 					question_ids: exam_questions,
-					});
+				});
 				setquizQuestionArr(response.data);
 				//console.log(response.data);
 			} catch (err) {
@@ -33,10 +42,12 @@ const ExamQuiz = () => {
 	const numberOfQuestions = exam_questions.length;
 	const questions: number[] = exam_questions;
 	const [timeRemaining, setTimeRemaining] = useState<number>(
-		exam_duration * 15 // Convert minutes to seconds
+		exam_duration // Convert minutes to seconds
 	);
 
-	const currentQuestion = quizQuestionArr ? quizQuestionArr[nextQuestionIdx] : null; // apatoto index ei dhore nicchi
+	const currentQuestion = quizQuestionArr
+		? quizQuestionArr[nextQuestionIdx]
+		: null; // apatoto index ei dhore nicchi
 
 	const handleNextQuestion = () => {
 		if (
@@ -69,17 +80,20 @@ const ExamQuiz = () => {
 		setAnswers(newAnswers);
 		const postBody = {
 			answers: newAnswers.map((answer, index) => ({
-			  question_id: quizQuestionArr[index].question_id,
-			  user_answer: answer
-			}))
-		  };
+				question_id: quizQuestionArr[index].question_id,
+				user_answer: answer,
+			})),
+		};
 
 		try {
-		 const ans_response = await api.post(`/exam/answer?lecture_id=${lecture_id}`, {
-				...postBody,
-			  });
+			const ans_response = await api.post(
+				`/exam/answer?lecture_id=${lecture_id}`,
+				{
+					...postBody,
+				}
+			);
 			console.log(ans_response.data);
-		} catch (err) {	
+		} catch (err) {
 			console.error(err);
 		}
 		setCurrentAnswer("");
@@ -123,6 +137,28 @@ const ExamQuiz = () => {
 		return <Spinner />;
 	}
 
+	const timerContainerStyle = {
+		display: "inline-block",
+		border: "2px solid #333",
+		padding: "10px",
+		borderRadius: "5px",
+		fontSize: "24px",
+		fontWeight: "bold"
+	};
+	
+	const timerDigitStyle = {
+		display: "inline-block",
+		width: "40px",
+		height: "40px",
+		backgroundColor: "#f5f5f5",
+		border: "2px solid #333",
+		borderRadius: "5px",
+		margin: "0 5px",
+		lineHeight: "40px",
+		overflow: "hidden",
+		animation: "roll 1s infinite alternate"
+	};
+
 	return (
 		<div className="container" style={{ marginTop: "100px" }}>
 			<div className="row" style={{ marginTop: "100px" }}>
@@ -136,10 +172,21 @@ const ExamQuiz = () => {
 				</div>
 				<div className="col-md-1"></div>
 				<div className="col-md-4">
-					<div className="timer">
+					<div className="timer" style={timerContainerStyle}>
 						<h4>
-							<i className="fa-solid fa-clock fa-xl"></i> &nbsp; Time Remaining:{" "}
-							{timeRemaining} seconds
+							<i className="fa-solid fa-clock fa-xl"></i> &nbsp; Time Remaining:
+							<div className="timer-digit">
+								{timeRemaining
+									.toString()
+									.padStart(2, "0")
+									.split("")
+									.map((digit, index) => (
+										<span key={index} style={timerDigitStyle}>
+											{digit}
+										</span>
+									))}
+							</div>{" "}
+							seconds
 						</h4>
 					</div>
 					<div
