@@ -28,143 +28,146 @@ import "./css/SigninSingupInput.css";
 import "./css/CoursePage/CoursesPageList.css";
 import "./css/SignupPrefs.css";
 import ForumPage from "./components/DiscussionForum/ForumPage";
+// ---
+import Search from "./components/Search/SearchPage";
 
 function App() {
-  // -----User Context
-  const [currentUser, setCurrentUser] = useState<string>("");
+	// -----User Context
+	const [currentUser, setCurrentUser] = useState<string>("");
 
-  const intitutionOptions = [
-    "School",
-    "College",
-    "Under Graduate",
-    "Post Graduate",
-    "Other",
-  ];
-  const experienceOptions = ["Beginner", "Intermediate", "Advanced"];
-  const goalOptions = ["Entering a new field", "Improving my skillset"];
-  // const fieldOptions = [
-  // 	"Computer Science",
-  // 	"Software Engineering",
-  // 	"Information Technology",
-  // 	"Network Engineering",
-  // 	"Cybersecurity",
-  // 	"Data Science",
-  // 	"Artificial Intelligence",
-  // 	"Machine Learning",
-  // 	"Systems Engineering",
-  // 	"Computer Engineering",
-  // 	"Database Systems",
-  // 	"Web Development",
-  // 	"Mobile Application Development",
-  // 	"Game Development",
-  // 	"Cloud Computing",
-  // 	"Big Data",
-  // 	"Internet of Things",
-  // 	"Virtual Reality",
-  // 	"Augmented Reality",
-  // 	"Blockchain Technology",
-  // ];
+	const intitutionOptions = [
+		"School",
+		"College",
+		"Under Graduate",
+		"Post Graduate",
+		"Other",
+	];
+	const experienceOptions = ["Beginner", "Intermediate", "Advanced"];
+	const goalOptions = ["Entering a new field", "Improving my skillset"];
+	// const fieldOptions = [
+	// 	"Computer Science",
+	// 	"Software Engineering",
+	// 	"Information Technology",
+	// 	"Network Engineering",
+	// 	"Cybersecurity",
+	// 	"Data Science",
+	// 	"Artificial Intelligence",
+	// 	"Machine Learning",
+	// 	"Systems Engineering",
+	// 	"Computer Engineering",
+	// 	"Database Systems",
+	// 	"Web Development",
+	// 	"Mobile Application Development",
+	// 	"Game Development",
+	// 	"Cloud Computing",
+	// 	"Big Data",
+	// 	"Internet of Things",
+	// 	"Virtual Reality",
+	// 	"Augmented Reality",
+	// 	"Blockchain Technology",
+	// ];
 
-  const [signin_bg, setSignin_bg] = useState<string>("");
+	const [signin_bg, setSignin_bg] = useState<string>("");
 
-  const [fieldOptions, setfieldOptions] = useState<any>([]);
-  useEffect(() => {
-    const handleFieldOptions = async () => {
-      try {
-        const res = await signin_api.get("/user/signin/fieldOption");
-        console.log(res.data.fieldOptionData);
-        setfieldOptions(res.data);
-        console.log("here it is");
-        console.log(fieldOptions);
-      } catch (err) {
-        console.log(err);
-      }
-    };
-    handleFieldOptions();
-  }, []);
+	const [fieldOptions, setfieldOptions] = useState<any>([]);
+	useEffect(() => {
+		const handleFieldOptions = async () => {
+			try {
+				const res = await signin_api.get("/user/signin/fieldOption");
+				console.log(res.data.fieldOptionData);
+				setfieldOptions(res.data);
+				console.log("here it is");
+				console.log(fieldOptions);
+			} catch (err) {
+				console.log(err);
+			}
+		};
+		handleFieldOptions();
+	}, []);
 
-  const getSignin_bg = async () => {
-    try {
-      const response = await signin_api.get("user/signin/bg", {
-        responseType: "blob",
-      });
-      const imgURL = URL.createObjectURL(response.data);
-      return imgURL;
-    } catch (error) {
-      console.error(error);
-      return "";
-    }
-  };
+	const getSignin_bg = async () => {
+		try {
+			const response = await signin_api.get("user/signin/bg", {
+				responseType: "blob",
+			});
+			const imgURL = URL.createObjectURL(response.data);
+			return imgURL;
+		} catch (error) {
+			console.error(error);
+			return "";
+		}
+	};
 
-  useEffect(() => {
-    getSignin_bg().then((data) => {
-      setSignin_bg(data);
-    });
-  }, []);
+	useEffect(() => {
+		getSignin_bg().then((data) => {
+			setSignin_bg(data);
+		});
+	}, []);
 
-  // Get the user from the local storage
-  useEffect(() => {
-    const user = localStorage.getItem("currentUser");
-    if (user) {
-      setCurrentUser(user);
-    }
-  }, []);
+	// Get the user from the local storage
+	useEffect(() => {
+		const user = localStorage.getItem("currentUser");
+		if (user) {
+			setCurrentUser(user);
+		}
+	}, []);
 
-  return (
-    <>
-      <UserContext.Provider value={{ currentUser, setCurrentUser }}>
-        <Router>
-          <Header />
-          <Routes>
-            <Route
-              path="/signup"
-              element={<SignUpForm background={signin_bg} />}
-            />
-            <Route
-              path="/signup/institution"
-              element={
-                <SignupInstitution
-                  background={signin_bg}
-                  options={intitutionOptions}
-                />
-              }
-            />
-            <Route
-              path="/signup/experience"
-              element={
-                <SignupExpGoal
-                  background={signin_bg}
-                  experienceOptions={experienceOptions}
-                  goalOptions={goalOptions}
-                />
-              }
-            />
-            <Route
-              path="/signup/interests"
-              element={
-                <SignupFieldPref
-                  background={signin_bg}
-                  fieldOptions={fieldOptions}
-                />
-              }
-            />
-            <Route
-              path="/signin"
-              element={<SignInForm background={signin_bg} />}
-            />
+	return (
+		<>
+			<UserContext.Provider value={{ currentUser, setCurrentUser }}>
+				<Router>
+					<Header />
+					<Routes>
+						<Route
+							path="/signup"
+							element={<SignUpForm background={signin_bg} />}
+						/>
+						<Route
+							path="/signup/institution"
+							element={
+								<SignupInstitution
+									background={signin_bg}
+									options={intitutionOptions}
+								/>
+							}
+						/>
+						<Route
+							path="/signup/experience"
+							element={
+								<SignupExpGoal
+									background={signin_bg}
+									experienceOptions={experienceOptions}
+									goalOptions={goalOptions}
+								/>
+							}
+						/>
+						<Route
+							path="/signup/interests"
+							element={
+								<SignupFieldPref
+									background={signin_bg}
+									fieldOptions={fieldOptions}
+								/>
+							}
+						/>
+						<Route
+							path="/signin"
+							element={<SignInForm background={signin_bg} />}
+						/>
 
-            <Route path="/courses/*" element={<CoursePageRoot />} />
-            <Route path="/upload" element={<CourseUpload />} />
-            <Route path="/home" element={<Homepage />} />
-            <Route path="/user/dashboard/*" element={<Dashboard />} />
-            <Route path="/admin/dashboard/*" element={<Dashboard_admin />} />
-            <Route path="/quiz/*" element={<QuizPageRoot />} />
-            <Route path="/discussion/*" element={<ForumPage />} />
-          </Routes>
-        </Router>
-      </UserContext.Provider>
-    </>
-  );
+						<Route path="/courses/*" element={<CoursePageRoot />} />
+						<Route path="/upload" element={<CourseUpload />} />
+						<Route path="/home" element={<Homepage />} />
+						<Route path="/user/dashboard/*" element={<Dashboard />} />
+						<Route path="/admin/dashboard/*" element={<Dashboard_admin />} />
+						<Route path="/quiz/*" element={<QuizPageRoot />} />
+						<Route path="/discussion/*" element={<ForumPage />} />
+						<Route path="/search" element={<Search />} />
+					</Routes>
+				</Router>
+			</UserContext.Provider>
+		</>
+	);
 }
 
 export default App;

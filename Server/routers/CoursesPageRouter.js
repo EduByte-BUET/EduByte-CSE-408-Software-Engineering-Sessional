@@ -15,6 +15,7 @@ const isLectureViewed = express.Router();
 const favorite_router = express.Router();
 const fetch_fav = express.Router();
 const top_categories_router = express.Router();
+const search_router = express.Router();
 
 const db = require("../database/db");
 
@@ -39,6 +40,7 @@ router.use("/blocks/lectures/isLectureViewed", isLectureViewed);
 router.use("/favorite", favorite_router);
 router.use("/user/fav", fetch_fav);
 router.use("/top_categories", top_categories_router);
+router.use("/search", search_router);
 
 category_router.route("/").get(async (req, res) => {
 	console.log("/courses/categories GET");
@@ -62,8 +64,7 @@ popular_course_router.route("/").get(async (req, res) => {
 recommended_course_router.route("/").get(async (req, res) => {
 	console.log("/courses/recommended GET");
 	// Get all the recommended courses
-	const user = await db.getUser(req.session.username);
-    const user_id = user.user_id;
+    const user_id = req.session.user_id;
 
 	const recommended_courses = await db.getRecommended_Courses(user_id);
 	
@@ -239,6 +240,17 @@ top_categories_router.route("/").get(async (req, res) => {
 
 	// An array of top-categories present in the website
 	if (top_categories != null) res.status(200).send(top_categories); // OK
+	else res.status(404).send(); // Not found
+});
+
+search_router.route("/").get(async (req, res) => {
+	console.log("/courses/search GET");
+	
+	const search_query = req.query.keyword;
+
+	const search_results = await db.searchCourses(search_query);
+
+	if (search_results != null) res.status(200).send(search_results); // OK
 	else res.status(404).send(); // Not found
 });
 

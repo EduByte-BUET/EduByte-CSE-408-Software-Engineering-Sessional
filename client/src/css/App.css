@@ -1,22 +1,22 @@
 #root {
-  max-width: screen-xl;
-  margin: 0 auto;
-  padding: 0rem;
-  text-align: center;
+	max-width: screen-xl;
+	margin: 0 auto;
+	padding: 0rem;
+	text-align: center;
 }
 
 body {
-  font-family: 'Inria Sans', sans-serif !important;
+	font-family: "Inria Sans", sans-serif;
 }
 
 div::-webkit-scrollbar {
-  width: 10px; /* For Chrome, Safari, and Opera */
+	width: 10px; /* For Chrome, Safari, and Opera */
 }
 
 div::-webkit-scrollbar-track {
-  background: lightcyan; /* Color of the track */
+	background: lightcyan; /* Color of the track */
 }
 
 div::-webkit-scrollbar-thumb {
-  background: lightseagreen; /* Color of the scroll thumb */
+	background: lightseagreen; /* Color of the scroll thumb */
 }
