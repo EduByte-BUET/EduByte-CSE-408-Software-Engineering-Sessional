@@ -14,6 +14,7 @@ const lecture_count = express.Router();
 const isLectureViewed = express.Router();
 const favorite_router = express.Router();
 const fetch_fav = express.Router();
+const top_categories_router = express.Router();
 
 const db = require("../database/db");
 
@@ -37,6 +38,7 @@ isLectureViewed.use(requireAuth);
 router.use("/blocks/lectures/isLectureViewed", isLectureViewed);
 router.use("/favorite", favorite_router);
 router.use("/user/fav", fetch_fav);
+router.use("/top_categories", top_categories_router);
 
 category_router.route("/").get(async (req, res) => {
 	console.log("/courses/categories GET");
@@ -228,6 +230,16 @@ fetch_fav.route("/").get(async (req, res) => {
 		console.error("Error fetching favorite courses:", error);
 		res.status(500).send({ error: "Internal Server Error" });
 	}
+});
+
+top_categories_router.route("/").get(async (req, res) => {
+	console.log("/courses/top_categories GET");
+
+	const top_categories = await db.getTopCategories();
+
+	// An array of top-categories present in the website
+	if (top_categories != null) res.status(200).send(top_categories); // OK
+	else res.status(404).send(); // Not found
 });
 
 module.exports = router;

@@ -1,9 +1,21 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import api from "../../api/GeneralAPI";
 
 export default function Category() {
+	const [category, setCategory] = useState([]);
+
+	useEffect(() => {
+		const fetchData = async () => {
+			const response = await api.get("/courses/top_categories");
+			setCategory(response.data);
+		};
+
+		fetchData();
+	}, []);
+
 	return (
 		<>
-			<section className="categories-area pt-170 pb-170">
+			<section className="categories-area pt-100 pb-170">
 				<div className="container" spellCheck>
 					<div className="row">
 						<div className="col-xl-8 col-lg-10 mx-auto">
@@ -15,71 +27,37 @@ export default function Category() {
 							</div>
 						</div>
 					</div>
-					<div className="row mb-30">
-						<div className="col-xl-3 col-lg-3 col-md-4 col-sm-6">
-							<a href="#" className="d-block category-wrapper">
-								<div className="single-category">
-									<i className="lni lni-pallet"></i>
-									<h3>Design</h3>
+					<div className="row">
+						{category.map((cat: any) => (
+							<>
+								<div className="col-md-4">
+									<div
+										className="category-wrapper"
+										style={{
+											cursor: "pointer",
+											border: "3px solid #f1f1f1",
+											maxHeight: "500px", // Adjust the maximum height as needed
+											overflowY: "auto",
+										}}
+									>
+										<div className="single-category">
+											<i className="lni lni-pallet"></i>
+											<h3>{cat.category}</h3>
+											<div style={{ marginTop: 50 }}>
+												<p>
+													<b>Description: </b>
+													{cat.description}
+												</p>
+												<p>
+													<b>Available courses on this category</b>
+													<h4>{cat.count}</h4>
+												</p>
+											</div>
+										</div>
+									</div>
 								</div>
-							</a>
-						</div>
-						<div className="col-xl-3 col-lg-3 col-md-4 col-sm-6">
-							<a href="#" className="d-block category-wrapper">
-								<div className="single-category">
-									<i className="lni lni-code-alt"></i>
-									<h3>Development</h3>
-								</div>
-							</a>
-						</div>
-						<div className="col-xl-3 col-lg-3 col-md-4 col-sm-6">
-							<a href="#" className="d-block category-wrapper">
-								<div className="single-category">
-									<i className="lni lni-target-customer"></i>
-									<h3>Marketing</h3>
-								</div>
-							</a>
-						</div>
-						<div className="col-xl-3 col-lg-3 col-md-4 col-sm-6">
-							<a href="#" className="d-block category-wrapper">
-								<div className="single-category">
-									<i className="lni lni-seo"></i>
-									<h3>SEO</h3>
-								</div>
-							</a>
-						</div>
-						<div className="col-xl-3 col-lg-3 col-md-4 col-sm-6">
-							<a href="#" className="d-block category-wrapper">
-								<div className="single-category">
-									<i className="lni lni-camera"></i>
-									<h3>Photography</h3>
-								</div>
-							</a>
-						</div>
-						<div className="col-xl-3 col-lg-3 col-md-4 col-sm-6">
-							<a href="#" className="d-block category-wrapper">
-								<div className="single-category">
-									<i className="lni lni-bar-chart"></i>
-									<h3>Business</h3>
-								</div>
-							</a>
-						</div>
-						<div className="col-xl-3 col-lg-3 col-md-4 col-sm-6">
-							<a href="#" className="d-block category-wrapper">
-								<div className="single-category">
-									<i className="lni lni-keyword-research"></i>
-									<h3>Analysis</h3>
-								</div>
-							</a>
-						</div>
-						<div className="col-xl-3 col-lg-3 col-md-4 col-sm-6">
-							<a href="#" className="d-block category-wrapper">
-								<div className="single-category">
-									<i className="lni lni-android"></i>
-									<h3>IT & Software</h3>
-								</div>
-							</a>
-						</div>
+							</>
+						))}
 					</div>
 				</div>
 			</section>

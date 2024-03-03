@@ -8,6 +8,9 @@ const post_create_router = express.Router();
 const show_posts_router = express.Router();
 const post_filter = express.Router();
 const reply_router = express.Router();
+const postType_router = express.Router();
+const course_router = express.Router();
+const tag_router = express.Router();
 const db = require("../database/db");
 router.use("/", posts_router);
 router.use("/post", post_selected_router);
@@ -17,6 +20,10 @@ router.use("/post/create", post_create_router);
 router.use("/post/show", show_posts_router);
 router.use("/filter", post_filter);
 router.use("/reply", reply_router);
+router.use("/postTypes", postType_router);
+router.use("/courses", course_router);
+router.use("/tags", tag_router);
+
 
 posts_router
     .route("/")
@@ -38,6 +45,49 @@ reply_router.route("/").post(async (req, res) => {
     else res.status(404);
     res.send(reply_id.toString());
 });
+
+
+// Route for filtering by post types
+postType_router
+  .route("/")
+  .get(async (req, res) => {
+    console.log("/discussion/postTypes GET");
+    const types = req.query.types.split(",");
+    const postsData = await db.fetchPostsDataByTypes(types);
+    if (postsData.length > 0) {
+      res.status(200).json(postsData);
+    } else {
+      res.status(404).send('No posts found for the selected types');
+    }
+  });
+
+// Route for filtering by a single course
+course_router
+  .route("/")
+  .get(async (req, res) => {
+    console.log("/discussion/courses GET");
+    const course = req.query.course;
+    const postsData = await db.fetchPostsDataByCourse(course);
+    if (postsData.length > 0) {
+      res.status(200).json(postsData);
+    } else {
+      res.status(404).send('No posts found for the selected course');
+    }
+  });
+
+// Route for filtering by tags
+tag_router
+  .route("/")
+  .get(async (req, res) => {
+    console.log("/discussion/tags GET");
+    const tags = req.query.tags.split(",");
+    const postsData = await db.fetchPostsDataByTags(tags);
+    if (postsData.length > 0) {
+      res.status(200).json(postsData);
+    } else {
+      res.status(404).send('No posts found for the selected tags');
+    }
+  });
 
 
 post_selected_router
@@ -240,8 +290,9 @@ post_create_router
         //   const creator = await db.getContentCreator(req.session.username);
         //   author_id = creator.creator_id;
         // }
+        const trimmedTags = tags.map(tag => tag.trim());
         const author_name = req.session.username;
-        const post_id = await db.addUserPost(author_id, author_type, author_name, course, tags, title, summary, post_type);
+        const post_id = await db.addUserPost(author_id, author_type, author_name, course, trimmedTags, title, summary, post_type);
 
         // A sample json response is given below, fetch data from database
         // Create post in database using post_title, post_content, user_id, user_name, post_tag

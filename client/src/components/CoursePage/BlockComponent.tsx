@@ -1,8 +1,9 @@
 import { useNavigate } from "react-router-dom";
 
 const BlockComponent = (props: any) => {
-	const { course_id, course_name, block_id, index, blockName, lectures } = props;
-	
+	const { course_id, course_name, block_id, index, blockName, lectures } =
+		props;
+
 	const navigate = useNavigate();
 	const handleBlockClick = () => {
 		navigate(`/courses/lectures`, {
@@ -36,10 +37,10 @@ const BlockComponent = (props: any) => {
 	};
 
 	return (
-		<div className="row-border mt-2 rounded p-3 text-start bold-text block-effect">
-			<p key={block_id} onClick={handleBlockClick}>
+		<div className="row-border mt-2 rounded p-3 text-start block-effect">
+			<b key={block_id} onClick={handleBlockClick}>
 				Block {index} &nbsp; | &nbsp; {blockName}
-			</p>
+			</b>
 			<ul style={{ listStyleType: "none" }}>
 				{lectures.map((lecture: any, index: number) => (
 					<li
@@ -50,9 +51,23 @@ const BlockComponent = (props: any) => {
 							lecture.lecture_id,
 							lecture.title
 						)}
-						style={{ cursor: "pointer", marginTop: "5px" }}
+						style={{
+							cursor: "pointer",
+							marginTop: "5px",
+							transition: "transform 0.3s",
+							fontWeight: "normal",
+						}}
+						onMouseEnter={(e: any) => {
+							e.target.style.fontWeight = "bolder";
+							e.target.style.transform = "translate(-5px)";
+						}}
+						onMouseLeave={(e: any) => {
+							e.target.style.fontWeight = "normal";
+							e.target.style.transform = "translate(0)";
+						}}
 					>
-						<i className="fas fa-hand-point-right"></i> {lecture.title}
+						Lec {index + 1} &nbsp; | &nbsp;
+						{lecture.title}
 					</li>
 				))}
 			</ul>

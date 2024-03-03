@@ -17,7 +17,7 @@ export default function ContactInfo() {
 					<div className="contact-content">
 						<h3>Hot Line Call Us 24/7</h3>
 						<h4><a href="javascript:void(0)">000-2222-5555</a></h4>
-						<h4><a href="javascript:void(0)">hello@gmail.com</a></h4>
+						<h4><a href="javascript:void(0)">EduByte.01@gmail.com</a></h4>
 					</div>
 				</div>
 				<div className="col-xl-7 col-lg-7">
