@@ -30,69 +30,87 @@ import "./css/SignupPrefs.css";
 import ForumPage from "./components/DiscussionForum/ForumPage";
 
 function App() {
-	// -----User Context
-	const [currentUser, setCurrentUser] = useState<string>("");
+  // -----User Context
+  const [currentUser, setCurrentUser] = useState<string>("");
 
-	const intitutionOptions = [
-		"School",
-		"College",
-		"Under Graduate",
-		"Post Graduate",
-		"Other",
-	];
-	const experienceOptions = ["Beginner", "Intermediate", "Advanced"];
-	const goalOptions = ["Entering a new field", "Improving my skillset"];
-	const fieldOptions = [
-		"Computer Science",
-		"Software Engineering",
-		"Information Technology",
-		"Network Engineering",
-		"Cybersecurity",
-		"Data Science",
-		"Artificial Intelligence",
-		"Machine Learning",
-		"Systems Engineering",
-		"Computer Engineering",
-		"Database Systems",
-		"Web Development",
-		"Mobile Application Development",
-		"Game Development",
-		"Cloud Computing",
-		"Big Data",
-		"Internet of Things",
-		"Virtual Reality",
-		"Augmented Reality",
-		"Blockchain Technology",
-	];
+  const intitutionOptions = [
+    "School",
+    "College",
+    "Under Graduate",
+    "Post Graduate",
+    "Other",
+  ];
+  const experienceOptions = ["Beginner", "Intermediate", "Advanced"];
+  const goalOptions = ["Entering a new field", "Improving my skillset"];
+  // const fieldOptions = [
+  // 	"Computer Science",
+  // 	"Software Engineering",
+  // 	"Information Technology",
+  // 	"Network Engineering",
+  // 	"Cybersecurity",
+  // 	"Data Science",
+  // 	"Artificial Intelligence",
+  // 	"Machine Learning",
+  // 	"Systems Engineering",
+  // 	"Computer Engineering",
+  // 	"Database Systems",
+  // 	"Web Development",
+  // 	"Mobile Application Development",
+  // 	"Game Development",
+  // 	"Cloud Computing",
+  // 	"Big Data",
+  // 	"Internet of Things",
+  // 	"Virtual Reality",
+  // 	"Augmented Reality",
+  // 	"Blockchain Technology",
+  // ];
 
-	const [signin_bg, setSignin_bg] = useState<string>("");
+  const [signin_bg, setSignin_bg] = useState<string>("");
 
-	const getSignin_bg = async () => {
-		try {
-			const response = await signin_api.get("user/signin/bg", { responseType: "blob" });
-			const imgURL = URL.createObjectURL(response.data);
-			return imgURL;
-		} catch (error) {
-			console.error(error);
-			return "";
-		}
-	};
+  const [fieldOptions, setfieldOptions] = useState<any>([]);
+  useEffect(() => {
+    const handleFieldOptions = async () => {
+      try {
+        const res = await signin_api.get("/user/signin/fieldOption");
+        console.log(res.data.fieldOptionData);
+        setfieldOptions(res.data);
+        console.log("here it is");
+        console.log(fieldOptions);
+      } catch (err) {
+        console.log(err);
+      }
+    };
+    handleFieldOptions();
+  }, []);
 
-	useEffect(() => {
-		getSignin_bg().then((data) => {
-			setSignin_bg(data);
-		});
-	}, []);
+  const getSignin_bg = async () => {
+    try {
+      const response = await signin_api.get("user/signin/bg", {
+        responseType: "blob",
+      });
+      const imgURL = URL.createObjectURL(response.data);
+      return imgURL;
+    } catch (error) {
+      console.error(error);
+      return "";
+    }
+  };
 
-	// Get the user from the local storage
-	useEffect(() => {
-		const user = localStorage.getItem("currentUser");
-		if (user) {
-			setCurrentUser(user);
-		}
-	}, []);
+  useEffect(() => {
+    getSignin_bg().then((data) => {
+      setSignin_bg(data);
+    });
+  }, []);
 
-	return (
+  // Get the user from the local storage
+  useEffect(() => {
+    const user = localStorage.getItem("currentUser");
+    if (user) {
+      setCurrentUser(user);
+    }
+  }, []);
+
+  return (
     <>
       <UserContext.Provider value={{ currentUser, setCurrentUser }}>
         <Router>
