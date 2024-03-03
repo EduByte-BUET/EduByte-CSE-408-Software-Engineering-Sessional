@@ -38,18 +38,22 @@ const CoursesPageHome = () => {
 	}, []);
 
 	const [recommendedCourses, setRecommendedCourses] = useState<any>(null);
+	
+   
 	useEffect(() => {
-		const fetchData = async () => {
-			try {
-				const res = await api.get("/courses/recommended");
-				setRecommendedCourses(res.data);
-			} catch (err) {
-				alert("Error occurred. Please try again later.");
-			}
-		};
+    const fetchData = async () => {
+      try {
+        const res = await api.get("/courses/recommended");
+        console.log(res);
+        setRecommendedCourses(res.data);
+      } catch (err) {
+        console.log("error in recom");
+        //alert("Error occurred. Please try again later.");
+      }
+    };
 
-		fetchData();
-	}, []);
+    fetchData();
+  }, []);
 	return (
 		<div className="container">
 			<div className="row d-flex justify-content-between">
