@@ -51,6 +51,7 @@ category_router.route("/").get(async (req, res) => {
 
 popular_course_router.route("/").get(async (req, res) => {
 	console.log("/courses/popular GET");
+	
 	// Get all the popular courses
 	const popular_courses = await db.getPopularCourses();
 	if (popular_courses != null) res.status(200); // OK
@@ -61,7 +62,11 @@ popular_course_router.route("/").get(async (req, res) => {
 recommended_course_router.route("/").get(async (req, res) => {
 	console.log("/courses/recommended GET");
 	// Get all the recommended courses
-	const recommended_courses = await db.getRecommendedCourses();
+	const user = await db.getUser(req.session.username);
+    const user_id = user.user_id;
+
+	const recommended_courses = await db.getRecommended_Courses(user_id);
+	
 	if (recommended_courses != null) res.status(200); // OK
 	else res.status(404);
 	res.json(recommended_courses);
