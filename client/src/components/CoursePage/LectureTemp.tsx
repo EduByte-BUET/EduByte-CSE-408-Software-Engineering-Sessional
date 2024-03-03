@@ -38,7 +38,10 @@ const LectureTemp = (props: any) => {
 			)}
 			style={{ cursor: "pointer" }}
 		>
-			<h5>Lecture {index + 1}</h5>
+			<h5>
+				<i className="fa-sharp fa-regular fa-circle-right"></i> &nbsp;
+				<b>Lecture {index + 1}</b>
+			</h5>
 			<h5>{lecture?.title}</h5>
 			{viewTik && (
 				<div className="d-flex justify-content-end">

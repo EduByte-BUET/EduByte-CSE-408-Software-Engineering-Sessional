@@ -104,10 +104,7 @@ const Lesson = () => {
 								textDecoration: "underline",
 							}}
 							className="mb-3 mt-3"
-						>
-							<i className="fa-solid fa-link"></i> Block {block_index}
-							&nbsp; {block_name}
-						</div>
+						></div>
 						<div className="mb-3">
 							<i className="fa-solid fa-play"></i> Lecture {lecture_index}
 							&nbsp; <i className="fa-solid fa-arrow-right"></i> &nbsp;{" "}
@@ -152,10 +149,11 @@ const Lesson = () => {
 						<button
 							onClick={handleButtonClick}
 							type="button"
-							className="btn red-button mt-4 w-50"
+							className="btn bordered-button mt-4 w-50"
 						>
-							Next lecture <i className="fa fa-arrow-right"></i>
+							Next lecture <i className="fa-solid fa-circle-check"></i>
 						</button>
+						<p><i className="fa-solid fa-triangle-exclamation"></i> These lessons would be marked as completed</p>
 					</div>
 				</div>
 				<div className="col-md-8 mt-3">

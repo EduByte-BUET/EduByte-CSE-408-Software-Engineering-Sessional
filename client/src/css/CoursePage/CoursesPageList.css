@@ -36,3 +36,12 @@
 	color: inherit;
 	text-decoration: none;
 }
+.hover-translate {
+	transition: transform 0.3s ease;
+	font-weight: normal;
+}
+
+.hover-translate:hover {
+	font-weight: bolder;
+	transform: translateY(-5px); /* Adjust the translation distance as needed */
+}

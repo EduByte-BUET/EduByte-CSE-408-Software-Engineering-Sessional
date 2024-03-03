@@ -1,73 +1,84 @@
-import React from 'react';
+import React from "react";
 
 export default function Footer() {
-  return (
-    <>
-    
-    <footer id="footer" className="footer-area pt-170">
-		<div className="container">
-			<div className="row">
-				<div className="col-xl-3 col-lg-3 col-md-6">
-					<div className="footer-widget">
-						<a href="index.html" className="logo d-blok">
-							<img src="assets/images/logo.svg" alt=""/>
-						</a>
-						<p></p>
-					</div>
-				</div>
-				<div className="col-xl-2 col-lg-2 offset-xl-1 offset-lg-1 col-md-6">
-					<div className="footer-widget">
-						<h5>Quick Links</h5>
-						<ul>
-							<li><a href="javascript:void(0)">Home</a></li>
-							<li><a href="javascript:void(0)">Courses</a></li>
-							<li><a href="javascript:void(0)">Eventd</a></li>
-							<li><a href="javascript:void(0)">Blog</a></li>
-						</ul>
-					</div>
-				</div>
-				<div className="col-xl-2 col-lg-2 col-md-6">
-					<div className="footer-widget">
-						<h5>Our Course</h5>
-						<ul>
-							<li><a href="javascript:void(0)">Design</a></li>
-							<li><a href="javascript:void(0)">Development</a></li>
-							<li><a href="javascript:void(0)">Marketing</a></li>
-							<li><a href="javascript:void(0)">SEO Design</a></li>
-						</ul>
-					</div>
-				</div>
-				<div className="col-xl-3 col-lg-3 col-md-6">
-					<div className="footer-widget">
-						<h5>Contact Us</h5>
-						<ul>
-							<li><p>Phone: +884-9273-3867</p></li>
-							<li><p>Email: hello@gmail.com</p></li>
-							<li><p>Address: Random Road<br/></p></li>
-						</ul>
-					</div>
-				</div>
-			</div>
-			<div className="footer-credit">
-				<div className="row">
-					<div className="col-md-6">
-						
-					</div>
-					<div className="col-md-6">
-						<div className="footer-social">
-							<ul className="d-flex justify-content-md-end justify-content-center">
-								<li><a href="javascript:void(0)"><i className="lni lni-facebook-filled"></i></a></li>
-								<li><a href="javascript:void(0)"><i className="lni lni-twitter-filled"></i></a></li>
-								<li><a href="javascript:void(0)"><i className="lni lni-instagram-filled"></i></a></li>
-								<li><a href="javascript:void(0)"><i className="lni lni-linkedin-original"></i></a></li>
+	return (
+		<>
+			<footer id="footer" className="footer-area">
+				<div className="container" style={{ borderTop: "2px solid black" }}>
+					<div className="row mt-30">
+						<div className="col-md-6">
+							<div className="footer-widget d-flex justify-content-left">
+								<img
+									src="https://cdn.pixabay.com/photo/2016/11/12/23/34/learn-1820039_640.jpg"
+									alt=""
+									height={"150px"}
+									style={{
+										opacity: 0.8,
+										borderRadius: "5%",
+										border: "1px solid black",
+									}}
+								/>
+								&nbsp;&nbsp;&nbsp;
+								{/* Say something nice about this site */}
+								&nbsp;{" "}
+								<p style={{ textAlign: "justify" }}>
+									{" "}
+									<b>Empowering Minds with AI Powered Education</b> <br />
+									We believe that everyone has the right to learn and grow, and
+									we are committed to making that a reality. Our platform is
+									designed to be interactive, engaging, and user-friendly, so
+									that learners of all ages and backgrounds can benefit from it.
+									We are constantly working to improve our platform and expand
+									our offerings, so that we can reach more people and make a
+									greater impact. We are excited to be a part of the future of
+									education, and we hope you will join us on this journey.
+								</p>
+							</div>
+						</div>
+						<div className="col-md-2">
+							<h5>
+								<b>About</b>
+							</h5>
+							<ul style={{ textAlign: "left", paddingLeft: "70px" }}>
+								<li>Innovative</li>
+								<li>Empowering</li>
+								<li>AI Powered</li>
+								<li>Interactive</li>
+							</ul>
+						</div>
+						<div className="col-md-4">
+							<h5>
+								<b>Contact</b>
+							</h5>
+							<ul style={{ textAlign: "left", paddingLeft: "140px" }}>
+								<li>
+									<b>Contact Information</b>
+									<ul>
+										<li>EduByte.01@gmail.com</li>
+										<li>Phone | 000-2222-5555</li>
+									</ul>
+								</li>
+								<li>
+									<b>Social Media</b>
+									<ul>
+										<li>Facebook | EduByte</li>
+										<li>Instagram | EduByte</li>
+										<li>Twitter | EduByte</li>
+									</ul>
+								</li>
 							</ul>
 						</div>
 					</div>
+					<div className="row">
+						<div className="footer-credit">
+							<div className="footer-social">
+								<i className="fa-solid fa-copyright"></i> Copyright by Team of
+								EduByte, BUET, Dhaka
+							</div>
+						</div>
+					</div>
 				</div>
-			</div>
-		</div>
-	</footer>
-      
-    </>
-  );
+			</footer>
+		</>
+	);
 }
