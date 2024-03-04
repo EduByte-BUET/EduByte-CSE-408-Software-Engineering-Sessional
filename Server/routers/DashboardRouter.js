@@ -211,30 +211,18 @@ admin_content_creators_router.route("/").get(async (req, res) => {
 
 	// admin would want to get the content creators from the database (all content creators present in the database)
 	// A sample json response is given below
-	content_creators = {
-		content_creators: [
-			{
-				content_creator_name: "Alice ContentCreator",
-				total_created_lectures: 30,
-				contribution_point: 500,
-			},
-			{
-				content_creator_name: "Bob Lecturer",
-				total_created_lectures: 25,
-				contribution_point: 450,
-			},
-			{
-				content_creator_name: "Charlie Instructor",
-				total_created_lectures: 20,
-				contribution_point: 400,
-			},
-			{
-				content_creator_name: "David Teacher",
-				total_created_lectures: 15,
-				contribution_point: 350,
-			},
-		],
-	};
+	// const content_creators = [
+    // {
+    //   name: "Jenny Wilson",
+    //   role: "Front-end Developer, Designer",
+    //   rating: 4.5,
+    //   courses: 42,
+    //   students: 110124,
+    //   bio: "I start my development and digital career studying digital design...",
+    //   avatar: "/path/to/avatar.jpg", // Replace with actual path
+    // },];
+
+	let content_creators = await db.getCCInfo();
 
 	if (Object.keys(content_creators).length > 0) res.status(200); // OK
 	else res.status(400); // Bad Request
@@ -246,15 +234,33 @@ admin_site_stats.route("/").get(async (req, res) => {
 
 	// admin would want to get the site stats from the database
 	// A sample json response is given below
-	site_stats = {
-		total_users: 1500,
-		total_posts: 500,
-		total_courses: 30,
-		total_lessons_creators: 10,
-		average_user_rating: 4.5,
-	};
+// let site_stats =	{
+//      userStats: {
+//        totalUsers: 1024,
+//        totalCreators: 60,
+//        totalAdmin: 50,
+//      },
+//      courseStats: {
+//        totalCourses: 150,
+//        totalCategories: 10,
+//   totalEnrollments: 3200,
+//      },
+   
+//  contentStats: {
+//       totalBlocks: 400,
+//        totalLectures: 850,
+//        totalLessons: 1200,
+//        totalQuizzes: 300,
+//      },
+//   }
 
-	if (Object.keys(site_stats).length > 0) res.status(200); // OK
+   let site_stats = await db.getSiteStats();
+   console.log("site_stats");
+   console.log(site_stats);
+   
+ 
+ 
+   if (Object.keys(site_stats).length > 0) res.status(200); // OK
 	else res.status(400); // Bad Request
 	res.json(site_stats);
 });

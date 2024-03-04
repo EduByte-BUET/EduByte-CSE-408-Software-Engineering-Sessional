@@ -16,7 +16,7 @@ import SavedPosts from "./SavedPosts";
 import MyPosts from "./MyPosts";
 import { useEffect, useState } from "react";
 
-
+import api from "../../api/GeneralAPI";
 const Dashboard = () => {
 	const [authFailed, setAuthFailed] = useState<boolean>(false);
 

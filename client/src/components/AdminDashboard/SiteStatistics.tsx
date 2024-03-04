@@ -7,41 +7,52 @@ import {
   useNavigate,
 } from "react-router-dom";
 import "../../css/dashboard.css";
-
+import api from "../../api/GeneralAPI";
 import dashboardapi from "../../api/GeneralAPI";
 
 function SiteStatistics() {
-  const [stats] = React.useState({
+
+  
+  const [stattts] = React.useState({
     userStats: {
       totalUsers: 1024,
-      newUsersThisMonth: 98,
-      activeCreators: 60,
+      totalCreators: 60,
+      totalAdmin: 50,
     },
     courseStats: {
       totalCourses: 150,
-      activeCourses: 120,
-      recentCourses: 8,
-      coursesByDifficulty: {
-        beginner: 50,
-        intermediate: 70,
-        advanced: 30,
-      },
-    },
-    engagementStats: {
+      totalCategories: 10,
       totalEnrollments: 3200,
+    },
+   
+    contentStats: {
+      totalBlocks: 400,
+      totalLectures: 850,
       totalLessons: 1200,
       totalQuizzes: 300,
     },
-    contentStats: {
-      totalCreators: 85,
-      totalBlocks: 400,
-      totalLectures: 850,
-    },
-    requestStats: {
-      totalRequests: 45,
-      pendingRequests: 12,
-    },
   });
+
+
+
+  const [stats, setStats] = React.useState<any>({});
+ 
+
+  useEffect(() => {
+    const handleSiteStats = async () => {
+      try {
+        
+        const res = await api.get("/dashboard/admin/site_stats");
+
+        setStats(res.data);
+      } catch (err: any) {
+        console.log(err);
+      }
+    };
+
+    handleSiteStats();
+  }, []);
+
 
   return (
     <div className="col-md-8 col-lg-9">
@@ -54,15 +65,15 @@ function SiteStatistics() {
                 <div key={idx} className="stat-category">
                   <h3>{category.replace(/([A-Z])/g, " $1")}</h3>
 
-                  {Object.entries(details).map(([key, value], i) => (
+                  {Object.entries(details as Record<string,unknown>).map(([key, value], i) => (
                     <div key={i} className="stat-detail">
                       <h6>{key.replace(/([A-Z])/g, " $1")}:</h6>
                       <p>
-                        {typeof value === "object"
-                          ? Object.entries(value)
+                        {typeof value === "object"&&value!=null
+                          ? Object.entries(value as Record<string,unknown>)
                               .map(([level, count]) => `${level}: ${count}`)
                               .join(", ")
-                          : value}
+                          : String(value).toLocaleString()}
                       </p>
                     </div>
                   ))}

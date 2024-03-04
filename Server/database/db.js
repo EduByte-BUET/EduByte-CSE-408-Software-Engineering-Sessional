@@ -157,41 +157,197 @@ const getPopularCourses = async () => {
 		console.log(err);
 	}
 };
+const getCCInfo = async () => {
+  try {
+    const res = await pool.query(
+      `SELECT c.*
+   FROM users c
+   WHERE c.access_level = 'ccreator'`
+    );
 
-const getRecommended_Courses = async (user_id) => {
-	try {
-		const res = await pool.query(
-			`SELECT c.*
-       FROM courses c
-       WHERE c.category = ANY(
-         SELECT unnest(interests)
-         FROM users
-         WHERE user_id = $1
-       )
-       ORDER BY c.total_enrolled DESC
-       LIMIT 2`,
-			[user_id]
-		);
-		if (res.rows[0]) {
-			return res.rows.map((row) => {
-				// convert the row object to a popular course object
-				const course = {
-					course_id: row.course_id,
-					course_title: row.course_title,
-					thumbnail_url: row.thumbnail_url,
-					difficulty_level: row.difficulty_level,
-					category: row.category,
-					total_enrolled: row.total_enrolled,
-					total_lessons: row.total_lessons,
-				};
-				return course;
-			});
-		}
-		return null;
-	} catch (err) {
-		console.log(err);
-	}
+    const courseno = await pool.query(
+      `SELECT COUNT(*) AS course_count
+FROM courses;
+`
+    );
+
+    const enrolled = await pool.query(
+      `SELECT SUM(total_enrolled) AS total_enrollment
+FROM courses;
+`
+    );
+
+    if (res.rows[0]) {
+      return res.rows.map((row) => {
+        // convert the row object to a popular course object
+        const cc = {
+          fullname: row.fullname,
+          username: row.username,
+          email: row.email,
+          access_level: row.access_level,
+          
+          total_course: courseno.rows[0].course_count,
+          total_enrolled: enrolled.rows[0].total_enrollment,
+        };
+        return cc;
+      });
+    }
+    return null;
+  } catch (err) {
+    console.log(err);
+  }
 };
+
+const getSiteStats = async () => {
+  try {
+    const c1 = await pool.query(
+      `SELECT COUNT(*) AS total_admins
+FROM users
+WHERE access_level = 'admin';`
+    );
+
+    const c2 = await pool.query(
+      `SELECT COUNT(*) AS total_users
+FROM users
+WHERE access_level = 'user'
+`
+    );
+
+    const c3 = await pool.query(
+      `SELECT COUNT(*) AS total_creators
+FROM users
+WHERE access_level = 'ccreator';
+`
+    );
+
+     const c4 = await pool.query(
+       `SELECT COUNT(*) AS total_course
+FROM courses;`
+     );
+
+     const c5 = await pool.query(
+       `SELECT COUNT(*) AS total_cat
+FROM categories;
+`
+     );
+
+     const c6 = await pool.query(
+       `SELECT SUM(total_enrolled) AS total_enrolled
+FROM courses;;
+`
+     );
+
+
+       const c7 = await pool.query(
+         `SELECT COUNT(*) AS total_block
+FROM blocks
+;
+`
+       );
+
+       const c8 = await pool.query(
+         `SELECT COUNT(*) AS total_lecture
+FROM lectures;`
+       );
+
+       const c9 = await pool.query(
+         `SELECT COUNT(*) AS total_lesson
+FROM lessons;
+`
+       );
+
+       const c10 = await pool.query(
+         `SELECT COUNT(*) AS total_quiz
+FROM quizzes;
+`
+       );
+
+
+  
+        const cc = {
+          userStats: {
+            totalUsers: c2.rows[0].total_users,
+            totalCreators: c3.rows[0].total_creators,
+            totalAdmin: c1.rows[0].total_admins,
+          },
+          courseStats: {
+            totalCategories: c5.rows[0].total_cat,
+            totalCourses: c4.rows[0].total_course,
+
+            totalEnrollments: c6.rows[0].total_enrolled,
+          },
+          contentStats: {
+            totalBlocks: c7.rows[0].total_block,
+            totalLectures: c8.rows[0].total_lecture,
+            totalLessons: c9.rows[0].total_lesson,
+            totalQuizzes: c10.rows[0].total_quiz,
+          },
+        };
+        return cc;
+      
+    
+    return null;
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+
+
+const getRecommended_Courses = async (user_id) => { 
+	try { 
+	  // const res = await pool.query( 
+	  //   `SELECT c.* 
+	  //    FROM courses c 
+	  //    WHERE c.category = ANY( 
+	  //      SELECT unnest(interests) 
+	  //      FROM users 
+	  //      WHERE user_id = $1 
+	  //    ) 
+	  //    ORDER BY c.total_enrolled DESC 
+	  //    LIMIT 2`, 
+	  //   [user_id] 
+	  // ); 
+   
+	  const res = await pool.query( 
+		`SELECT c.* 
+		 FROM courses c 
+		 WHERE c.category = ANY( 
+		   SELECT unnest(interests) 
+		   FROM users 
+		   WHERE user_id = $1 
+		 ) 
+		 AND NOT EXISTS ( 
+		   SELECT 1 
+		   FROM enrolled_courses ec 
+		   WHERE ec.user_id = $1 
+		   AND ec.course_id = c.course_id 
+		 ) 
+		 ORDER BY c.total_enrolled DESC 
+		 LIMIT 2`, 
+		[user_id] 
+	  ); 
+	  if (res.rows[0]) { 
+		return res.rows.map((row) => { 
+		  // convert the row object to a popular course object 
+		  const course = { 
+			course_id: row.course_id, 
+			description: row.description, 
+			course_title: row.course_title, 
+			thumbnail_url: row.thumbnail_url, 
+			difficulty_level: row.difficulty_level, 
+			category: row.category, 
+			total_enrolled: row.total_enrolled, 
+			total_lessons: row.total_lessons, 
+		  }; 
+		  return course; 
+		}); 
+	  } 
+	  return null; 
+	} catch (err) { 
+	  console.log(err); 
+	} 
+  };
 
 const getCourse = async (course_id) => {
 	try {
@@ -329,7 +485,7 @@ const registerToCourse = async (
 const getBlockList = async (course_id) => {
 	try {
 		const courseResult = await pool.query(
-			"SELECT c.course_id, c.course_title, c.total_lectures, c.total_quizzes, b.block_id, b.title, l.lecture_id, l.title FROM courses c JOIN blocks b ON c.course_id = b.course_id JOIN lectures l ON b.block_id = l.block_id WHERE c.course_id = $1 GROUP BY c.course_id, b.block_id, l.lecture_id ORDER BY b.block_id, l.lecture_id",
+			"SELECT c.course_id, c.course_title, c.total_lectures, c.total_quizzes, b.block_id, b.title AS block_title, l.lecture_id, l.title AS lecture_title FROM courses c JOIN blocks b ON c.course_id = b.course_id JOIN lectures l ON b.block_id = l.block_id WHERE c.course_id = $1 GROUP BY c.course_id, b.block_id, l.lecture_id ORDER BY b.block_id, l.lecture_id",
 			[course_id]
 		);
 		let courseRows = courseResult.rows;
@@ -353,14 +509,14 @@ const getBlockList = async (course_id) => {
 				currentBlockId = courseRow.block_id;
 				currentBlock = {
 					block_id: courseRow.block_id,
-					title: courseRow.title,
+					title: courseRow.block_title,
 					lectures: [],
 					total_quizzes: 0,
 				};
 			}
 			let lecture = {
 				lecture_id: courseRow.lecture_id,
-				title: courseRow.title,
+				title: courseRow.lecture_title,
 			};
 			const quizResult = await pool.query(
 				"SELECT quiz_id, quiz_title, quiz_duration FROM quizzes WHERE lecture_id = $1",
@@ -1356,6 +1512,7 @@ const addReply = async (
 		throw error;
 	}
 };
+
 const fetchPostsDataByTypes = async (types) => {
 	try {
 		const postsQueryResult = await pool.query(
@@ -2032,4 +2189,6 @@ module.exports = {
 	removeSavedPost,
 	getMyPosts,
 	deletePost,
+  getCCInfo,
+  getSiteStats,
 };
