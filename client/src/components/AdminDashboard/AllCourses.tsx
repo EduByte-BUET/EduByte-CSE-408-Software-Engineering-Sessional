@@ -113,12 +113,12 @@ const AllCourses = () => {
 												Details
 											</button>
 
-											<button
+											{/* <button
 												className="btn red-button mb-3"
 												onClick={() => handleRemoveCourse(course)}
 											>
 												Remove
-											</button>
+											</button> */}
 										</div>
 									</div>
 								</div>
