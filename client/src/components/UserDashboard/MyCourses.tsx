@@ -194,6 +194,7 @@ const MyCourses = (props: any) => {
 						</Link>
 					</button> */}
 				</div>
+
 			</div>
 		</div>
 	);
