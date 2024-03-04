@@ -138,7 +138,7 @@ const RecommendedCourses = () => {
         </div>
       </div>
 
-      <div className="mt-auto bottom-links ">
+      {/* <div className="mt-auto bottom-links ">
         <button className="btn blue-button">
           <Link
             to="/courses"
@@ -155,7 +155,7 @@ const RecommendedCourses = () => {
             Request New Course <i className="bi bi-arrow-down"></i>
           </Link>
         </button>
-      </div>
+      </div> */}
     </div>
   );
 };

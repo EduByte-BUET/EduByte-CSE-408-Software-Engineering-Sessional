@@ -485,7 +485,7 @@ const registerToCourse = async (
 const getBlockList = async (course_id) => {
 	try {
 		const courseResult = await pool.query(
-			"SELECT c.course_id, c.course_title, c.total_lectures, c.total_quizzes, b.block_id, b.title, l.lecture_id, l.title FROM courses c JOIN blocks b ON c.course_id = b.course_id JOIN lectures l ON b.block_id = l.block_id WHERE c.course_id = $1 GROUP BY c.course_id, b.block_id, l.lecture_id ORDER BY b.block_id, l.lecture_id",
+			"SELECT c.course_id, c.course_title, c.total_lectures, c.total_quizzes, b.block_id, b.title AS block_title, l.lecture_id, l.title AS lecture_title FROM courses c JOIN blocks b ON c.course_id = b.course_id JOIN lectures l ON b.block_id = l.block_id WHERE c.course_id = $1 GROUP BY c.course_id, b.block_id, l.lecture_id ORDER BY b.block_id, l.lecture_id",
 			[course_id]
 		);
 		let courseRows = courseResult.rows;
@@ -509,14 +509,14 @@ const getBlockList = async (course_id) => {
 				currentBlockId = courseRow.block_id;
 				currentBlock = {
 					block_id: courseRow.block_id,
-					title: courseRow.title,
+					title: courseRow.block_title,
 					lectures: [],
 					total_quizzes: 0,
 				};
 			}
 			let lecture = {
 				lecture_id: courseRow.lecture_id,
-				title: courseRow.title,
+				title: courseRow.lecture_title,
 			};
 			const quizResult = await pool.query(
 				"SELECT quiz_id, quiz_title, quiz_duration FROM quizzes WHERE lecture_id = $1",

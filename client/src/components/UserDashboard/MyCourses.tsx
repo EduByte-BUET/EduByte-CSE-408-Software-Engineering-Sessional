@@ -178,7 +178,7 @@ const MyCourses = (props: any) => {
 					</div>
 				</div>
 
-				<div className="mt-auto bottom-links ">
+				{/* <div className="mt-auto bottom-links ">
 					<button className="btn blue-button">
 						<Link
 							to="/courses"
@@ -195,7 +195,7 @@ const MyCourses = (props: any) => {
 							Request Course <i className="bi bi-arrow-right"></i>
 						</Link>
 					</button>
-				</div>
+				</div> */}
 			</div>
 		</div>
 	);
