@@ -73,21 +73,20 @@ function App() {
 
 	const [signin_bg, setSignin_bg] = useState<string>("");
 
-	const [fieldOptions, setfieldOptions] = useState<any>([]);
-	useEffect(() => {
-		const handleFieldOptions = async () => {
-			try {
-				const res = await signin_api.get("/user/signin/fieldOption");
-				console.log(res.data.fieldOptionData);
-				setfieldOptions(res.data);
-				console.log("here it is");
-				console.log(fieldOptions);
-			} catch (err) {
-				console.log(err);
-			}
-		};
-		handleFieldOptions();
-	}, []);
+  const [fieldOptions, setfieldOptions] = useState<any>([]);
+  useEffect(() => {
+    const handleFieldOptions = async () => {
+      try {
+        const res = await signin_api.get("/user/signin/fieldOption");
+        
+        setfieldOptions(res.data);
+        
+      } catch (err) {
+        console.log(err);
+      }
+    };
+    handleFieldOptions();
+  }, []);
 
 	const getSignin_bg = async () => {
 		try {
