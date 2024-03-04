@@ -206,9 +206,8 @@ const Lesson = () => {
 							}
 						})}
 					</div>
-
 					<AI />
-					<p>It's in progress</p>
+					{/* <p>It's in progress</p> */}
 					<AIImage />
 				</div>
 			</div>
