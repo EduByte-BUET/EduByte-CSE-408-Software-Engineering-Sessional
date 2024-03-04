@@ -7,6 +7,12 @@ const router = express.Router();
 
 const payment_router = express.Router();
 router.use("/payment", payment_router);
+const success_router = express.Router();
+router.use("/payment/success", success_router);
+const failure_router = express.Router();
+router.use("/payment/fail", failure_router);
+const cancel_router = express.Router();
+router.use("/payment/cancel", cancel_router);
 
 const store_id = "eduby65e524da7f98c";
 const store_passwd = "eduby65e524da7f98c@ssl";
@@ -19,13 +25,13 @@ payment_router.route("/").post(async (req, res) => {
 	const username = req.session.username;
 
 	const data = {
-		total_amount: amount, // may have security issues
+		total_amount: parseInt(amount), // may have security issues
 		currency: "BDT",
 		tran_id: tran_id, // use unique tran_id for each api call
-		success_url: "http://localhost:5173/donate/payment/success",
-		fail_url: "http://localhost:5173/donate/payment/fail",
-		cancel_url: "http://localhost:5173/donate/payment/cancel",
-		ipn_url: "http://localhost:5173/ipn",
+		success_url: "http://localhost:3000/donate/payment/success",
+		fail_url: "http://localhost:3000/donate/payment/fail",
+		cancel_url: "http://localhost:3000/donate/payment/cancel",
+		ipn_url: "http://localhost:3000/ipn",
 		shipping_method: "Courier",
 		product_name: "Computer.",
 		product_category: "Electronic",
@@ -56,16 +62,34 @@ payment_router.route("/").post(async (req, res) => {
 	);
 	console.log("Amount: ", amount);
 	const sslcz = new SSLCommerzPayment(store_id, store_passwd, false);
-	sslcz.init(data).then((data) => {
+	sslcz.init(data).then((apiRes) => {
 		// Redirect the user to payment gateway
-		if (data?.GatewayPageURL) {
-			return res.status(200).redirect(data?.GatewayPageURL);
+		if (apiRes?.GatewayPageURL) {
+			res.status(200).json({ url: apiRes.GatewayPageURL });
 		} else {
-			return res.status(400).json({
+			res.status(400).json({
 				message: "Session was not successful",
 			});
 		}
 	});
+});
+
+success_router.route("/").post(async (req, res) => {
+	console.log("/donate/payment/success POST");
+
+	res.redirect("http://localhost:5173/donate/payment/success");
+});
+
+failure_router.route("/").post(async (req, res) => {
+	console.log("/donate/payment/fail POST");
+
+	res.redirect("http://localhost:5173/donate/payment/fail");
+});
+
+cancel_router.route("/").post(async (req, res) => {
+	console.log("/donate/payment/cancel POST");
+
+	res.redirect("http://localhost:5173/donate/payment/cancel");
 });
 
 module.exports = router;

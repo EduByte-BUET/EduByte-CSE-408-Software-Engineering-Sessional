@@ -25,17 +25,18 @@ const donate = () => {
 		setDonationAmount({ amount: parseInt(e.target.value) || 0 });
 	};
 
-	const handleSubmit = async () => {
+	const handleSubmit = async (e) => {
+		e.preventDefault();
 		// Process donation here
 		try {
-			await api
-				.post("/donate/payment", {
-					amount: donationAmount.amount,
-				})
-				.then((res: any) => {
-					navigate(res.data.url);
-				});
+			const res = await api.post("/donate/payment", {
+				amount: donationAmount.amount,
+			});
+
+			window.location.href = res.data.url;
+			return;
 		} catch (err) {
+			alert("Kindly select an amount");
 			console.log(err);
 		}
 	};
@@ -44,7 +45,7 @@ const donate = () => {
 		<Container className="py-5">
 			<Row className="justify-content-md-center">
 				<Col md={6}>
-					<div className="text-center mb-5">
+					<div className="text-center mb-3">
 						<h2 className="search-heading" style={{ textAlign: "left" }}>
 							Donate
 						</h2>
@@ -57,6 +58,7 @@ const donate = () => {
 					</div>
 					<Form onSubmit={handleSubmit}>
 						<Row className="justify-content-center mb-3">
+							<h1 style={{ opacity: "0.5" }}>Choose an amount</h1>
 							<Col xs={"auto"}>
 								<Button
 									variant="primary"
@@ -119,16 +121,19 @@ const donate = () => {
 										borderRight: "2px solid black",
 									}}
 								/>
+								<label htmlFor="donationAmount" style={{ marginRight: "70%" }}>
+									<i className="fa-regular fa-note-sticky"></i> &nbsp; Enter
+									custom amount
+								</label>
 							</Col>
 						</Row>
-						<Row className="justify-content-center mt-3">
+						<Row className="justify-content-center mt-5">
 							<Col xs={"auto"}>
 								<Button
 									className="btn green-button"
 									variant="primary"
 									type="submit"
 									size="lg"
-									onClick={handleSubmit}
 								>
 									Donate Now
 								</Button>
