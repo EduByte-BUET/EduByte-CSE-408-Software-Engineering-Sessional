@@ -30,6 +30,10 @@ import "./css/SignupPrefs.css";
 import ForumPage from "./components/DiscussionForum/ForumPage";
 // ---
 import Search from "./components/Search/SearchPage";
+// ---
+import Donation from "./components/DonationPage/DonationPage";
+import DonationSuccess from "./components/DonationPage/Successful";
+import DonationFailure from "./components/DonationPage/Failue";
 
 function App() {
 	// -----User Context
@@ -162,6 +166,12 @@ function App() {
 						<Route path="/quiz/*" element={<QuizPageRoot />} />
 						<Route path="/discussion/*" element={<ForumPage />} />
 						<Route path="/search" element={<Search />} />
+						<Route path="/donate" element={<Donation />} />
+						<Route
+							path="/donate/payment/success"
+							element={<DonationSuccess />}
+						/>
+						<Route path="/donate/payment/fail" element={<DonationFailure />} />
 					</Routes>
 				</Router>
 			</UserContext.Provider>

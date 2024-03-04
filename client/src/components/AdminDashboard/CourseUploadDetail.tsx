@@ -76,8 +76,8 @@ function CourseUploadDetail() {
 				<div className="container  review-requests">
 					<h2 className="text-center mb-4">Course Upload Detail</h2>
 
-					<table className="table table-no-lines ">
-						<tbody>
+					<table className="table">
+						<tbody style={{ textAlign: "left" }}>
 							{/* Pending and Creator Information */}
 							<tr>
 								<th>Pending ID</th>
@@ -174,7 +174,7 @@ function CourseUploadDetail() {
 						}}
 					>
 						<button className="btn green-button" onClick={handleAccept}>
-							Accept <i className=""></i>
+							Approve <i className=""></i>
 						</button>
 						<button className="btn red-button" onClick={handleDelete}>
 							Delete <i className=""></i>

@@ -3,9 +3,10 @@ import { useNavigate } from "react-router-dom";
 import "../../css/discussion.css"; // Make sure this path is correct
 import api from "../../api/GeneralAPI";
 import Select from "react-select";
+import UserAuth from "../UserAuth";
 
 function CreatePost() {
-  const navigate = useNavigate();
+	const navigate = useNavigate();
 	const [authorType, setAuthorType] = useState("user");
 	const [postType, setPostType] = useState("discussion");
 	const [title, setTitle] = useState("");
@@ -17,24 +18,47 @@ function CreatePost() {
 		{ value: string; label: string }[]
 	>([]);
 
+	const fetchData = async () => {
+		try {
+			const response = await api.get(`/discussion/post/show`);
+			if (response.status === 200) {
+				const responseData = response.data;
+				setShowCourse(responseData.courses);
+				setShowTags(responseData.tags);
+				console.log("Courses fetched successfully!", responseData);
+			} else {
+				console.error("Failed to fetch courses:", response.statusText);
+			}
+		} catch (error) {
+			console.error("Error fetching courses:", error);
+		}
+	};
+
+	const userAuth = async (justAuth: boolean) => {
+		try {
+			await api.get("/user/auth");
+
+			const accesslevel = await api.get("/user/signin/accesslevel");
+			if (accesslevel.data.access_level == "user") setAuthorType("user");
+			else if (accesslevel.data.access_level == "ccreator") {
+				setAuthorType("content_creator");
+			}
+			if (justAuth == false) fetchData();
+		} catch (error) {
+			console.error("Error fetching courses:", error);
+			alert("You need to login first");
+			navigate("/signin");
+			return;
+		}
+	};
+
 	// useeffect to fetch courses and tags
 	useEffect(() => {
-		const fetchData = async () => {
-			try {
-				const response = await api.get(`/discussion/post/show`);
-				if (response.status === 200) {
-					const responseData = response.data;
-					setShowCourse(responseData.courses);
-					setShowTags(responseData.tags);
-					console.log("Courses fetched successfully!", responseData);
-				} else {
-					console.error("Failed to fetch courses:", response.statusText);
-				}
-			} catch (error) {
-				console.error("Error fetching courses:", error);
-			}
+		const demoFunc = async () => {
+			await userAuth(false);
 		};
-		fetchData();
+
+		demoFunc();
 	}, []);
 
 	const handleCourseChange = (event) => {
@@ -55,7 +79,6 @@ function CreatePost() {
 			summary: summary, // Use the updated state for summary
 			post_type: postType,
 		};
-		console.log(postData);
 
 		try {
 			const response = await api.post(`/discussion/post/create`, postData);
@@ -63,7 +86,7 @@ function CreatePost() {
 			if (response.status === 200) {
 				const responseData = response.data; // Assuming api.post returns data in a property
 				console.log("Post created successfully!", responseData);
-                navigate("/discussion"); // Replace '/discussion' with your actual endpoint
+				navigate("/discussion"); // Replace '/discussion' with your actual endpoint
 			} else {
 				console.error("Failed to create post:", response.statusText);
 			}
@@ -94,13 +117,8 @@ function CreatePost() {
 					<form onSubmit={handleSubmit}>
 						<div className="form-row">
 							<label htmlFor="authorType">Author Type:</label>
-							<select
-								id="authorType"
-								value={authorType}
-								onChange={(e) => setAuthorType(e.target.value)}
-							>
-								<option value="user">User</option>
-								<option value="content_creator">Content Creator</option>
+							<select id="authorType" value={authorType}>
+								<option value={authorType}>{authorType}</option>
 							</select>
 						</div>
 
@@ -145,7 +163,9 @@ function CreatePost() {
 							>
 								<option value="discussion">Discussion</option>
 								<option value="qna">Q&A</option>
-								<option value="announcements">Announcements</option>
+								{authorType === "content_creator" && (
+									<option value="announcements">Announcements</option>
+								)}
 							</select>
 						</div>
 
@@ -168,10 +188,7 @@ function CreatePost() {
 							></textarea>
 						</div>
 
-						<button
-							type="submit"
-							className="btn blue-button"
-						>
+						<button type="submit" className="btn blue-button">
 							Post
 						</button>
 					</form>

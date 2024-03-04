@@ -13,6 +13,7 @@ import RequestCourse from "./RequestCourse";
 import Popup from "../Popup";
 import UserAuth from "../UserAuth";
 import SavedPosts from "./SavedPosts";
+import MyPosts from "./MyPosts";
 import { useEffect, useState } from "react";
 
 import api from "../../api/GeneralAPI";
@@ -44,6 +45,7 @@ const Dashboard = () => {
 						element={<UserNotification />}
 					/>
 					<Route path="/savedposts" element={<SavedPosts />} />
+					<Route path="/myposts" element={<MyPosts />} />
 					<Route path="/request_course" element={<RequestCourse />} />
 				</Routes>
 			</div>

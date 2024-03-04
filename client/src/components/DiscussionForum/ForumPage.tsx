@@ -1,5 +1,3 @@
-import React, { useEffect } from "react";
-import { UserContext } from "../UserContext/UserContext";
 import {
   BrowserRouter as Router,
   Route,
@@ -18,7 +16,6 @@ const ForumPage = () => {
     <div className="container">
       <div className="row">
         <Filters/>
-
         <Routes>
           <Route path="/" element={<PostCard />} />
           <Route path="/create_post" element={<CreatePost/>} />
