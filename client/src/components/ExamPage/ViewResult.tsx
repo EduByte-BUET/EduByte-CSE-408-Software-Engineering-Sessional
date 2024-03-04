@@ -52,8 +52,6 @@ const ViewResult = () => {
 		});
 	};
 
-	console.log("Total obtained mark: ", totalObtainedMark);
-
 	const handleContinue = () => {
 		navigate(`/courses`);
 	};

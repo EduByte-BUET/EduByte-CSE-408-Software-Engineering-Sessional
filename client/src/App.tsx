@@ -34,6 +34,7 @@ import Search from "./components/Search/SearchPage";
 import Donation from "./components/DonationPage/DonationPage";
 import DonationSuccess from "./components/DonationPage/Successful";
 import DonationFailure from "./components/DonationPage/Failue";
+import DonationCancel from "./components/DonationPage/Cancel";
 
 function App() {
 	// -----User Context
@@ -173,6 +174,7 @@ function App() {
 							element={<DonationSuccess />}
 						/>
 						<Route path="/donate/payment/fail" element={<DonationFailure />} />
+						<Route path="/donate/payment/cancel" element={<DonationCancel />} />
 					</Routes>
 				</Router>
 			</UserContext.Provider>

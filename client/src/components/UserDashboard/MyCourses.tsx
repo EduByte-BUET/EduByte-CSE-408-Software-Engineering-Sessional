@@ -60,7 +60,7 @@ const MyCourses = (props: any) => {
 
 				<div
 					className="courses-container"
-					style={{ height: "540px", overflowY: "auto" }}
+					style={{ height: "580px", overflowY: "auto" }}
 				>
 					<div className="courses-list">
 						{courses.length === 0 && (
@@ -179,22 +179,20 @@ const MyCourses = (props: any) => {
 				</div>
 
 				<div className="mt-auto bottom-links ">
-					<button className="btn blue-button">
-						<Link
-							to="/courses"
-							style={{ color: "inherit", textDecoration: "inherit" }}
-						>
-							Add Course <i className="bi bi-arrow-right"></i>
-						</Link>
+					<button
+						className="btn green-button"
+						onClick={() => navigate("/courses")}
+					>
+						Add Course <i className="bi bi-arrow-right"></i>
 					</button>
-					<button className="btn green-button">
+					{/* <button className="btn green-button">
 						<Link
 							to="/reqCourse"
 							style={{ color: "inherit", textDecoration: "inherit" }}
 						>
 							Request Course <i className="bi bi-arrow-right"></i>
 						</Link>
-					</button>
+					</button> */}
 				</div>
 			</div>
 		</div>

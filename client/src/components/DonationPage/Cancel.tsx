@@ -1,7 +1,7 @@
 import { Container, Row, Col } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 
-const donate = () => {
+const Cancel = () => {
 	const navigate = useNavigate();
 
 	const handleClick = () => {
@@ -22,12 +22,12 @@ const donate = () => {
 						</h2>
 						<i
 							style={{ fontSize: "200px", color: "red" }}
-							className="fa-solid fa-x"
+							className="fa-solid fa-ban"
 						></i>
 					</div>
 					<div>
 						<h2 style={{ opacity: "0.6", color: "red" }}>
-							Failed to make transaction!
+							Transaction Cancelled
 						</h2>
 					</div>
 					<div>
@@ -48,4 +48,4 @@ const donate = () => {
 	);
 };
 
-export default donate;
+export default Cancel;
