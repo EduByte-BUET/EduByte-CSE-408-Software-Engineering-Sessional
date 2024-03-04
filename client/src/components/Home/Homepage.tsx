@@ -6,7 +6,7 @@ import TitlePage from "./TitlePage";
 import PopularCourses from "./PopularCourses";
 import ContactInfo from "./ContactInfo";
 import Skills from "./Skills";
-import TopBlogs from "./TopBlogs";
+import TopBlogs from "./SiteAI";
 import Footer from "./Footer";
 import Category from "./Category";
 

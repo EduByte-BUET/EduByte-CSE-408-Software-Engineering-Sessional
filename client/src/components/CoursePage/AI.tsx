@@ -3,6 +3,7 @@ import { GoogleGenerativeAI } from "@google/generative-ai";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { HarmCategory } from "@google/generative-ai";
 import { HarmBlockThreshold } from "@google/generative-ai";
+import { Spinner } from "react-bootstrap";
 
 const API_KEY = "AIzaSyC7U9eH7FCkx-aHYObkzURzrxFPA2Us5nk";
 const MODEL_NAME = "gemini-pro";
@@ -82,7 +83,7 @@ const AI: React.FC = () => {
 		try {
 			const result = await chat.sendMessage(message);
 			const response = result.response;
-			console.log(response.text());
+			// console.log(response.text());
 			setChatHistory([
 				...chatHistory,
 				`User: ${message}`,
@@ -105,11 +106,13 @@ const AI: React.FC = () => {
 			className="container mt-4"
 			style={{ backgroundColor: "#f0f0f0", borderRadius: "10px" }}
 		>
-			<h2 className="mb-4 text-start">Edurika</h2>
+			<h2 className="mb-4 text-start">
+				<b>Edurika</b>
+			</h2>
 
 			<div
 				style={{
-					height: "200px",
+					height: "400px",
 					overflowY: "scroll",
 					border: "1px solid #ccc",
 					padding: "10px",
@@ -124,6 +127,8 @@ const AI: React.FC = () => {
 							border: "1px solid #ccc",
 							padding: "10px",
 							marginBottom: "10px",
+							backgroundColor: "#fff",
+							borderRadius: "10px",
 						}}
 					>
 						{message}
