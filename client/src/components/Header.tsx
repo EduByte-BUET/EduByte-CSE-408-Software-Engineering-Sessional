@@ -64,6 +64,9 @@ function Header() {
 
 				<Navbar.Collapse id="basic-navbar-nav">
 					<Nav className="ms-auto">
+						<Nav.Link as={Link} to="/search" className="custom-nav-link">
+							Search
+						</Nav.Link>
 						<Nav.Link as={Link} to="/courses" className="custom-nav-link">
 							Courses
 						</Nav.Link>

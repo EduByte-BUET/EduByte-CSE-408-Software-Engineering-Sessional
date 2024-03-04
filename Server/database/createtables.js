@@ -16,10 +16,10 @@ const tables = {
 };
 
 const createUsersTable = async () => {
-  // Create the users table if it doesn't exist
-  // SERIAL - auto-incrementing integer
-  await pool.query(
-    `
+	// Create the users table if it doesn't exist
+	// SERIAL - auto-incrementing integer
+	await pool.query(
+		`
             CREATE TABLE IF NOT EXISTS users (
             user_id SERIAL PRIMARY KEY,
 			fullname VARCHAR(100) NOT NULL,
@@ -32,22 +32,22 @@ const createUsersTable = async () => {
 			interests VARCHAR(100)[] NOT NULL
             )
         `,
-    (err, res) => {
-      if (err) {
-        console.error(err);
-        return;
-      }
+		(err, res) => {
+			if (err) {
+				console.error(err);
+				return;
+			}
 
-      console.log("USERS Table creation successful");
-    }
-  );
+			console.log("USERS Table creation successful");
+		}
+	);
 };
 
 const createContentCreatorTable = async () => {
-  // Create the content_creator table if it doesn't exist
-  // SERIAL - auto-incrementing integer
-  await pool.query(
-    `
+	// Create the content_creator table if it doesn't exist
+	// SERIAL - auto-incrementing integer
+	await pool.query(
+		`
             CREATE TABLE IF NOT EXISTS content_creator (
             creator_id SERIAL PRIMARY KEY,
             fullname VARCHAR(100) NOT NULL,
@@ -56,22 +56,22 @@ const createContentCreatorTable = async () => {
             password VARCHAR(50) NOT NULL
             );
         `,
-    (err, res) => {
-      if (err) {
-        console.error(err);
-        return;
-      }
+		(err, res) => {
+			if (err) {
+				console.error(err);
+				return;
+			}
 
-      console.log("CONTENT_CREATOR Table creation successful");
-    }
-  );
+			console.log("CONTENT_CREATOR Table creation successful");
+		}
+	);
 };
 
 const createCourseTable = async () => {
-  // Create the courses table if it doesn't exist
-  // SERIAL - auto-incrementing integer
-  await pool.query(
-    `
+	// Create the courses table if it doesn't exist
+	// SERIAL - auto-incrementing integer
+	await pool.query(
+		`
 		CREATE TABLE IF NOT EXISTS courses (
 			course_id SERIAL PRIMARY KEY,
 			course_title TEXT NOT NULL,
@@ -91,22 +91,22 @@ const createCourseTable = async () => {
 			category VARCHAR(255)
 		);
 		`,
-    (err, res) => {
-      if (err) {
-        console.error(err);
-        return;
-      }
+		(err, res) => {
+			if (err) {
+				console.error(err);
+				return;
+			}
 
-      console.log("COURSES Table creation successful");
-    }
-  );
+			console.log("COURSES Table creation successful");
+		}
+	);
 };
 
 const createBlocksTable = async () => {
-  // Create the blocks table if it doesn't exist
-  // SERIAL - auto-incrementing integer
-  await pool.query(
-    `
+	// Create the blocks table if it doesn't exist
+	// SERIAL - auto-incrementing integer
+	await pool.query(
+		`
 		CREATE TABLE IF NOT EXISTS blocks (
 			block_id SERIAL PRIMARY KEY,
 			course_id INT REFERENCES courses(course_id),
@@ -118,22 +118,22 @@ const createBlocksTable = async () => {
 			updated_at TIMESTAMP WITHOUT TIME ZONE
 		);
 		`,
-    (err, res) => {
-      if (err) {
-        console.error(err);
-        return;
-      }
+		(err, res) => {
+			if (err) {
+				console.error(err);
+				return;
+			}
 
-      console.log("BLOCKS Table creation successful");
-    }
-  );
+			console.log("BLOCKS Table creation successful");
+		}
+	);
 };
 
 const createLectureTable = async () => {
-  // Create the lectures table if it doesn't exist
-  // SERIAL - auto-incrementing integer
-  await pool.query(
-    `
+	// Create the lectures table if it doesn't exist
+	// SERIAL - auto-incrementing integer
+	await pool.query(
+		`
 		CREATE TABLE IF NOT EXISTS lectures (
 			lecture_id SERIAL PRIMARY KEY,
 			block_id INT REFERENCES blocks(block_id),
@@ -145,22 +145,22 @@ const createLectureTable = async () => {
 			last_access TIMESTAM WITHOUT TIME ZONE
 		);
 		`,
-    (err, res) => {
-      if (err) {
-        console.error(err);
-        return;
-      }
+		(err, res) => {
+			if (err) {
+				console.error(err);
+				return;
+			}
 
-      console.log("LECTURES Table creation successful");
-    }
-  );
+			console.log("LECTURES Table creation successful");
+		}
+	);
 };
 
 const createLessonTable = async () => {
-  // Create the lessons table if it doesn't exist
-  // SERIAL - auto-incrementing integer
-  await pool.query(
-    `
+	// Create the lessons table if it doesn't exist
+	// SERIAL - auto-incrementing integer
+	await pool.query(
+		`
 		CREATE TABLE IF NOT EXISTS lessons (
 			lesson_id SERIAL PRIMARY KEY,
 			lecture_id INT REFERENCES lectures(lecture_id),
@@ -174,22 +174,22 @@ const createLessonTable = async () => {
 		);
 		
 		`,
-    (err, res) => {
-      if (err) {
-        console.error(err);
-        return;
-      }
+		(err, res) => {
+			if (err) {
+				console.error(err);
+				return;
+			}
 
-      console.log("LESSONS Table creation successful");
-    }
-  );
+			console.log("LESSONS Table creation successful");
+		}
+	);
 };
 
 const createPendingCoursesTable = async () => {
-  // Create the pending_courses table if it doesn't exist
-  // SERIAL - auto-incrementing integer
-  await pool.query(
-    `
+	// Create the pending_courses table if it doesn't exist
+	// SERIAL - auto-incrementing integer
+	await pool.query(
+		`
 		CREATE TABLE IF NOT EXISTS pending_courses (
 			pending_id SERIAL PRIMARY KEY,
 			creator_id INT,
@@ -207,22 +207,22 @@ const createPendingCoursesTable = async () => {
 			file_url TEXT
 		);
 		`,
-    (err, res) => {
-      if (err) {
-        console.error(err);
-        return;
-      }
+		(err, res) => {
+			if (err) {
+				console.error(err);
+				return;
+			}
 
-      console.log("PENDING_COURSES Table creation successful");
-    }
-  );
+			console.log("PENDING_COURSES Table creation successful");
+		}
+	);
 };
 
 const createEnrolledCoursesTable = async () => {
-  // Create the enrolled_courses table if it doesn't exist
-  // SERIAL - auto-incrementing integer
-  await pool.query(
-    `
+	// Create the enrolled_courses table if it doesn't exist
+	// SERIAL - auto-incrementing integer
+	await pool.query(
+		`
 		CREATE TABLE IF NOT EXISTS enrolled_courses (
 			user_id INT,
 			course_id INT REFERENCES courses(course_id) ON DELETE CASCADE,
@@ -235,22 +235,22 @@ const createEnrolledCoursesTable = async () => {
 		);
 		
 		`,
-    (err, res) => {
-      if (err) {
-        console.error(err);
-        return;
-      }
+		(err, res) => {
+			if (err) {
+				console.error(err);
+				return;
+			}
 
-      console.log("ENROLLED_COURSES Table creation successful");
-    }
-  );
+			console.log("ENROLLED_COURSES Table creation successful");
+		}
+	);
 };
 
 const createRecommendedCoursesTable = async () => {
-  // Create the recommended_courses table if it doesn't exist
-  // SERIAL - auto-incrementing integer
-  await pool.query(
-    `
+	// Create the recommended_courses table if it doesn't exist
+	// SERIAL - auto-incrementing integer
+	await pool.query(
+		`
 		CREATE TABLE IF NOT EXISTS recommended_courses (
 			user_id INT REFERENCES users(user_id),
 			course_id INT REFERENCES courses(course_id) ON DELETE CASCADE,
@@ -261,22 +261,22 @@ const createRecommendedCoursesTable = async () => {
 		);
 		
 		`,
-    (err, res) => {
-      if (err) {
-        console.error(err);
-        return;
-      }
+		(err, res) => {
+			if (err) {
+				console.error(err);
+				return;
+			}
 
-      console.log("RECOMMENDED_COURSES Table creation successful");
-    }
-  );
+			console.log("RECOMMENDED_COURSES Table creation successful");
+		}
+	);
 };
 
 const createQuizTable = async () => {
-  // Create the quizzes table if it doesn't exist
-  // SERIAL - auto-incrementing integer
-  await pool.query(
-    `
+	// Create the quizzes table if it doesn't exist
+	// SERIAL - auto-incrementing integer
+	await pool.query(
+		`
         CREATE TABLE IF NOT EXISTS quizzes (
             quiz_id SERIAL PRIMARY KEY,
             lecture_id INT REFERENCES lessons(lesson_id),
@@ -289,11 +289,11 @@ const createQuizTable = async () => {
         );
         
         `,
-    (err, res) => {
-      if (err) {
-        console.error(err);
-        return;
-      }
+		(err, res) => {
+			if (err) {
+				console.error(err);
+				return;
+			}
 
 			console.log("QUIZZES Table creation successful");
 		}
@@ -302,7 +302,7 @@ const createQuizTable = async () => {
 //quiz_questions
 const createQuestionTable = async () => {
 	await pool.query(
-	  `
+		`
 	  CREATE TABLE IF NOT EXISTS Question (
 		  question_id SERIAL PRIMARY KEY,
 		  question_type VARCHAR(100), -- Specify the type of question (e.g., multiple-choice, coding)
@@ -312,21 +312,21 @@ const createQuestionTable = async () => {
 		  -- Add other fields related to the question
 	  );
 	  `,
-	  (err, res) => {
-		if (err) {
-		  console.error(err);
-		  return;
+		(err, res) => {
+			if (err) {
+				console.error(err);
+				return;
+			}
+
+			console.log("Question Table creation successful");
 		}
-  
-		console.log("Question Table creation successful");
-	  }
 	);
-  };
+};
 
 //result_of the quiz
 const createResultTable = async () => {
 	await pool.query(
-	  `
+		`
 	  CREATE TABLE IF NOT EXISTS result (
 		  result_id SERIAL PRIMARY KEY,
 		  user_id INT REFERENCES users(user_id),
@@ -337,24 +337,22 @@ const createResultTable = async () => {
 		  comment TEXT
 	  );
 	  `,
-	  (err, res) => {
-		if (err) {
-		  console.error(err);
-		  return;
+		(err, res) => {
+			if (err) {
+				console.error(err);
+				return;
+			}
+
+			console.log("Result Table creation successful");
 		}
-  
-		console.log("Result Table creation successful");
-	  }
 	);
-  };
-  
-  
+};
 
 const createCourseProgressTable = async () => {
-  // Create the course_progress table if it doesn't exist
-  // SERIAL - auto-incrementing integer
-  await pool.query(
-    `
+	// Create the course_progress table if it doesn't exist
+	// SERIAL - auto-incrementing integer
+	await pool.query(
+		`
 		CREATE TABLE IF NOT EXISTS course_progress (
 			user_id INT REFERENCES users(user_id),
 			course_id INT REFERENCES courses(course_id) ON DELETE CASCADE,
@@ -368,22 +366,22 @@ const createCourseProgressTable = async () => {
 		);
 		
 		`,
-    (err, res) => {
-      if (err) {
-        console.error(err);
-        return;
-      }
+		(err, res) => {
+			if (err) {
+				console.error(err);
+				return;
+			}
 
-      console.log("COURSE_PROGRESS Table creation successful");
-    }
-  );
+			console.log("COURSE_PROGRESS Table creation successful");
+		}
+	);
 };
 
 const createCategogoriesTable = async () => {
-  // Create the categories table if it doesn't exist
-  // SERIAL - auto-incrementing integer
-  await pool.query(
-    `
+	// Create the categories table if it doesn't exist
+	// SERIAL - auto-incrementing integer
+	await pool.query(
+		`
 		CREATE TABLE IF NOT EXISTS categories (
 			category_id SERIAL PRIMARY KEY,
 			name VARCHAR(255) NOT NULL,
@@ -392,21 +390,21 @@ const createCategogoriesTable = async () => {
 		);
 		
 		`,
-    (err, res) => {
-      if (err) {
-        console.error(err);
-        return;
-      }
+		(err, res) => {
+			if (err) {
+				console.error(err);
+				return;
+			}
 
-      console.log("CATEGORIES Table creation successful");
-    }
-  );
+			console.log("CATEGORIES Table creation successful");
+		}
+	);
 };
 
 const createUserNotificationTable = async () => {
-  // Create the user_notification table if it doesn't exist
-  await pool.query(
-    `
+	// Create the user_notification table if it doesn't exist
+	await pool.query(
+		`
     CREATE TABLE IF NOT EXISTS user_notification (
       notification_id SERIAL PRIMARY KEY,
       user_id INT NOT NULL REFERENCES users(user_id),
@@ -417,20 +415,20 @@ const createUserNotificationTable = async () => {
       status VARCHAR(20) DEFAULT 'Unread'
     );
   `,
-    (err, res) => {
-      if (err) {
-        console.error(err);
-        return;
-      }
-      console.log("USER_NOTIFICATION Table creation successful");
-    }
-  );
+		(err, res) => {
+			if (err) {
+				console.error(err);
+				return;
+			}
+			console.log("USER_NOTIFICATION Table creation successful");
+		}
+	);
 };
 
 const createAdminNotificationTable = async () => {
-  // Create the admin_notification table if it doesn't exist
-  await pool.query(
-    `
+	// Create the admin_notification table if it doesn't exist
+	await pool.query(
+		`
     CREATE TABLE IF NOT EXISTS admin_notification (
       notification_id SERIAL PRIMARY KEY,
       user_id INT REFERENCES users(user_id),
@@ -442,20 +440,20 @@ const createAdminNotificationTable = async () => {
       status VARCHAR(20) DEFAULT 'Unread'
     );
   `,
-    (err, res) => {
-      if (err) {
-        console.error(err);
-        return;
-      }
-      console.log("ADMIN_NOTIFICATION Table creation successful");
-    }
-  );
+		(err, res) => {
+			if (err) {
+				console.error(err);
+				return;
+			}
+			console.log("ADMIN_NOTIFICATION Table creation successful");
+		}
+	);
 };
 
 const createCourseRequestTable = async () => {
-  // Create the course_request table if it doesn't exist
-  await pool.query(
-    `
+	// Create the course_request table if it doesn't exist
+	await pool.query(
+		`
     CREATE TABLE IF NOT EXISTS course_request (
       request_id SERIAL PRIMARY KEY,
       user_id INT NOT NULL REFERENCES users(user_id), 
@@ -466,20 +464,20 @@ const createCourseRequestTable = async () => {
       status VARCHAR(20) DEFAULT 'Pending' 
     );
     `,
-    (err, res) => {
-      if (err) {
-        console.error(err);
-        return;
-      }
-      console.log("COURSE_REQUEST Table creation successful");
-    }
-  );
+		(err, res) => {
+			if (err) {
+				console.error(err);
+				return;
+			}
+			console.log("COURSE_REQUEST Table creation successful");
+		}
+	);
 };
 
 const createPostsTable = async () => {
-  // Create the posts table if it doesn't exist
-  await pool.query(
-    `
+	// Create the posts table if it doesn't exist
+	await pool.query(
+		`
       CREATE TABLE IF NOT EXISTS posts (
         post_id SERIAL PRIMARY KEY,
         author_id SERIAL,  -- References the user or content creator who created the post
@@ -497,23 +495,21 @@ const createPostsTable = async () => {
         CONSTRAINT unique_post UNIQUE (author_id, title) -- Ensure that posts with the same author and title are not allowed
       )
     `,
-    (err, res) => {
-      if (err) {
-        console.error(err);
-        return;
-      }
+		(err, res) => {
+			if (err) {
+				console.error(err);
+				return;
+			}
 
-      console.log("POSTS Table creation successful");
-    }
-  );
+			console.log("POSTS Table creation successful");
+		}
+	);
 };
 
-
-
 const createRepliesTable = async () => {
-  // Create the replies table if it doesn't exist
-  await pool.query(
-    `
+	// Create the replies table if it doesn't exist
+	await pool.query(
+		`
       CREATE TABLE IF NOT EXISTS replies (
         reply_id SERIAL PRIMARY KEY,
         post_id SERIAL REFERENCES posts(post_id) ON DELETE CASCADE, -- Cascading delete for post
@@ -528,27 +524,26 @@ const createRepliesTable = async () => {
         CONSTRAINT check_parent_reply_id CHECK (parent_reply_id IS NULL OR parent_reply_id > 0) -- Check constraint to ensure parent_reply_id is NULL for the first reply
       )
     `,
-    (err, res) => {
-      if (err) {
-        console.error(err);
-        return;
-      }
+		(err, res) => {
+			if (err) {
+				console.error(err);
+				return;
+			}
 
-      console.log("REPLIES Table creation successful");
-    }
-  );
+			console.log("REPLIES Table creation successful");
+		}
+	);
 };
 
-
 const dropTable = async (table_name) => {
-  await pool.query(`DROP TABLE IF EXISTS ${table_name};`, (err, res) => {
-    if (err) {
-      console.error(err);
-      return;
-    }
+	await pool.query(`DROP TABLE IF EXISTS ${table_name};`, (err, res) => {
+		if (err) {
+			console.error(err);
+			return;
+		}
 
-    console.log(`${table_name} Table dropped successfully`);
-  });
+		console.log(`${table_name} Table dropped successfully`);
+	});
 };
 
 // Constraints
@@ -557,21 +552,18 @@ const addUniqueConstraint = async () => {
 		await pool.query(
 			`CREATE UNIQUE INDEX IF NOT EXISTS unique_pending_courses_index
        ON pending_courses (lesson_title);`
-
-
 		);
 		console.log("Unique constraint added successfully");
 	} catch (error) {
 		console.error("Error adding unique constraint:", error);
 		throw error;
 	}
-
 };
 
 const createFavoritesTable = async () => {
-  // Create the favorites table if it doesn't exist
-  await pool.query(
-    `
+	// Create the favorites table if it doesn't exist
+	await pool.query(
+		`
       CREATE TABLE IF NOT EXISTS favorites (
         id SERIAL PRIMARY KEY,
         user_id SERIAL REFERENCES users(user_id),
@@ -579,15 +571,15 @@ const createFavoritesTable = async () => {
         CONSTRAINT unique_user_course_pair UNIQUE (user_id, course_id)
       )
     `,
-    (err, res) => {
-      if (err) {
-        console.error(err);
-        return;
-      }
+		(err, res) => {
+			if (err) {
+				console.error(err);
+				return;
+			}
 
-      console.log("FAVORITES Table creation successful");
-    }
-  );
+			console.log("FAVORITES Table creation successful");
+		}
+	);
 };
 
 /*
@@ -595,7 +587,7 @@ ALTER TABLE result ADD CONSTRAINT unique_user_question UNIQUE (user_id, question
 */
 
 const initDB = async (newPool) => {
-  pool = newPool;
+	pool = newPool;
 
 	// await dropTable(tables.courses);
 	// await createUsersTable();
@@ -613,18 +605,16 @@ const initDB = async (newPool) => {
 	// await createAdminNotificationTable();
 	// await createCourseRequestTable();
 	// await createPendingCoursesTable();
-	//  await createQuestionTable();
+	// await createQuestionTable();
 	// await createResultTable();
-  // await createPostsTable();
-  // await createRepliesTable();
-
+	// await createPostsTable();
+	// await createRepliesTable();
 
 	// Constraints
 	// await addUniqueConstraint();
-  //createFavoritesTable();
-
+	//createFavoritesTable();
 };
 
 module.exports = {
-  initDB,
+	initDB,
 };
