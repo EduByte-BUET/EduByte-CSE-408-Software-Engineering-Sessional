@@ -294,42 +294,60 @@ FROM quizzes;
 
 
 
-const getRecommended_Courses = async (user_id) => {
-	try {
-		const res = await pool.query(
-			`SELECT c.*
-       FROM courses c
-       WHERE c.category = ANY(
-         SELECT unnest(interests)
-         FROM users
-         WHERE user_id = $1
-       )
-       ORDER BY c.total_enrolled DESC
-       LIMIT 2`,
-      [user_id]
-    );
-    if (res.rows[0]) {
-      return res.rows.map((row) => {
-        // convert the row object to a popular course object
-        const course = {
-          course_id: row.course_id,
-          description: row.description,
-          course_title: row.course_title,
-          thumbnail_url: row.thumbnail_url,
-          difficulty_level: row.difficulty_level,
-          category: row.category,
-          total_enrolled: row.total_enrolled,
-          total_lessons: row.total_lessons,
-        };
-        return course;
-      });
-    }
-    return null;
-  } catch (err) {
-    console.log(err);
-  }
-
-};
+const getRecommended_Courses = async (user_id) => { 
+	try { 
+	  // const res = await pool.query( 
+	  //   `SELECT c.* 
+	  //    FROM courses c 
+	  //    WHERE c.category = ANY( 
+	  //      SELECT unnest(interests) 
+	  //      FROM users 
+	  //      WHERE user_id = $1 
+	  //    ) 
+	  //    ORDER BY c.total_enrolled DESC 
+	  //    LIMIT 2`, 
+	  //   [user_id] 
+	  // ); 
+   
+	  const res = await pool.query( 
+		`SELECT c.* 
+		 FROM courses c 
+		 WHERE c.category = ANY( 
+		   SELECT unnest(interests) 
+		   FROM users 
+		   WHERE user_id = $1 
+		 ) 
+		 AND NOT EXISTS ( 
+		   SELECT 1 
+		   FROM enrolled_courses ec 
+		   WHERE ec.user_id = $1 
+		   AND ec.course_id = c.course_id 
+		 ) 
+		 ORDER BY c.total_enrolled DESC 
+		 LIMIT 2`, 
+		[user_id] 
+	  ); 
+	  if (res.rows[0]) { 
+		return res.rows.map((row) => { 
+		  // convert the row object to a popular course object 
+		  const course = { 
+			course_id: row.course_id, 
+			description: row.description, 
+			course_title: row.course_title, 
+			thumbnail_url: row.thumbnail_url, 
+			difficulty_level: row.difficulty_level, 
+			category: row.category, 
+			total_enrolled: row.total_enrolled, 
+			total_lessons: row.total_lessons, 
+		  }; 
+		  return course; 
+		}); 
+	  } 
+	  return null; 
+	} catch (err) { 
+	  console.log(err); 
+	} 
+  };
 
 const getCourse = async (course_id) => {
 	try {
