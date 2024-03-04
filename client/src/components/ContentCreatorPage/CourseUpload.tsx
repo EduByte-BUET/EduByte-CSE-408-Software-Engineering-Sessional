@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import "../../css/Button.css";
 import api from "../../api/GeneralAPI";
 import uploadFile from "./UploadToFirebase";
@@ -21,6 +22,7 @@ interface Course {
 }
 
 export default function CourseUpload() {
+	const navigate = useNavigate();
 	const [courses, setCourses] = useState<Course[]>([]);
 	const [blocks, setBlocks] = useState<Block[]>([]);
 	const [lectures, setLectures] = useState<Lecture[]>([]);
@@ -40,6 +42,7 @@ export default function CourseUpload() {
 	const [lessonTitle, setLessonTitle] = useState("");
 	const [lessonDescription, setLessonDescription] = useState("");
 	const [file, setFile] = useState<File | null>(null);
+	const [filetype, setFiletype] = useState("");
 
 	const getCourseTitle = (selCourseid: any) => {
 		const course = courses.find(
@@ -105,6 +108,16 @@ export default function CourseUpload() {
 	// ------------------------------------------------
 
 	const handleSubmit = async (event: any) => {
+		if (
+			selectedCourse === "" ||
+			selectedBlock === "" ||
+			selectedLecture === "" ||
+			file === null
+		) {
+			alert("Please select a course, block, lecture and upload a file.");
+			return;
+		}
+
 		event.preventDefault();
 		// upload the file to firebase
 		const file_url = await uploadFile(
@@ -117,27 +130,28 @@ export default function CourseUpload() {
 		if (file_url === null) return;
 
 		// send the file_url to the server
-		// ------------------------------------------- creator id change korte hobe --------------------------
+		// ------------------------------------------- creator id change korte hobe (done) --------------------------
 		const data = {
-      creator_id: 1,
-      course_id: selectedCourse,
-      course_title: courseTitle,
-      course_description: courseDescription,
-      block_id: selectedBlock,
-      block_title: blockTitle,
-      block_description: blockDescription,
-      lecture_id: selectedLecture,
-      lecture_title: lectureTitle,
-      lecture_description: lectureDescription,
-      lesson_title: lessonTitle,
-      lesson_description: lessonDescription,
-      file_url: file_url,
-    };
+			course_id: selectedCourse,
+			course_title: courseTitle,
+			course_description: courseDescription,
+			block_id: selectedBlock,
+			block_title: blockTitle,
+			block_description: blockDescription,
+			lecture_id: selectedLecture,
+			lecture_title: lectureTitle,
+			lecture_description: lectureDescription,
+			lesson_title: lessonTitle,
+			lesson_description: lessonDescription,
+			file_url: file_url,
+			file_type: filetype,
+		};
 		console.log(data);
 
 		try {
 			const result = await api.post("/content-create/upload/add-lesson", data);
 			alert(result.data.message);
+			navigate("/home");
 			// result.data.message => title already is in use or successfully added the lesson to the course
 		} catch (error) {
 			console.error(error);
@@ -371,7 +385,7 @@ export default function CourseUpload() {
 										Select a Lecture
 									</option>
 									{lectures.map((lecture, index) => (
-										<option key={index} value={index}>
+										<option key={index} value={lecture.lecture_id}>
 											{lecture.title}
 										</option>
 									))}
@@ -479,6 +493,28 @@ export default function CourseUpload() {
 					</div>
 
 					<div className="row">
+						<div className="col-md-4">
+							<label htmlFor="fileTyleSelect" className="form-label">
+								Set File Type
+							</label>
+						</div>
+						<div className="col-md-5 mb-5">
+							<select
+								id="filetypeselect"
+								className="form-control"
+								value={filetype}
+								onChange={(e: any) => {
+									setFiletype(e.target.value);
+								}}
+							>
+								<option value="" disabled hidden>
+									Select file type
+								</option>
+								<option value="pdf">PDF</option>
+								<option value="video">Video</option>
+							</select>
+						</div>
+
 						<p style={{ color: "crimson", textAlign: "left" }}>
 							<i className="fa-solid fa-info-circle"></i> You may select a video
 							or a pdf file per lesson. <br />

@@ -1,374 +1,184 @@
 const express = require("express");
+const userAuth = require("./RequireAuth");
+const db = require("../database/db");
+
 const router = express.Router();
 const posts_router = express.Router();
-const post_selected_router = express.Router();
-const myposts_router = express.Router();
 const post_update_router = express.Router();
+const post_save_router = express.Router();
 const post_create_router = express.Router();
 const show_posts_router = express.Router();
-const post_filter = express.Router();
 const reply_router = express.Router();
 const postType_router = express.Router();
 const course_router = express.Router();
 const tag_router = express.Router();
-const db = require("../database/db");
+
 router.use("/", posts_router);
-router.use("/post", post_selected_router);
-router.use("/myposts", myposts_router);
+post_update_router.use(userAuth);
 router.use("/post/update", post_update_router);
+post_save_router.use(userAuth);
+router.use("/post/save", post_save_router);
+post_create_router.use(userAuth);
 router.use("/post/create", post_create_router);
 router.use("/post/show", show_posts_router);
-router.use("/filter", post_filter);
 router.use("/reply", reply_router);
 router.use("/postTypes", postType_router);
 router.use("/courses", course_router);
 router.use("/tags", tag_router);
 
-
-posts_router
-    .route("/")
-    .get(async (req, res) => {
-        console.log("/discussion GET");
-        const postsData = await db.fetchPostsData();
-        if (postsData.length > 0) {
-            res.status(200).json(postsData);
-        } else {
-            res.status(404).send('No posts found');
-        }
-    });
-    
-reply_router.route("/").post(async (req, res) => {
-    console.log("/discussion/reply POST");
-    const {post_id, summary, author_id, author_type, author_name, parent_reply_id} = req.body;
-    const reply_id = await db.addReply(post_id, summary, author_id, author_type, author_name, parent_reply_id);
-    if (reply_id != null) res.status(200);
-    else res.status(404);
-    res.send(reply_id.toString());
+posts_router.route("/").get(async (req, res) => {
+	console.log("/discussion GET");
+	const postsData = await db.fetchPostsData();
+	if (postsData.length > 0) {
+		res.status(200).json(postsData);
+	} else {
+		res.status(404).send("No posts found");
+	}
 });
 
+reply_router.route("/").post(async (req, res) => {
+	console.log("/discussion/reply POST");
+	const { post_id, summary, parent_reply_id } = req.body;
+	// author_id, author_type, author_name
+	const author_id = req.session.user_id;
+	const author_name = req.session.username;
+	const author_type = await db.getUserType(author_id);
+
+	const reply_id = await db.addReply(
+		post_id,
+		summary,
+		author_id,
+		author_type,
+		author_name,
+		parent_reply_id
+	);
+	if (reply_id != null) res.status(200);
+	else res.status(404);
+	res.send(reply_id.toString());
+});
 
 // Route for filtering by post types
-postType_router
-  .route("/")
-  .get(async (req, res) => {
-    console.log("/discussion/postTypes GET");
-    const types = req.query.types.split(",");
-    const postsData = await db.fetchPostsDataByTypes(types);
-    if (postsData.length > 0) {
-      res.status(200).json(postsData);
-    } else {
-      res.status(404).send('No posts found for the selected types');
-    }
-  });
-
-// Route for filtering by a single course
-course_router
-  .route("/")
-  .get(async (req, res) => {
-    console.log("/discussion/courses GET");
-    const course = req.query.course;
-    const postsData = await db.fetchPostsDataByCourse(course);
-    if (postsData.length > 0) {
-      res.status(200).json(postsData);
-    } else {
-      res.status(404).send('No posts found for the selected course');
-    }
-  });
-
-// Route for filtering by tags
-tag_router
-  .route("/")
-  .get(async (req, res) => {
-    console.log("/discussion/tags GET");
-    const tags = req.query.tags.split(",");
-    const postsData = await db.fetchPostsDataByTags(tags);
-    if (postsData.length > 0) {
-      res.status(200).json(postsData);
-    } else {
-      res.status(404).send('No posts found for the selected tags');
-    }
-  });
-
-
-post_selected_router
-    .route("/")
-    .get(async (req, res) => {
-        console.log("/discussion/post GET");
-        postid = req.query.postid;
-        console.log('Postid: ' + postid);
-
-        // A sample json response is given below, fetch data from database
-        post = 
-        {
-            "post_id": 1,
-            "post_title": "Introduction to Programming",
-            "post_content": "Learn the basics of programming.",
-            "user_id": 123,
-            "user_name": "JohnDoe",
-            "post_time": "2023-08-01T12:00:00Z",
-            "total_upvote": 25,
-            "total_downvote": 5,
-            "total_reply": 10,
-            "post_tag": "programming",
-            "replies": [
-            {
-                "reply_id": 101,
-                "user_id": 456,
-                "post_id": 1,
-                "reply_content": "This is a great post!",
-                "reply_time": "2023-08-01T12:15:00Z",
-                "parent_reply_id": 0
-            },
-            {
-                "reply_id": 102,
-                "user_id": 789,
-                "post_id": 1,
-                "reply_content": "I have a question...",
-                "reply_time": "2023-08-01T12:30:00Z",
-                "parent_reply_id": 101
-            },
-            // Additional replies...
-            ]
-        }
-          
-        if (Object.keys(post).length != 0) res.status(200);
-        else res.status(404);
-        res.json(post);
-    });
-
-myposts_router
-    .route("/")
-    .get(async (req, res) => {
-        console.log("/discussion/myposts GET");
-        userid = req.query.userid;
-        console.log('Userid: ' + userid);
-
-        // A sample json response is given below, fetch data from database using userid
-        myposts =
-        {
-            "user_posts": [
-              {
-                "post_id": 1,
-                "post_title": "Introduction to Programming",
-                "post_content": "Learn the basics of programming.",
-                "user_id": 123,
-                "user_name": "JohnDoe",
-                "post_time": "2023-08-01T12:00:00Z",
-                "total_upvote": 25,
-                "total_downvote": 5,
-                "total_reply": 10,
-                "post_tag": "programming",
-                "Replies": []
-              },
-              {
-                "post_id": 2,
-                "post_title": "Web Development Tips",
-                "post_content": "Explore useful tips for web development.",
-                "user_id": 123,
-                "user_name": "JohnDoe",
-                "post_time": "2023-08-02T09:30:00Z",
-                "total_upvote": 15,
-                "total_downvote": 2,
-                "total_reply": 8,
-                "post_tag": "webdev",
-                 "Replies": []
-              },
-            ]
-          }
-          
-          
-        if (Object.keys(myposts).length != 0) res.status(200);
-        else res.status(404);
-        res.json(myposts);
-    })
-    .put(async (req, res) => {
-        console.log("/discussion/myposts PUT");
-        postid = req.body.postid;
-        command = req.body.command;
-        console.log('Postid: ' + postid);
-
-        // A sample json response is given below, fetch data from database
-        // Update post_content in database using postid
-
-        res_string = '';
-        res_db = 'success';
-        if (command == "update") {
-          content = req.body.content;
-          // check the userid and postid before deletion
-          // if the req.body.userid == post.user_id then delete the post
-            if (res_db === 'success') res.status(200);
-            else res.status(404);
-            res_string = 'mypost updated';
-        }
-        else if (command == "delete") { 
-          // check the userid and postid before deletion
-          // if the req.body.userid == post.user_id then delete the post
-            if (res_db === 'success') res.status(200);
-            else res.status(404);
-            res_string = 'Mypost deleted';
-        }
-
-        else res.status(404);
-
-        res.send(res_string);
-    });
-
-post_update_router
-    .route("/")
-    .put(async (req, res) => {
-        console.log("/discussion/post/update POST");
-        postid = req.body.postid;
-        command = req.body.command;
-        post_content = req.body.post_content;
-        console.log('Postid: ' + postid);
-
-        // A sample json response is given below, fetch data from database
-        // Update post_content in database using postid
-
-        res_string = '';
-        res_db = 'success';
-        if (command == "upvote") {
-            if (res_db === 'success') res.status(200);
-            else res.status(404);
-            res_string = 'post upvoted';
-        }
-        else if (command == "downvote") {
-            if (res_db === 'success') res.status(200);
-            else res.status(404);
-            res_string = 'post downvoted';
-        }
-        else if (command == "rm_upvote") {
-            if (res_db === 'success') res.status(200);
-            else res.status(404);
-            res_string = 'post upvote removed';
-        }
-        else if (command == "rm_downvote") {
-            if (res_db === 'success') res.status(200);
-            else res.status(404);
-            res_string = 'post downvote removed';
-        }
-        else if (command == "comment") {
-            content = req.body.content;
-            // Add comment to database using postid, content
-            if (res_db === 'success') res.status(200);
-            else res.status(404);
-            res_string = 'comment added';
-        }
-        else if (command == "delete") {
-          // check the userid and postid before deletion
-          // if the req.body.userid == post.user_id then delete the post
-            if (res_db === 'success') res.status(200);
-            else res.status(404);
-            res_string = 'post deleted';
-        }
-        else res.status(404);
-
-        res.send(res_string);
-    });
-
-post_create_router
-    .route("/")
-    .post(async (req, res) => {
-        console.log("/discussion/post/create POST");
-
-        // author_id, author_type, course, tags, title, summary, post_type
-        // const postData = {
-        //   authorType,
-        //   course,
-        //   tags: tags.split(','), // Assuming tags are entered as a comma-separated string
-        //   postType,
-        //   title,
-        //   summary,
-        // };
-        const {author_type, course, tags, title, summary, post_type} = req.body;
-        let author_id = 1;
-        // if(author_type === "user"){
-        //   const user = await db.getUser(req.session.username);
-	      //   author_id = user.user_id;
-        // }
-        // else{
-        //   const creator = await db.getContentCreator(req.session.username);
-        //   author_id = creator.creator_id;
-        // }
-        const trimmedTags = tags.map(tag => tag.trim());
-        const author_name = req.session.username;
-        const post_id = await db.addUserPost(author_id, author_type, author_name, course, trimmedTags, title, summary, post_type);
-
-        // A sample json response is given below, fetch data from database
-        // Create post in database using post_title, post_content, user_id, user_name, post_tag
-        res_db = 'success';
-        if (res_db === 'success') res.status(200);
-        else res.status(404);
-
-        res.send(post_id.toString());
-    });
-
-show_posts_router.get("/", async (req, res) => {
-    console.log("/discussion/post/show GET");
-    const courses = await db.getAllCourses();
-    const tags = await db.getAllTags();
-    if (courses != null && tags != null) res.status(200);
-    else res.status(404);
-    res.status(200).json({courses, tags});
+postType_router.route("/").get(async (req, res) => {
+	console.log("/discussion/postTypes GET");
+	const types = req.query.types.split(",");
+	const postsData = await db.fetchPostsDataByTypes(types);
+	if (postsData.length > 0) {
+		res.status(200).json(postsData);
+	} else {
+		res.status(404).send("No posts found for the selected types");
+	}
 });
 
-post_filter
-    .route("/")
-    .post(async (req, res) => {
-        console.log("/discussion/filter POST");
-        filters = req.body;
-        console.log(filters);
+// Route for filtering by a single course
+course_router.route("/").get(async (req, res) => {
+	console.log("/discussion/courses GET");
+	const course = req.query.course;
+	const postsData = await db.fetchPostsDataByCourse(course);
+	if (postsData.length > 0) {
+		res.status(200).json(postsData);
+	} else {
+		res.status(404).send("No posts found for the selected course");
+	}
+});
 
-        // Get a list of posts filtered - using the filters (json)
-        // A sample json response is given below, fetch data from database
-        filtered_posts = 
-        {
-            "posts": [
-              {
-                "post_id": 1,
-                "post_title": "Introduction to Programming",
-                "post_content": "Learn the basics of programming.",
-                "user_id": 123,
-                "user_name": "JohnDoe",
-                "post_time": "2023-08-01T12:00:00Z",
-                "total_upvote": 25,
-                "total_downvote": 5,
-                "total_reply": 10,
-                "post_tag": "programming",
-                "replies": []
-              },
-              {
-                "post_id": 2,
-                "post_title": "Web Development Tips",
-                "post_content": "Explore useful tips for web development.",
-                "user_id": 789,
-                "user_name": "JaneSmith",
-                "post_time": "2023-08-02T09:30:00Z",
-                "total_upvote": 15,
-                "total_downvote": 2,
-                "total_reply": 8,
-                "post_tag": "webdev",
-                "replies": []
-              },
-              {
-                "post_id": 3,
-                "post_title": "Understanding Data Structures",
-                "post_content": "Dive into the world of data structures.",
-                "user_id": 456,
-                "user_name": "AliceJohnson",
-                "post_time": "2023-08-03T14:20:00Z",
-                "total_upvote": 30,
-                "total_downvote": 3,
-                "total_reply": 12,
-                "post_tag": "datastructures",
-                "replies": []
-              }
-            ]
-          }
-          
-        if (Object.keys(filtered_posts).length != 0) res.status(200);
-        else res.status(404);
-        res.json(filtered_posts);
-    });
+// Route for filtering by tags
+tag_router.route("/").get(async (req, res) => {
+	console.log("/discussion/tags GET");
+	const tags = req.query.tags.split(",");
+	const postsData = await db.fetchPostsDataByTags(tags);
+	if (postsData.length > 0) {
+		res.status(200).json(postsData);
+	} else {
+		res.status(404).send("No posts found for the selected tags");
+	}
+});
+
+post_update_router.route("/").put(async (req, res) => {
+	console.log("/discussion/post/update PUT");
+
+	postid = req.body.post_id;
+	command = req.body.command;
+
+	res_string = "";
+	let upvotes = 0;
+	let downvotes = 0;
+	if (command == "upvote") {
+		try {
+			await db.upvotePost(postid, req.session.user_id);
+			const count = await db.getUpDownVotes(postid);
+			upvotes = count.upvotes;
+			downvotes = count.downvotes;
+			res_string = "done";
+		} catch (e) {
+			console.log(e);
+		}
+	} else if (command == "downvote") {
+		try {
+			await db.downvotePost(postid, req.session.user_id);
+			const count = await db.getUpDownVotes(postid);
+			upvotes = count.upvotes;
+			downvotes = count.downvotes;
+			res_string = "done";
+		} catch (e) {
+			console.log(e);
+		}
+	} else {
+		res_string = "done";
+	}
+
+	const upDownCount = { upvotes, downvotes };
+
+	if (res_string === "done") res.status(200).json(upDownCount);
+	else res.status(404).send();
+});
+
+post_save_router.route("/").put(async (req, res) => {
+	console.log("/discussion/post/save POST");
+
+	const post_id = req.body.post_id;
+
+	const saved = await db.savePost(post_id, req.session.user_id);
+
+	if (saved === "success") res.status(200).send("Post Saved Successfully");
+	else if (saved === "duplicate") res.status(409).send("Post already saved");
+	else res.status(404).send();
+});
+
+post_create_router.route("/").post(async (req, res) => {
+	console.log("/discussion/post/create POST");
+
+	const { author_type, course, tags, title, summary, post_type } = req.body;
+	let author_id = req.session.user_id;
+
+	const trimmedTags = tags.map((tag) => tag.trim());
+	const author_name = req.session.username;
+	const post_id = await db.addUserPost(
+		author_id,
+		author_type,
+		author_name,
+		course,
+		trimmedTags,
+		title,
+		summary,
+		post_type
+	);
+
+	// A sample json response is given below, fetch data from database
+	// Create post in database using post_title, post_content, user_id, user_name, post_tag
+	res_db = "success";
+	if (res_db === "success") res.status(200);
+	else res.status(404);
+
+	res.send(post_id.toString());
+});
+
+show_posts_router.get("/", async (req, res) => {
+	console.log("/discussion/post/show GET");
+	const courses = await db.getAllCourses();
+	const tags = await db.getAllTags();
+	if (courses != null && tags != null) res.status(200);
+	else res.status(404);
+	res.status(200).json({ courses, tags });
+});
 
 module.exports = router;

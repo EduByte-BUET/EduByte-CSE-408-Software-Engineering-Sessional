@@ -71,8 +71,10 @@ add_lesson_router.route("/").post(async (req, res) => {
 		title: courseToBeUploaded.lesson_title,
 		description: courseToBeUploaded.lesson_description,
 		file_url: courseToBeUploaded.file_url,
-		creator_id: courseToBeUploaded.creator_id,
+		file_type: courseToBeUploaded.file_type,
+		creator_id: req.session.user_id,
 	};
+	console.log(lecture);
 
 	const response = await db.addLessonToPendingCourses(course, block, lecture, lesson);
 

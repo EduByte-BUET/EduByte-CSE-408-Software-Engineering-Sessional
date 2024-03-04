@@ -21,6 +21,11 @@ const SearchResultCard = (props: any) => {
 					{courses.length !== 0 &&
 						courses.map((course) => (
 							<div className="card card-dash mb-3 shadow-sm" key={course.id}>
+                                <div className="row">
+                                    <div className="col-md-10">
+                                        
+                                    </div>
+                                </div>
 								<img
 									src={course.thumbnail_url}
 									className="card-img-top"

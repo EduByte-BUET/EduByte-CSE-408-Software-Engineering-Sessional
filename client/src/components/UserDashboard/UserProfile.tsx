@@ -9,7 +9,6 @@ const UserProfile = () => {
 	const currentUser = React.useContext(UserContext);
 
 	// Getting the current user from the context
-	const { setCurrentUser } = React.useContext(UserContext);
 	const navigate = useNavigate();
 
 	const handleLogout = async () => {
@@ -19,7 +18,6 @@ const UserProfile = () => {
 			currentUser.setCurrentUser(null);
 			window.localStorage.removeItem("currentUser");
 			navigate("/home");
-			setCurrentUser(null);
 		} catch (err) {
 			console.error(err);
 		}
@@ -37,13 +35,17 @@ const UserProfile = () => {
 		navigate("/user/dashboard/notifications");
 	};
 
+	const handleMyPosts = () => {
+		navigate("/user/dashboard/myposts");
+	};
+
 	const handleSavedPosts = () => {
 		navigate("/user/dashboard/savedposts");
 	};
 
 	return (
 		<div className="col-md-4 col-lg-3 bg-light d-flex flex-column sidebars">
-			<div className="text-center py-4">
+			<div className="text-center pt-3">
 				<img src={newimage} alt="User" className="img-thumbnail" />
 				<h3>{currentUser.currentUser}</h3>
 			</div>
@@ -78,6 +80,13 @@ const UserProfile = () => {
 					onClick={handleSavedPosts}
 				>
 					Saved Posts
+				</Link>
+				<Link
+					to="/user/dashboard/myposts"
+					className="nav-link dash-navlink"
+					onClick={handleMyPosts}
+				>
+					My Posts
 				</Link>
 			</nav>
 			<button className="btn blue-button m-3" onClick={() => navigate("/home")}>

@@ -687,7 +687,7 @@ const addLesson = async (course, block, lecture, lesson) => {
 		await pool.query("BEGIN");
 
 		let courseId = course.course_id;
-		if (!courseId) {
+		if (courseId == null) {
 			const courseInsertResult = await pool.query(
 				"INSERT INTO courses (course_title, description) VALUES ($1, $2) RETURNING course_id",
 				[course.course_title, course.description]
@@ -696,7 +696,7 @@ const addLesson = async (course, block, lecture, lesson) => {
 		}
 
 		let blockId = block.block_id;
-		if (!blockId) {
+		if (blockId == null) {
 			const blockInsertResult = await pool.query(
 				"INSERT INTO blocks (course_id, title, description) VALUES ($1, $2, $3) RETURNING block_id",
 				[courseId, block.title, block.description]
@@ -705,7 +705,7 @@ const addLesson = async (course, block, lecture, lesson) => {
 		}
 
 		let lectureId = lecture.lecture_id;
-		if (!lectureId) {
+		if (lectureId == null) {
 			const lectureInsertResult = await pool.query(
 				"INSERT INTO lectures (block_id, title, description) VALUES ($1, $2, $3) RETURNING lecture_id",
 				[blockId, lecture.title, lecture.description]
@@ -714,13 +714,14 @@ const addLesson = async (course, block, lecture, lesson) => {
 		}
 
 		const lessonInsertResult = await pool.query(
-			"INSERT INTO lessons (lecture_id, creator_id, title, description, created_at, updated_at, file_url) VALUES ($1, $2, $3, $4, NOW(), NOW(), $5) RETURNING lesson_id",
+			"INSERT INTO lessons (lecture_id, creator_id, title, description, created_at, updated_at, file_url, lesson_type) VALUES ($1, $2, $3, $4, NOW(), NOW(), $5, $6) RETURNING lesson_id",
 			[
 				lectureId,
 				lesson.creator_id,
 				lesson.title,
 				lesson.description,
 				lesson.file_url,
+				lesson.file_type,
 			]
 		);
 
@@ -751,6 +752,7 @@ const addLessonToPendingCourses = async (course, block, lecture, lesson) => {
 			lesson_title,
 			lesson_description,
 			file_url,
+			file_type,
 			creator_id,
 		] = [
 			course.course_id,
@@ -765,11 +767,12 @@ const addLessonToPendingCourses = async (course, block, lecture, lesson) => {
 			lesson.title,
 			lesson.description,
 			lesson.file_url,
+			lesson.file_type,
 			lesson.creator_id,
 		];
 
 		await pool.query(
-			"INSERT INTO pending_courses (creator_id, course_id, course_title, course_description, block_id, block_title, block_description, lecture_id, lecture_title, lecture_description, lesson_title, lesson_description, file_url) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)",
+			"INSERT INTO pending_courses (creator_id, course_id, course_title, course_description, block_id, block_title, block_description, lecture_id, lecture_title, lecture_description, lesson_title, lesson_description, file_url, file_type) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14)",
 			[
 				creator_id || null,
 				course_id || null,
@@ -784,6 +787,7 @@ const addLessonToPendingCourses = async (course, block, lecture, lesson) => {
 				lesson_title || null,
 				lesson_description || null,
 				file_url || null,
+				file_type || null,
 			]
 		);
 
@@ -806,28 +810,29 @@ const approveLesson = async (pending_id) => {
 		// Organize the fetched data into objects and add lessons to the respective tables
 		for (const row of lessonData.rows) {
 			const course = {
-				course_id: row.course_id || "",
-				course_title: row.course_title || "",
-				description: row.course_description || "",
+				course_id: row.course_id || null,
+				course_title: row.course_title || null,
+				description: row.course_description || null,
 			};
 
 			const block = {
-				block_id: row.block_id || "",
-				title: row.block_title || "",
-				description: row.block_description || "",
+				block_id: row.block_id || null,
+				title: row.block_title || null,
+				description: row.block_description || null,
 			};
 
 			const lecture = {
-				lecture_id: row.lecture_id || "",
-				title: row.lecture_title || "",
-				description: row.lecture_description || "",
+				lecture_id: row.lecture_id || null,
+				title: row.lecture_title || null,
+				description: row.lecture_description || null,
 			};
 
 			const lesson = {
-				title: row.lesson_title || "",
-				description: row.lesson_description || "",
-				file_url: row.file_url || "",
-				creator_id: row.creator_id || "",
+				title: row.lesson_title || null,
+				description: row.lesson_description || null,
+				file_url: row.file_url || null,
+				file_type: row.file_type || null,
+				creator_id: row.creator_id || null,
 			};
 
 			// Add the lesson to the respective tables using addLesson function
@@ -1351,49 +1356,6 @@ const addReply = async (
 		throw error;
 	}
 };
-
-const insertFavorite = async (user_id, course_id) => {
-	try {
-		await pool.query("BEGIN");
-
-		const queryText = `
-		INSERT INTO favorites (user_id, course_id) 
-		VALUES ($1, $2) 
-		RETURNING id`;
-
-		const queryValues = [user_id, course_id];
-		const result = await pool.query(queryText, queryValues);
-
-		const favorite_id = result.rows[0].id;
-
-		await pool.query("COMMIT");
-		return favorite_id;
-	} catch (error) {
-		await pool.query("ROLLBACK");
-		console.error("Error adding favorite:", error);
-		throw error;
-	}
-};
-const getFavouriteCourses = async (user_id) => {
-	try {
-		const res = await pool.query(
-			`
-		SELECT c.course_id, c.course_title, c.description
-		FROM courses c
-		JOIN favorites f ON c.course_id = f.course_id AND f.user_id = $1
-		WHERE f.user_id IS NOT NULL
-		LIMIT 5
-		`,
-			[user_id]
-		);
-
-		return res.rows;
-	} catch (err) {
-		console.error(err);
-		// Handle the error appropriately, e.g., throw an error or return a default value
-		throw err;
-	}
-};
 const fetchPostsDataByTypes = async (types) => {
 	try {
 		const postsQueryResult = await pool.query(
@@ -1675,13 +1637,342 @@ const searchCourses = async (searchQuery) => {
 			["%" + searchQuery + "%"]
 		);
 		return res.rows;
-	}
-	catch (err) {
+	} catch (err) {
 		console.error(err);
 		// Handle the error appropriately, e.g., throw an error or return a default value
 		return null;
 	}
-}
+};
+
+const getUserType = async (user_id) => {
+	try {
+		const res = await pool.query(
+			`
+		SELECT access_level FROM users WHERE user_id = $1
+		`,
+			[user_id]
+		);
+
+		const userType = res.rows[0].access_level;
+		if (userType === "user") return "user";
+		else if (userType === "content_creator") return "content_creator";
+		else if (userType === "admin") return "admin";
+
+		return null;
+	} catch (err) {
+		console.error(err);
+
+		return null;
+	}
+};
+
+const upvotePost = async (post_id, user_id) => {
+	// check in the post_reaction table (user_id, post_id, reaction_type) to check whether the user has already upvoted or downvoted the post
+	// if the the upvoted then don't do anything
+	// if the user has downvoted then update the reaction_type to upvote and downvotes to downvotes - 1, upvotes to upvotes + 1
+	try {
+		const res = await pool.query(
+			`
+		SELECT reaction_type FROM post_reaction WHERE user_id = $1 AND post_id = $2
+		`,
+			[user_id, post_id]
+		);
+
+		if (res.rows.length === 0) {
+			// if the user has not reacted to the post yet
+			await pool.query(
+				`
+			INSERT INTO post_reaction (user_id, post_id, reaction_type)
+			VALUES ($1, $2, $3)
+			`,
+				[user_id, post_id, "upvote"]
+			);
+
+			await pool.query(
+				`
+			UPDATE posts
+			SET upvotes = upvotes + 1
+			WHERE post_id = $1
+			`,
+				[post_id]
+			);
+		} else {
+			// if the user has already reacted to the post
+			if (res.rows[0].reaction_type === "downvote") {
+				await pool.query(
+					`
+				UPDATE post_reaction
+				SET reaction_type = $1
+				WHERE user_id = $2 AND post_id = $3
+				`,
+					["upvote", user_id, post_id]
+				);
+				await pool.query(
+					`
+				UPDATE posts
+				SET upvotes = upvotes + 1, downvotes = downvotes - 1
+				WHERE downvotes > 0 AND post_id = $1
+				`,
+					[post_id]
+				);
+			}
+		}
+	} catch (err) {
+		console.error(err);
+	}
+};
+
+const downvotePost = async (post_id, user_id) => {
+	// check in the post_reaction table (user_id, post_id, reaction_type) to check whether the user has already upvoted or downvoted the post
+	// if the the downvoted then don't do anything
+	// if the user has upvoted then update the reaction_type to downvote and upvotes to upvotes - 1, downvotes to downvotes + 1
+	try {
+		const res = await pool.query(
+			`
+		SELECT reaction_type FROM post_reaction WHERE user_id = $1 AND post_id = $2
+		`,
+			[user_id, post_id]
+		);
+
+		if (res.rows.length === 0) {
+			// if the user has not reacted to the post yet
+			await pool.query(
+				`
+			INSERT INTO post_reaction (user_id, post_id, reaction_type)
+			VALUES ($1, $2, $3)
+			`,
+				[user_id, post_id, "downvote"]
+			);
+
+			await pool.query(
+				`
+			UPDATE posts
+			SET downvotes = downvotes + 1
+			WHERE post_id = $1
+			`,
+				[post_id]
+			);
+		} else {
+			// if the user has already reacted to the post
+			if (res.rows[0].reaction_type === "upvote") {
+				await pool.query(
+					`
+				UPDATE post_reaction
+				SET reaction_type = $1
+				WHERE user_id = $2 AND post_id = $3
+				`,
+					["downvote", user_id, post_id]
+				);
+				await pool.query(
+					`
+				UPDATE posts
+				SET upvotes = upvotes - 1, downvotes = downvotes + 1
+				WHERE upvotes > 0 AND post_id = $1
+				`,
+					[post_id]
+				);
+			}
+		}
+	} catch (err) {
+		console.error(err);
+	}
+};
+
+const getUpDownVotes = async (post_id) => {
+	try {
+		const res = await pool.query(
+			`
+		SELECT upvotes, downvotes FROM posts WHERE post_id = $1
+		`,
+			[post_id]
+		);
+
+		return res.rows[0];
+	} catch (err) {
+		console.error(err);
+	}
+};
+
+const savePost = async (post_id, user_id) => {
+	// There is a field named saved_posts[] in the users table
+	// insert the post_id in that field, but make sure that, the post_id is not already in the array
+
+	try {
+		const res = await pool.query(
+			`
+		SELECT saved_posts FROM users WHERE user_id = $1
+		`,
+			[user_id]
+		);
+
+		if (res.rows[0].saved_posts === null) {
+			await pool.query(
+				`
+			UPDATE users
+			SET saved_posts = $1
+			WHERE user_id = $2
+			`,
+				[[post_id], user_id]
+			);
+		} else {
+			const savedPosts = res.rows[0].saved_posts;
+
+			if (!savedPosts.includes(post_id)) {
+				await pool.query(
+					`
+				UPDATE users
+				SET saved_posts = array_append(saved_posts, $1)
+				WHERE user_id = $2
+				`,
+					[post_id, user_id]
+				);
+				return "success";
+			}
+		}
+
+		return "duplicate";
+	} catch (err) {
+		console.error(err);
+		return null;
+	}
+};
+
+const getSavedPosts = async (user_id) => {
+	try {
+		const res = await pool.query(
+			`
+		SELECT saved_posts FROM users WHERE user_id = $1
+		`,
+			[user_id]
+		);
+
+		// Fetch data from the posts table using the post_id
+		const post_ids = res.rows[0].saved_posts;
+
+		const savedPosts = [];
+		for (const post_id of post_ids) {
+			const res1 = await pool.query(
+				`
+			SELECT * FROM posts WHERE post_id = $1
+			`,
+				[post_id]
+			);
+			const post = res1.rows[0];
+			const postData = {
+				post_id: post.post_id,
+				author_id: post.author_id,
+				author_type: post.author_type,
+				author_name: post.author_name,
+				course: post.course,
+				tags: post.tags
+					? post.tags
+							.replace(/[{}"]/g, "")
+							.split(",")
+							.map((tag) => tag.trim())
+					: [],
+				timestamp: post.timestamp.toISOString(),
+				title: post.title,
+				summary: post.summary,
+				post_type: post.post_type,
+				upvotes: post.upvotes,
+				downvotes: post.downvotes,
+				replies: [],
+			};
+
+			savedPosts.push(postData);
+		}
+		return savedPosts;
+	} catch (err) {
+		console.error(err);
+	}
+};
+
+const removeSavedPost = async (post_id, user_id) => {
+	try {
+		const res = await pool.query(
+			`
+		SELECT saved_posts FROM users WHERE user_id = $1
+		`,
+			[user_id]
+		);
+
+		const savedPosts = res.rows[0].saved_posts;
+		console.log("savedPosts: ");
+		console.log(savedPosts);
+		console.log("Post id: ", post_id);
+
+		if (savedPosts.includes(parseInt(post_id))) {
+			console.log("Post id found in the saved_posts array");
+			await pool.query(
+				`
+			UPDATE users
+			SET saved_posts = array_remove(saved_posts, $1)
+			WHERE user_id = $2
+			`,
+				[post_id, user_id]
+			);
+
+			return "success";
+		}
+	} catch (err) {
+		console.error(err);
+		return null;
+	}
+};
+
+const getMyPosts = async (user_id) => {
+	try {
+		const res = await pool.query(
+			`
+		SELECT * FROM posts WHERE author_id = $1
+		`,
+			[user_id]
+		);
+
+		const myPosts = res.rows.map((post) => ({
+			post_id: post.post_id,
+			author_id: post.author_id,
+			author_type: post.author_type,
+			author_name: post.author_name,
+			course: post.course,
+			tags: post.tags
+				? post.tags
+						.replace(/[{}"]/g, "")
+						.split(",")
+						.map((tag) => tag.trim())
+				: [],
+			timestamp: post.timestamp.toISOString(),
+			title: post.title,
+			summary: post.summary,
+			post_type: post.post_type,
+			upvotes: post.upvotes,
+			downvotes: post.downvotes,
+			replies: [],
+		}));
+
+		return myPosts;
+	} catch (err) {
+		console.error(err);
+		return null;
+	}
+};
+
+
+const deletePost = async (post_id) => {
+	try {
+		await pool.query(
+			`
+		DELETE FROM posts WHERE post_id = $1
+		`,
+			[post_id]
+		);
+
+		return "success";
+	} catch (err) {
+		console.error(err);
+		return null;
+	}
+};
 
 module.exports = {
 	createTables,
@@ -1724,11 +2015,21 @@ module.exports = {
 	getContentCreator,
 	fetchPostsData,
 	addReply,
-	insertFavorite,
-	getFavouriteCourses,
 	unregisterCourse,
 	getTopCategories,
 	getFieldOptionData,
 	getRecommended_Courses,
 	searchCourses,
+	fetchPostsDataByTypes,
+	fetchPostsDataByCourse,
+	fetchPostsDataByTags,
+	getUserType,
+	upvotePost,
+	downvotePost,
+	getUpDownVotes,
+	savePost,
+	getSavedPosts,
+	removeSavedPost,
+	getMyPosts,
+	deletePost,
 };

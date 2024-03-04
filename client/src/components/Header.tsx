@@ -44,6 +44,19 @@ function Header() {
 		handleAccessLevel();
 	}, [currentUser]);
 
+	// Function to handle the logout
+	const handleLogout = async () => {
+		try {
+			await api.get("/user/signin/logout");
+
+			window.localStorage.removeItem("currentUser");
+			navigate("/home");
+			setCurrentUser(null);
+		} catch (err) {
+			console.error(err);
+		}
+	};
+
 	// Accesslevel ta error return korbe and data jodio save thake LS e but header e show korbe na
 
 	return (
@@ -81,6 +94,9 @@ function Header() {
 								<Nav.Link as={Link} to="/upload" className="custom-nav-link">
 									<i className="fa-solid fa-upload"></i> Course Upload
 								</Nav.Link>
+								<Nav.Link onClick={handleLogout} className="custom-nav-link">
+                                    Logout
+                                </Nav.Link>
 							</>
 						)}
 						{currentUser && accesslevelData === "user" ? (

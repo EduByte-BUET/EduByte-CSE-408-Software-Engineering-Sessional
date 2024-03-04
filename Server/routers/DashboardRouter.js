@@ -1,12 +1,16 @@
 const express = require("express");
+const db = require("../database/db");
 const requireAuth = require("./RequireAuth");
+
 const router = express.Router();
 const courses_router = express.Router();
 const recommendations_router = express.Router();
 const notifications_router = express.Router();
 const saved_posts_router = express.Router();
+const myposts_router = express.Router();
+const remove_saved_post_router = express.Router();
+const delete_post_router = express.Router();
 const unregister_course_router = express.Router();
-const db = require("../database/db");
 
 // --------------------------------------------- User ---------------------------------------------
 
@@ -20,6 +24,12 @@ saved_posts_router.use(requireAuth);
 router.use("/user/saved_posts", saved_posts_router);
 unregister_course_router.use(requireAuth);
 router.use("/user/courses", unregister_course_router);
+remove_saved_post_router.use(requireAuth);
+router.use("/user/remove_saved_post", remove_saved_post_router);
+delete_post_router.use(requireAuth);
+router.use("/user/delete_post", delete_post_router);
+myposts_router.use(requireAuth);
+router.use("/user/my_posts", myposts_router);
 // dashboard Credentials
 // Name, Email, Username, Password
 
@@ -32,8 +42,7 @@ courses_router.route("/").get(async (req, res) => {
 
 	if (courses === null) {
 		res.status(400).send();
-	}
-	else {
+	} else {
 		res.status(200).send(courses);
 	}
 });
@@ -47,8 +56,7 @@ unregister_course_router.route("/").delete(async (req, res) => {
 	let result = await db.unregisterCourse(user_id, course_id);
 	if (result === null) {
 		res.status(400).send();
-	}
-	else {
+	} else {
 		res.status(200).send(result);
 	}
 });
@@ -111,113 +119,55 @@ notifications_router.route("/").get(async (req, res) => {
 saved_posts_router.route("/").get(async (req, res) => {
 	console.log("/user/saved_posts GET");
 
-	// Client would want to get the saved posts from the database
-	// userid (needed to get data form the db) is stored in req.session.userid
-	// A sample json response is given below
-	saved_posts = {
-		saved_posts: [
-			{
-				post_id: 1,
-				post_title: "Introduction to React",
-				post_content: "Learn the basics of React programming.",
-				user_id: 123,
-				user_name: "JohnDoe",
-				post_time: "2023-05-15T08:00:00Z",
-				total_upvote: 25,
-				total_downvote: 5,
-				total_reply: 10,
-				post_tag: "react",
-				reply: [
-					{
-						reply_id: 101,
-						user_id: 456,
-						user_name: "Doe",
-						post_id: 1,
-						reply_content: "This is a great post!",
-						reply_time: "2023-05-15T08:15:00Z",
-						parent_reply_id: 0,
-					},
-					{
-						reply_id: 102,
-						user_id: 789,
-						user_name: "Jane",
-						post_id: 1,
-						reply_content: "I found this post very helpful!",
-						reply_time: "2023-05-15T08:30:00Z",
-						parent_reply_id: 0,
-					},
-				],
-			},
-			{
-				post_id: 2,
-				post_title: "Web Development Tips",
-				post_content: "Explore useful tips for web development.",
-				user_id: 789,
-				user_name: "JaneSmith",
-				post_time: "2023-05-16T10:30:00Z",
-				total_upvote: 15,
-				total_downvote: 2,
-				total_reply: 8,
-				post_tag: "webdev",
-				reply: [
-					{
-						reply_id: 201,
-						user_id: 456,
-						user_name: "John",
-						post_id: 2,
-						reply_content: "Thanks for sharing!",
-						reply_time: "2023-05-16T11:00:00Z",
-						parent_reply_id: 0,
-					},
-					{
-						reply_id: 202,
-						user_id: 123,
-						user_name: "Doe",
-						post_id: 2,
-						reply_content: "Great tips!",
-						reply_time: "2023-05-16T11:30:00Z",
-						parent_reply_id: 0,
-					},
-				],
-			},
-			{
-				post_id: 3,
-				post_title: "Understanding CSS Grid",
-				post_content: "Learn how to use CSS Grid for layout design.",
-				user_id: 456,
-				user_name: "JohnDoe",
-				post_time: "2023-05-17T09:00:00Z",
-				total_upvote: 20,
-				total_downvote: 3,
-				total_reply: 9,
-				post_tag: "css",
-				reply: [
-					{
-						reply_id: 301,
-						user_id: 789,
-						user_name: "Jane",
-						post_id: 3,
-						reply_content: "This is a great introduction to CSS Grid!",
-						reply_time: "2023-05-17T09:30:00Z",
-						parent_reply_id: 0,
-					},
-					{
-						reply_id: 302,
-						user_id: 123,
-						user_name: "Doe",
-						post_id: 3,
-						reply_content: "Thanks for the post!",
-						reply_time: "2023-05-17T10:00:00Z",
-						parent_reply_id: 0,
-					},
-				],
-			},
-		],
-	};
+	const user_id = req.session.user_id;
+	let saved_posts = await db.getSavedPosts(user_id);
 
-	if (Object.keys(saved_posts).length > 0) res.status(200); // OK
-	else res.status(400); // Bad Request
-	res.json(saved_posts);
+	if (saved_posts === null) {
+		res.status(404).send();
+	} else {
+		res.status(200).json(saved_posts);
+	}
+});
+
+remove_saved_post_router.route("/").delete(async (req, res) => {
+	console.log("/user/remove_saved_post DELETE");
+
+	const user_id = req.session.user_id;
+	const post_id = req.query.post_id;
+
+	let removed = await db.removeSavedPost(post_id, user_id);
+	if (removed === null) {
+		res.status(400).send();
+	} else {
+		res.status(200).send();
+	}
+});
+
+myposts_router.route("/").get(async (req, res) => {
+	console.log("/user/my_posts GET");
+
+	const user_id = req.session.user_id;
+	let my_posts = await db.getMyPosts(user_id);
+
+	if (my_posts === null) {
+		res.status(404).send();
+	} else {
+		res.status(200).json(my_posts);
+	}
+});
+
+delete_post_router.route("/").delete(async (req, res) => {
+	console.log("/user/delete_post DELETE");
+
+	const post_id = req.query.post_id;
+	const user_id = req.session.user_id;
+
+	let removed = await db.deletePost(post_id, user_id);
+	if (removed === null) {
+		res.status(400).send();
+	} else {
+		res.status(200).send();
+	}
 });
 
 // --------------------------------------------- Admin ---------------------------------------------
