@@ -157,6 +157,142 @@ const getPopularCourses = async () => {
     console.log(err);
   }
 };
+const getCCInfo = async () => {
+  try {
+    const res = await pool.query(
+      `SELECT c.*
+   FROM users c
+   WHERE c.access_level = 'ccreator'`
+    );
+
+    const courseno = await pool.query(
+      `SELECT COUNT(*) AS course_count
+FROM courses;
+`
+    );
+
+    const enrolled = await pool.query(
+      `SELECT SUM(total_enrolled) AS total_enrollment
+FROM courses;
+`
+    );
+
+    if (res.rows[0]) {
+      return res.rows.map((row) => {
+        // convert the row object to a popular course object
+        const cc = {
+          fullname: row.fullname,
+          username: row.username,
+          email: row.email,
+          access_level: row.access_level,
+          
+          total_course: courseno.rows[0].course_count,
+          total_enrolled: enrolled.rows[0].total_enrollment,
+        };
+        return cc;
+      });
+    }
+    return null;
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+const getSiteStats = async () => {
+  try {
+    const c1 = await pool.query(
+      `SELECT COUNT(*) AS total_admins
+FROM users
+WHERE access_level = 'admin';`
+    );
+
+    const c2 = await pool.query(
+      `SELECT COUNT(*) AS total_users
+FROM users
+WHERE access_level = 'user'
+`
+    );
+
+    const c3 = await pool.query(
+      `SELECT COUNT(*) AS total_creators
+FROM users
+WHERE access_level = 'ccreator';
+`
+    );
+
+     const c4 = await pool.query(
+       `SELECT COUNT(*) AS total_course
+FROM courses;`
+     );
+
+     const c5 = await pool.query(
+       `SELECT COUNT(*) AS total_cat
+FROM categories;
+`
+     );
+
+     const c6 = await pool.query(
+       `SELECT SUM(total_enrolled) AS total_enrolled
+FROM courses;;
+`
+     );
+
+
+       const c7 = await pool.query(
+         `SELECT COUNT(*) AS total_block
+FROM blocks
+;
+`
+       );
+
+       const c8 = await pool.query(
+         `SELECT COUNT(*) AS total_lecture
+FROM lectures;`
+       );
+
+       const c9 = await pool.query(
+         `SELECT COUNT(*) AS total_lesson
+FROM lessons;
+`
+       );
+
+       const c10 = await pool.query(
+         `SELECT COUNT(*) AS total_quiz
+FROM quizzes;
+`
+       );
+
+
+  
+        const cc = {
+          userStats: {
+            totalUsers: c2.rows[0].total_users,
+            totalCreators: c3.rows[0].total_creators,
+            totalAdmin: c1.rows[0].total_admins,
+          },
+          courseStats: {
+            totalCategories: c5.rows[0].total_cat,
+            totalCourses: c4.rows[0].total_course,
+
+            totalEnrollments: c6.rows[0].total_enrolled,
+          },
+          contentStats: {
+            totalBlocks: c7.rows[0].total_block,
+            totalLectures: c8.rows[0].total_lecture,
+            totalLessons: c9.rows[0].total_lesson,
+            totalQuizzes: c10.rows[0].total_quiz,
+          },
+        };
+        return cc;
+      
+    
+    return null;
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+
 
 const getRecommended_Courses = async (user_id) => {
   try {
@@ -177,6 +313,7 @@ const getRecommended_Courses = async (user_id) => {
         // convert the row object to a popular course object
         const course = {
           course_id: row.course_id,
+          description: row.description,
           course_title: row.course_title,
           thumbnail_url: row.thumbnail_url,
           difficulty_level: row.difficulty_level,
@@ -1394,6 +1531,10 @@ const getFavouriteCourses = async (user_id) => {
     throw err;
   }
 };
+
+
+
+
 const fetchPostsDataByTypes = async (types) => {
 	try {
 	  const postsQueryResult = await pool.query('SELECT * FROM posts WHERE post_type = ANY($1::text[])', [types]);
@@ -1680,4 +1821,6 @@ module.exports = {
   getTopCategories,
   getFieldOptionData,
   getRecommended_Courses,
+  getCCInfo,
+  getSiteStats,
 };

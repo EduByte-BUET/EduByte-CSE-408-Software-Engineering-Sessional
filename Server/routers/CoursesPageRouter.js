@@ -65,10 +65,26 @@ recommended_course_router.route("/").get(async (req, res) => {
 	const user = await db.getUser(req.session.username);
     const user_id = user.user_id;
 
-	const recommended_courses = await db.getRecommended_Courses(user_id);
-	
-	if (recommended_courses != null) res.status(200); // OK
-	else res.status(404);
+
+	let recommended_courses = await db.getRecommended_Courses(user_id);
+	console.log("inside the recomm router");
+	console.log(recommended_courses);
+	if (recommended_courses==null){
+		recommended_courses = [
+	// 		{
+    //   course_id: "",
+    //   description: "",
+    //   course_title: "",
+    //   thumbnail_url: "",
+    //   difficulty_level: "",
+    //   category: "",
+    //   total_enrolled: "",
+    //   total_lessons: "",
+    //  }
+	];
+	}
+    if (recommended_courses != null) res.status(200); // OK
+    else res.status(404);
 	res.json(recommended_courses);
 });
 

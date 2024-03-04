@@ -44,11 +44,11 @@ const CoursesPageHome = () => {
     const fetchData = async () => {
       try {
         const res = await api.get("/courses/recommended");
-        console.log(res);
+       
         setRecommendedCourses(res.data);
       } catch (err) {
-        console.log("error in recom");
-        //alert("Error occurred. Please try again later.");
+        
+        alert("Error occurred. Please try again later.");
       }
     };
 
@@ -88,6 +88,8 @@ const CoursesPageHome = () => {
 						title="Popular Courses"
 						courses={popularCourses ? popularCourses : []}
 					/>
+					
+
 					<CourseViewSections
 						title="Courses By Preferences"
 						courses={recommendedCourses ? recommendedCourses : []}

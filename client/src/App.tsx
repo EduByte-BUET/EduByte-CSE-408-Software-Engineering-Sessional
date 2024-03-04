@@ -72,10 +72,9 @@ function App() {
     const handleFieldOptions = async () => {
       try {
         const res = await signin_api.get("/user/signin/fieldOption");
-        console.log(res.data.fieldOptionData);
+        
         setfieldOptions(res.data);
-        console.log("here it is");
-        console.log(fieldOptions);
+        
       } catch (err) {
         console.log(err);
       }

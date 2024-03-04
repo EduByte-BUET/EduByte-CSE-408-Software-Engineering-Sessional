@@ -1,82 +1,37 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import { NavLink, Link } from "react-router-dom";
 import "../../css/dashboard.css";
+import api from "../../api/GeneralAPI";
 import newimage from "../../assets/hero-img.png";
 import { useNavigate } from "react-router-dom";
 
 const ContentCreatorsProfile = () => {
+  console.log("/admin/content_creators GET");
+  const [profiles, setCCData] = React.useState<any>([]);
 
-  const profiles = [
-    {
-      name: "Jenny Wilson",
-      role: "Front-end Developer, Designer",
-      rating: 4.5,
-      courses: 42,
-      students: 110124,
-      bio: "I start my development and digital career studying digital design...",
-      avatar: "/path/to/avatar.jpg", // Replace with actual path
-    },
-    {
-      name: "Jenny Wilson",
-      role: "Front-end Developer, Designer",
-      rating: 4.5,
-      courses: 42,
-      students: 110124,
-      bio: "I start my development and digital career studying digital design...",
-      avatar: "/path/to/avatar.jpg", // Replace with actual path
-    },
-    {
-      name: "Jenny Wilson",
-      role: "Front-end Developer, Designer",
-      rating: 4.5,
-      courses: 42,
-      students: 110124,
-      bio: "I start my development and digital career studying digital design...",
-      avatar: "/path/to/avatar.jpg", // Replace with actual path
-    },
-    {
-      name: "Jenny Wilson",
-      role: "Front-end Developer, Designer",
-      rating: 4.5,
-      courses: 42,
-      students: 110124,
-      bio: "I start my development and digital career studying digital design...",
-      avatar: "/path/to/avatar.jpg", // Replace with actual path
-    },
-    {
-      name: "Jenny Wilson",
-      role: "Front-end Developer, Designer",
-      rating: 4.5,
-      courses: 42,
-      students: 110124,
-      bio: "I start my development and digital career studying digital design...",
-      avatar: "/path/to/avatar.jpg", // Replace with actual path
-    },
-    {
-      name: "Jenny Wilson",
-      role: "Front-end Developer, Designer",
-      rating: 4.5,
-      courses: 42,
-      students: 110124,
-      bio: "I start my development and digital career studying digital design...",
-      avatar: "/path/to/avatar.jpg", // Replace with actual path
-    },
-    // ... add more profiles as needed
-  ];
+  useEffect(() => {
+    const handleCC = async () => {
+      try {
+        const res = await api.get("/dashboard/admin/content_creators");
 
-const navigate = useNavigate();
+        setCCData(res.data);
+      } catch (err: any) {
+        console.log(err);
+      }
+    };
 
+    handleCC();
+  }, []);
+
+  const navigate = useNavigate();
 
   return (
     <div className="col-md-8 col-lg-9">
       <div className=" justify-content-between align-items-center py-3">
         {/* Add SortBy and SearchBar components */}
       </div>
-      <div
-        className="container"
-        style={{ height: "640px", overflowY: "auto" }}
-      >
+      <div className="container" style={{ height: "640px", overflowY: "auto" }}>
         <div className="container py-5">
           <div className="row justify-content-between">
             {profiles.map((profile, index) => (
@@ -88,28 +43,30 @@ const navigate = useNavigate();
                       alt={profile.name}
                       className="content-creator-avatar mb-3"
                     />
-                    <h4 className="mb-0">{profile.name}</h4>
-                    <p className="text-muted">{profile.role}</p>
-                    <p className="mb-1">
-                      <span className="content-creator-rating">
-                        {profile.rating}{" "}
-                        <i className="bi bi-star-fill text-warning"></i>
-                      </span>{" "}
-                      Instructor Rating
-                    </p>
+                    <h4 className="mb-0">{profile.fullname}</h4>
+                    <p className="text-muted">@{profile.username}</p>
+                    <p className="mb-1"></p>
                     <p>
                       <span className="content-creator-courses">
-                        {profile.courses} Courses
-                      </span>{" "}
-                      ·
+                        {profile.total_course} Courses
+                      </span>
+                      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                       <span className="content-creator-students">
-                        {profile.students.toLocaleString()} Students
+                        {profile.total_enrolled.toLocaleString()} Students
                       </span>
                     </p>
-                    <p>{profile.bio}</p>
-                    <button className="btn btn-outline-primary btn-sm" onClick={() => navigate('/admin/dashboard/content_creators/info')}>
+                    <p>
+                      I start my development and digital career studying digital
+                      design
+                    </p>
+
+                    <p className="text-muted">
+                      Email: {profile.email}
+                    </p>
+
+                    {/* <button className="btn btn-outline-primary btn-sm" onClick={() => navigate('/admin/dashboard/content_creators/info')}>
                       View Details
-                    </button>
+                    </button> */}
                   </div>
                 </div>
               </div>
